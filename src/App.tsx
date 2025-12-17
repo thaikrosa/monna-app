@@ -8,6 +8,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AppLayout } from "@/layouts/AppLayout";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import ShoppingList from "./pages/ShoppingList";
 import Theme from "./pages/Theme";
 import NotFound from "./pages/NotFound";
 
@@ -27,6 +28,7 @@ const App = () => (
             {/* Protected routes */}
             <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/lista" element={<ShoppingList />} />
               <Route path="/theme" element={<Theme />} />
             </Route>
             

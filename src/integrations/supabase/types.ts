@@ -47,6 +47,173 @@ export type Database = {
         }
         Relationships: []
       }
+      shopping_item_events: {
+        Row: {
+          event_type: string
+          id: string
+          item_id: string | null
+          meta: Json
+          occurred_at: string
+          user_id: string
+        }
+        Insert: {
+          event_type: string
+          id?: string
+          item_id?: string | null
+          meta?: Json
+          occurred_at?: string
+          user_id?: string
+        }
+        Update: {
+          event_type?: string
+          id?: string
+          item_id?: string | null
+          meta?: Json
+          occurred_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shopping_item_events_item_fk"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "shopping_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shopping_item_events_item_fk"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "v_shopping_items_with_frequency"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shopping_item_stats: {
+        Row: {
+          avg_days_between: number | null
+          intervals_count: number
+          item_id: string
+          last_calculated_at: string
+          last_checked_at: string | null
+          user_id: string
+        }
+        Insert: {
+          avg_days_between?: number | null
+          intervals_count?: number
+          item_id: string
+          last_calculated_at?: string
+          last_checked_at?: string | null
+          user_id: string
+        }
+        Update: {
+          avg_days_between?: number | null
+          intervals_count?: number
+          item_id?: string
+          last_calculated_at?: string
+          last_checked_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shopping_item_stats_item_fk"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "shopping_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shopping_item_stats_item_fk"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "v_shopping_items_with_frequency"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shopping_items: {
+        Row: {
+          checked_at: string | null
+          created_at: string
+          id: string
+          is_checked: boolean
+          last_purchased_at: string | null
+          name: string
+          name_norm: string | null
+          notes: string | null
+          quantity_text: string | null
+          tag_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          checked_at?: string | null
+          created_at?: string
+          id?: string
+          is_checked?: boolean
+          last_purchased_at?: string | null
+          name: string
+          name_norm?: string | null
+          notes?: string | null
+          quantity_text?: string | null
+          tag_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          checked_at?: string | null
+          created_at?: string
+          id?: string
+          is_checked?: boolean
+          last_purchased_at?: string | null
+          name?: string
+          name_norm?: string | null
+          notes?: string | null
+          quantity_text?: string | null
+          tag_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shopping_items_tag_fk"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "shopping_tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shopping_tags: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          name_norm: string | null
+          sort_order: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          name_norm?: string | null
+          sort_order?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          name_norm?: string | null
+          sort_order?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       survey_responses: {
         Row: {
           age: string | null
@@ -154,10 +321,64 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_shopping_items_with_frequency: {
+        Row: {
+          avg_days_between: number | null
+          checked_at: string | null
+          created_at: string | null
+          id: string | null
+          intervals_count: number | null
+          is_checked: boolean | null
+          last_calculated_at: string | null
+          last_checked_at: string | null
+          last_purchased_at: string | null
+          name: string | null
+          notes: string | null
+          quantity_text: string | null
+          tag_id: string | null
+          tag_name: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shopping_items_tag_fk"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "shopping_tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       get_complete_schema: { Args: never; Returns: Json }
+      shopping_add_item: {
+        Args: {
+          p_name: string
+          p_notes?: string
+          p_quantity_text?: string
+          p_tag_name?: string
+        }
+        Returns: string
+      }
+      shopping_check_duplicate: {
+        Args: { p_name: string; p_tag_name?: string }
+        Returns: boolean
+      }
+      shopping_clear_checked_items: {
+        Args: { p_days_ago?: number }
+        Returns: number
+      }
+      shopping_delete_item: { Args: { p_item_id: string }; Returns: undefined }
+      shopping_set_item_checked: {
+        Args: { p_checked: boolean; p_item_id: string }
+        Returns: undefined
+      }
+      shopping_upsert_tag: {
+        Args: { p_name: string; p_sort_order?: number }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

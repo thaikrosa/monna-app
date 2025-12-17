@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Header from "@/components/_legacy/Header";
 import { Envelope, InstagramLogo, XLogo } from "@phosphor-icons/react";
 
 const Authors = () => {

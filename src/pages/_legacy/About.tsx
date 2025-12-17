@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Header from "@/components/_legacy/Header";
 import { Envelope } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 

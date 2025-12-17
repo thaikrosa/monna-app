@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Header from "@/components/_legacy/Header";
 import { Button } from "@/components/ui/button";
 
 const StyleGuide = () => {

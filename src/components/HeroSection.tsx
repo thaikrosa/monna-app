@@ -37,21 +37,21 @@ const HeroSection = () => {
                 className="w-12 h-12 rounded-full border-2 border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center hover:scale-110"
                 aria-label="Instagram"
               >
-                <InstagramLogo className="w-5 h-5" weight="regular" />
+                <InstagramLogo className="w-6 h-6 md:w-5 md:h-5 opacity-85" weight="regular" />
               </a>
               <a
                 href="#facebook"
                 className="w-12 h-12 rounded-full border-2 border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center hover:scale-110"
                 aria-label="Facebook"
               >
-                <FacebookLogo className="w-5 h-5" weight="regular" />
+                <FacebookLogo className="w-6 h-6 md:w-5 md:h-5 opacity-85" weight="regular" />
               </a>
               <a
                 href="#linkedin"
                 className="w-12 h-12 rounded-full border-2 border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center hover:scale-110"
                 aria-label="LinkedIn"
               >
-                <LinkedinLogo className="w-5 h-5" weight="regular" />
+                <LinkedinLogo className="w-6 h-6 md:w-5 md:h-5 opacity-85" weight="regular" />
               </a>
             </div>
           </div>

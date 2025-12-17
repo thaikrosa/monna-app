@@ -81,14 +81,14 @@ const Authors = () => {
                   className="w-10 h-10 rounded-full border border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center"
                   aria-label="Twitter"
                 >
-                  <XLogo className="w-4 h-4" weight="regular" />
+                  <XLogo className="w-5 h-5 md:w-4 md:h-4 opacity-85" weight="regular" />
                 </a>
                 <a
                   href="#instagram"
                   className="w-10 h-10 rounded-full border border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center"
                   aria-label="Instagram"
                 >
-                  <InstagramLogo className="w-4 h-4" weight="regular" />
+                  <InstagramLogo className="w-5 h-5 md:w-4 md:h-4 opacity-85" weight="regular" />
                 </a>
               </div>
             </div>

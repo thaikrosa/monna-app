@@ -1,5 +1,5 @@
-import Header from "@/components/Header";
-import ArticleCard from "@/components/ArticleCard";
+import Header from "@/components/_legacy/Header";
+import ArticleCard from "@/components/_legacy/ArticleCard";
 import { articles } from "@/data/articles";
 
 const Wellness = () => {

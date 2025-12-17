@@ -1,7 +1,7 @@
-import Header from "@/components/Header";
-import ArticleCard from "@/components/ArticleCard";
-import HeroSection from "@/components/HeroSection";
-import IntroSection from "@/components/IntroSection";
+import Header from "@/components/_legacy/Header";
+import ArticleCard from "@/components/_legacy/ArticleCard";
+import HeroSection from "@/components/_legacy/HeroSection";
+import IntroSection from "@/components/_legacy/IntroSection";
 import { articles } from "@/data/articles";
 
 const Index = () => {

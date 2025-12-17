@@ -1,5 +1,5 @@
 import Header from "@/components/Header";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Envelope, MapPin, Phone } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -121,7 +121,7 @@ const Contact = () => {
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-5 h-5" />
+                    <Envelope className="w-5 h-5" weight="thin" />
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Email</h3>
@@ -131,7 +131,7 @@ const Contact = () => {
                 </div>
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-5 h-5" />
+                    <MapPin className="w-5 h-5" weight="thin" />
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Location</h3>
@@ -141,7 +141,7 @@ const Contact = () => {
                 </div>
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-5 h-5" />
+                    <Phone className="w-5 h-5" weight="thin" />
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Phone</h3>

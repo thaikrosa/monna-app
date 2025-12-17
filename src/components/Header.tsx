@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Moon, Sun } from "lucide-react";
+import { List, X, Moon, Sun } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 
 const Header = () => {
@@ -71,9 +71,9 @@ const Header = () => {
               aria-label="Toggle theme"
             >
               {isDark ? (
-                <Sun className="h-4 w-4 sm:h-5 sm:w-5" />
+                <Sun className="h-4 w-4 sm:h-5 sm:w-5" weight="thin" />
               ) : (
-                <Moon className="h-4 w-4 sm:h-5 sm:w-5" />
+                <Moon className="h-4 w-4 sm:h-5 sm:w-5" weight="thin" />
               )}
             </button>
             
@@ -87,7 +87,7 @@ const Header = () => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label="Toggle menu"
             >
-              {isMenuOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Menu className="h-5 w-5 sm:h-6 sm:w-6" />}
+              {isMenuOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" weight="thin" /> : <List className="h-5 w-5 sm:h-6 sm:w-6" weight="thin" />}
             </button>
           </div>
         </div>

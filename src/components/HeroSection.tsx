@@ -1,4 +1,4 @@
-import { Instagram, Facebook, Linkedin } from "lucide-react";
+import { InstagramLogo, FacebookLogo, LinkedinLogo } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 
 const HeroSection = () => {
@@ -37,21 +37,21 @@ const HeroSection = () => {
                 className="w-12 h-12 rounded-full border-2 border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center hover:scale-110"
                 aria-label="Instagram"
               >
-                <Instagram className="w-5 h-5" />
+                <InstagramLogo className="w-5 h-5" weight="thin" />
               </a>
               <a
                 href="#facebook"
                 className="w-12 h-12 rounded-full border-2 border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center hover:scale-110"
                 aria-label="Facebook"
               >
-                <Facebook className="w-5 h-5" />
+                <FacebookLogo className="w-5 h-5" weight="thin" />
               </a>
               <a
                 href="#linkedin"
                 className="w-12 h-12 rounded-full border-2 border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center hover:scale-110"
                 aria-label="LinkedIn"
               >
-                <Linkedin className="w-5 h-5" />
+                <LinkedinLogo className="w-5 h-5" weight="thin" />
               </a>
             </div>
           </div>

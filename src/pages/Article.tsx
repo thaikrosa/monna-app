@@ -109,7 +109,7 @@ const Article = () => {
                   className="w-10 h-10 rounded-full border border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center"
                   aria-label="Share on Twitter"
                 >
-                  <XLogo className="w-4 h-4" weight="thin" />
+                  <XLogo className="w-4 h-4" weight="regular" />
                 </a>
                 <a
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
@@ -118,7 +118,7 @@ const Article = () => {
                   className="w-10 h-10 rounded-full border border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center"
                   aria-label="Share on Facebook"
                 >
-                  <FacebookLogo className="w-4 h-4" weight="thin" />
+                  <FacebookLogo className="w-4 h-4" weight="regular" />
                 </a>
                 <a
                   href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
@@ -127,7 +127,7 @@ const Article = () => {
                   className="w-10 h-10 rounded-full border border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center"
                   aria-label="Share on LinkedIn"
                 >
-                  <LinkedinLogo className="w-4 h-4" weight="thin" />
+                  <LinkedinLogo className="w-4 h-4" weight="regular" />
                 </a>
               </div>
             </div>

@@ -2,7 +2,7 @@ import { useParams, Navigate } from "react-router-dom";
 import Header from "@/components/Header";
 import ArticleCard from "@/components/ArticleCard";
 import { getArticleById, getRelatedArticles } from "@/data/articles";
-import { Facebook, Twitter, Linkedin, Link2, ArrowLeft } from "lucide-react";
+import { FacebookLogo, XLogo, LinkedinLogo, Link, ArrowLeft } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -44,7 +44,7 @@ const Article = () => {
             href="/"
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-accent transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4" weight="thin" />
             Back to articles
           </a>
         </div>
@@ -100,7 +100,7 @@ const Article = () => {
                   className="w-10 h-10 rounded-full border border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center"
                   aria-label="Copy link"
                 >
-                  <Link2 className="w-4 h-4" />
+                  <Link className="w-4 h-4" weight="thin" />
                 </button>
                 <a
                   href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(window.location.href)}`}
@@ -109,7 +109,7 @@ const Article = () => {
                   className="w-10 h-10 rounded-full border border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center"
                   aria-label="Share on Twitter"
                 >
-                  <Twitter className="w-4 h-4" />
+                  <XLogo className="w-4 h-4" weight="thin" />
                 </a>
                 <a
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
@@ -118,7 +118,7 @@ const Article = () => {
                   className="w-10 h-10 rounded-full border border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center"
                   aria-label="Share on Facebook"
                 >
-                  <Facebook className="w-4 h-4" />
+                  <FacebookLogo className="w-4 h-4" weight="thin" />
                 </a>
                 <a
                   href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
@@ -127,7 +127,7 @@ const Article = () => {
                   className="w-10 h-10 rounded-full border border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center"
                   aria-label="Share on LinkedIn"
                 >
-                  <Linkedin className="w-4 h-4" />
+                  <LinkedinLogo className="w-4 h-4" weight="thin" />
                 </a>
               </div>
             </div>
@@ -177,7 +177,7 @@ const Article = () => {
                 onClick={handleCopyLink}
                 className="flex-1 py-3 rounded-full border border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center gap-2"
               >
-                <Link2 className="w-4 h-4" />
+                <Link className="w-4 h-4" weight="thin" />
                 <span className="text-sm">Copy link</span>
               </button>
               <a
@@ -187,7 +187,7 @@ const Article = () => {
                 className="w-12 h-12 rounded-full border border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center"
                 aria-label="Share on Twitter"
               >
-                <Twitter className="w-4 h-4" />
+                <XLogo className="w-4 h-4" weight="thin" />
               </a>
               <a
                 href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
@@ -196,7 +196,7 @@ const Article = () => {
                 className="w-12 h-12 rounded-full border border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center"
                 aria-label="Share on Facebook"
               >
-                <Facebook className="w-4 h-4" />
+                <FacebookLogo className="w-4 h-4" weight="thin" />
               </a>
             </div>
           </div>

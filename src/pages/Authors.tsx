@@ -1,5 +1,5 @@
 import Header from "@/components/Header";
-import { Mail, Instagram, Twitter } from "lucide-react";
+import { Envelope, InstagramLogo, XLogo } from "@phosphor-icons/react";
 
 const Authors = () => {
   const authors = [
@@ -74,21 +74,21 @@ const Authors = () => {
                   className="w-10 h-10 rounded-full border border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center"
                   aria-label="Email"
                 >
-                  <Mail className="w-4 h-4" />
+                  <Envelope className="w-4 h-4" weight="thin" />
                 </a>
                 <a
                   href="#twitter"
                   className="w-10 h-10 rounded-full border border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center"
                   aria-label="Twitter"
                 >
-                  <Twitter className="w-4 h-4" />
+                  <XLogo className="w-4 h-4" weight="thin" />
                 </a>
                 <a
                   href="#instagram"
                   className="w-10 h-10 rounded-full border border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center"
                   aria-label="Instagram"
                 >
-                  <Instagram className="w-4 h-4" />
+                  <InstagramLogo className="w-4 h-4" weight="thin" />
                 </a>
               </div>
             </div>

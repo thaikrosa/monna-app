@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "@phosphor-icons/react";
 
 interface ArticleCardProps {
   id: string;
@@ -65,7 +65,7 @@ const ArticleCard = ({ id, title, category, date, image, size = "small" }: Artic
 
         {/* Floating circular arrow button - positioned outside content overlay */}
         <div className="absolute bottom-6 right-6 floating-button">
-          <ArrowUpRight className="w-5 h-5" />
+          <ArrowUpRight className="w-5 h-5" weight="thin" />
         </div>
       </div>
     </a>

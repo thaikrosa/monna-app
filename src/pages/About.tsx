@@ -1,5 +1,5 @@
 import Header from "@/components/Header";
-import { Mail } from "lucide-react";
+import { Envelope } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 
 const About = () => {
@@ -104,7 +104,7 @@ const About = () => {
             Subscribe to receive our latest articles, insights, and inspiration directly in your inbox.
           </p>
           <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-8">
-            <Mail className="mr-2 h-4 w-4" />
+            <Envelope className="mr-2 h-4 w-4" weight="thin" />
             Subscribe Now
           </Button>
         </section>

@@ -119,6 +119,12 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
 
     const datetime = new Date(`${dueDate}T${dueTime}:00`);
 
+    // Validar se a data não é no passado
+    if (datetime < new Date()) {
+      toast.error('Ops, esse horário já passou. Vamos agendar pra quando?');
+      return;
+    }
+
     // Montar recurrence_config baseado no tipo
     let recurrence_config: Record<string, unknown> | null = null;
     
@@ -158,7 +164,10 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
     }
   };
 
-  const isValid = title.trim() && dueDate;
+  // Verificar se a data/hora selecionada está no passado
+  const selectedDateTime = new Date(`${dueDate}T${dueTime}:00`);
+  const isDateInPast = selectedDateTime < new Date();
+  const isValid = title.trim() && dueDate && !isDateInPast;
 
   const inputClass = "bg-transparent border-0 border-b border-border/30 rounded-none focus:border-[#6B7F5E]/50 focus:ring-0 transition-colors duration-150 placeholder:text-muted-foreground/40";
 
@@ -206,7 +215,7 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                   type="date"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className={inputClass}
+                  className={`${inputClass} ${isDateInPast ? 'border-[#C4754B]/50' : ''}`}
                 />
               </div>
               <div className="space-y-3">
@@ -218,10 +227,17 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                   type="time"
                   value={dueTime}
                   onChange={(e) => setDueTime(e.target.value)}
-                  className={inputClass}
+                  className={`${inputClass} ${isDateInPast ? 'border-[#C4754B]/50' : ''}`}
                 />
               </div>
             </div>
+            
+            {/* Mensagem de erro inline para data passada */}
+            {isDateInPast && (
+              <p className="text-xs text-[#C4754B]/80 mt-2">
+                Essa data já passou. Escolhe um horário a partir de agora?
+              </p>
+            )}
           </div>
 
           {/* ═══════════════════════════════════════════════════════════════

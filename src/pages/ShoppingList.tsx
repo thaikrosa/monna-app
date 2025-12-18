@@ -1,153 +1,63 @@
-import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { Input } from '@/components/ui/input';
+import { Link } from 'react-router-dom';
+import { CaretLeft, Broom } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, Trash } from '@phosphor-icons/react';
-import { toast } from 'sonner';
-
-interface ShoppingItem {
-  id: string;
-  name: string;
-  quantity_text: string | null;
-  tag_name: string | null;
-  is_checked: boolean;
-  avg_days_between: number | null;
-}
+import { AddItemForm } from '@/components/shopping/AddItemForm';
+import { ShoppingItemCard } from '@/components/shopping/ShoppingItemCard';
+import {
+  useShoppingItems,
+  useToggleChecked,
+  useDeleteItem,
+  useClearChecked,
+} from '@/hooks/useShoppingList';
 
 export default function ShoppingList() {
-  const [newItem, setNewItem] = useState('');
-  const queryClient = useQueryClient();
+  const { data: items = [], isLoading } = useShoppingItems();
+  const toggleChecked = useToggleChecked();
+  const deleteItem = useDeleteItem();
+  const clearChecked = useClearChecked();
 
-  // Fetch items from view
-  const { data: items = [], isLoading } = useQuery({
-    queryKey: ['shopping-items'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('v_shopping_items_with_frequency')
-        .select('id, name, quantity_text, tag_name, is_checked, avg_days_between')
-        .order('is_checked', { ascending: true })
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      return data as ShoppingItem[];
-    },
-  });
-
-  // Add item mutation
-  const addItem = useMutation({
-    mutationFn: async (name: string) => {
-      const { data, error } = await supabase.rpc('shopping_add_item', {
-        p_name: name.trim(),
-      });
-      if (error) {
-        console.log('[Annia Debug] addItem error:', error.message, error);
-        throw error;
-      }
-      console.log('[Annia Debug] addItem success:', data);
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['shopping-items'] });
-      queryClient.invalidateQueries({ queryKey: ['shopping-pending-count'] });
-      setNewItem('');
-    },
-    onError: (error: Error) => {
-      console.log('[Annia Debug] addItem onError:', error);
-      toast.error('Erro ao adicionar item');
-    },
-  });
-
-  // Toggle checked mutation
-  const toggleChecked = useMutation({
-    mutationFn: async ({ id, checked }: { id: string; checked: boolean }) => {
-      const { error } = await supabase.rpc('shopping_set_item_checked', {
-        p_item_id: id,
-        p_checked: checked,
-      });
-      if (error) {
-        console.log('[Annia Debug] toggleChecked error:', error.message, error);
-        throw error;
-      }
-      console.log('[Annia Debug] toggleChecked success:', id, checked);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['shopping-items'] });
-      queryClient.invalidateQueries({ queryKey: ['shopping-pending-count'] });
-    },
-    onError: (error: Error) => {
-      console.log('[Annia Debug] toggleChecked onError:', error);
-      toast.error('Erro ao atualizar item');
-    },
-  });
-
-  // Delete item mutation
-  const deleteItem = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.rpc('shopping_delete_item', {
-        p_item_id: id,
-      });
-      if (error) {
-        console.log('[Annia Debug] deleteItem error:', error.message, error);
-        throw error;
-      }
-      console.log('[Annia Debug] deleteItem success:', id);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['shopping-items'] });
-      queryClient.invalidateQueries({ queryKey: ['shopping-pending-count'] });
-    },
-    onError: (error: Error) => {
-      console.log('[Annia Debug] deleteItem onError:', error);
-      toast.error('Erro ao remover item');
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newItem.trim()) {
-      addItem.mutate(newItem);
-    }
-  };
-
-  const formatFrequency = (days: number | null) => {
-    if (!days) return null;
-    const rounded = Math.round(days);
-    return `aprox. a cada ${rounded} ${rounded === 1 ? 'dia' : 'dias'}`;
-  };
+  const checkedCount = items.filter((item) => item.is_checked).length;
 
   return (
     <div className="max-w-lg mx-auto">
-      {/* Header */}
+      {/* Header com botão voltar */}
       <header className="mb-8">
-        <h1 className="text-2xl font-bold text-foreground">Lista de Compras</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Tudo o que você costuma comprar, em um só lugar.
-        </p>
+        <div className="flex items-center gap-3">
+          <Link
+            to="/"
+            className="p-1 -ml-1 text-muted-foreground hover:text-foreground transition-all duration-150"
+          >
+            <CaretLeft weight="thin" className="h-5 w-5" />
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Lista de Compras</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Tudo o que você costuma comprar, em um só lugar.
+            </p>
+          </div>
+        </div>
       </header>
 
-      {/* Add item form - com annia-glass */}
-      <form onSubmit={handleSubmit} className="flex gap-2 mb-8 p-3 annia-glass rounded-lg">
-        <Input
-          type="text"
-          placeholder="Adicionar item…"
-          value={newItem}
-          onChange={(e) => setNewItem(e.target.value)}
-          className="flex-1 bg-transparent border-border/50 focus:border-primary/50"
-        />
-        <Button
-          type="submit"
-          size="icon"
-          variant="ghost"
-          className="text-muted-foreground hover:text-foreground hover:bg-transparent"
-          disabled={!newItem.trim() || addItem.isPending}
-        >
-          <Plus weight="thin" className="h-5 w-5" />
-        </Button>
-      </form>
+      {/* Formulário de adição com seletor de tags */}
+      <AddItemForm />
 
-      {/* Items list */}
+      {/* Ação de limpeza - só aparece se houver itens marcados */}
+      {checkedCount > 0 && (
+        <div className="flex justify-end mb-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-xs text-muted-foreground hover:text-foreground transition-all duration-150"
+            onClick={() => clearChecked.mutate()}
+            disabled={clearChecked.isPending}
+          >
+            <Broom weight="thin" className="h-4 w-4 mr-1" />
+            Limpar {checkedCount} concluído{checkedCount > 1 ? 's' : ''}
+          </Button>
+        </div>
+      )}
+
+      {/* Lista de itens */}
       <div className="space-y-0">
         {isLoading ? (
           <div className="py-8 text-center text-muted-foreground text-sm">
@@ -159,57 +69,12 @@ export default function ShoppingList() {
           </div>
         ) : (
           items.map((item) => (
-            <div
+            <ShoppingItemCard
               key={item.id}
-              className={`group flex items-center gap-3 py-3 px-1 border-b border-border/30 last:border-b-0 transition-all duration-150 ${
-                item.is_checked ? 'opacity-60' : ''
-              }`}
-            >
-              <Checkbox
-                checked={item.is_checked}
-                onCheckedChange={(checked) =>
-                  toggleChecked.mutate({ id: item.id, checked: !!checked })
-                }
-                className="data-[state=checked]:bg-primary data-[state=checked]:border-primary transition-all duration-150"
-              />
-
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`text-foreground transition-all duration-150 ${
-                      item.is_checked ? 'line-through decoration-muted-foreground/50 text-muted-foreground' : ''
-                    }`}
-                  >
-                    {item.name}
-                  </span>
-                  {item.quantity_text && (
-                    <span className="text-xs text-muted-foreground">
-                      ({item.quantity_text})
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex items-center gap-2 mt-0.5">
-                  {item.tag_name && (
-                    <span className="text-xs text-primary/80">{item.tag_name}</span>
-                  )}
-                  {item.avg_days_between && (
-                    <span className="text-xs text-muted-foreground">
-                      {formatFrequency(item.avg_days_between)}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-all duration-150 text-muted-foreground hover:text-foreground hover:bg-transparent"
-                onClick={() => deleteItem.mutate(item.id)}
-              >
-                <Trash weight="thin" className="h-4 w-4" />
-              </Button>
-            </div>
+              item={item}
+              onToggle={(id, checked) => toggleChecked.mutate({ id, checked })}
+              onDelete={(id) => deleteItem.mutate(id)}
+            />
           ))
         )}
       </div>

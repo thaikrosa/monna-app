@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      children: {
+        Row: {
+          accepted_health_disclaimer: boolean | null
+          allergies: string | null
+          birth_date: string
+          blood_type: string | null
+          created_at: string
+          gender: string | null
+          id: string
+          is_neurodivergent: boolean | null
+          medical_notes: string | null
+          name: string
+          nickname: string | null
+          personality_traits: string | null
+          show_standard_milestones: boolean | null
+          soothing_methods: string | null
+          special_needs_notes: string | null
+          updated_at: string
+          user_id: string
+          vaccination_reminders_enabled: boolean | null
+        }
+        Insert: {
+          accepted_health_disclaimer?: boolean | null
+          allergies?: string | null
+          birth_date: string
+          blood_type?: string | null
+          created_at?: string
+          gender?: string | null
+          id?: string
+          is_neurodivergent?: boolean | null
+          medical_notes?: string | null
+          name: string
+          nickname?: string | null
+          personality_traits?: string | null
+          show_standard_milestones?: boolean | null
+          soothing_methods?: string | null
+          special_needs_notes?: string | null
+          updated_at?: string
+          user_id?: string
+          vaccination_reminders_enabled?: boolean | null
+        }
+        Update: {
+          accepted_health_disclaimer?: boolean | null
+          allergies?: string | null
+          birth_date?: string
+          blood_type?: string | null
+          created_at?: string
+          gender?: string | null
+          id?: string
+          is_neurodivergent?: boolean | null
+          medical_notes?: string | null
+          name?: string
+          nickname?: string | null
+          personality_traits?: string | null
+          show_standard_milestones?: boolean | null
+          soothing_methods?: string | null
+          special_needs_notes?: string | null
+          updated_at?: string
+          user_id?: string
+          vaccination_reminders_enabled?: boolean | null
+        }
+        Relationships: []
+      }
       contacts: {
         Row: {
           alias: string

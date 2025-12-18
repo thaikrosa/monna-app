@@ -63,7 +63,7 @@ export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingI
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-all duration-150 text-muted-foreground hover:text-foreground hover:bg-transparent"
+          className="h-8 w-8 text-muted-foreground/60 hover:text-foreground active:text-foreground hover:bg-transparent opacity-0 group-hover:opacity-100 transition-all duration-150"
           onClick={() => onEdit(item)}
         >
           <PencilSimple weight="thin" className="h-4 w-4" />
@@ -72,7 +72,7 @@ export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingI
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-all duration-150 text-muted-foreground hover:text-foreground hover:bg-transparent"
+          className="h-8 w-8 text-muted-foreground/60 hover:text-foreground active:text-foreground hover:bg-transparent opacity-0 group-hover:opacity-100 transition-all duration-150"
           onClick={() => onDelete(item.id)}
         >
           <Trash weight="thin" className="h-4 w-4" />

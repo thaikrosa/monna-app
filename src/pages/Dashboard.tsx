@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ListChecks, UsersThree, CaretRight } from '@phosphor-icons/react';
+import { ListChecks, UsersThree, Baby, CaretRight } from '@phosphor-icons/react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -32,6 +32,19 @@ export default function Dashboard() {
     queryFn: async () => {
       const { count, error } = await supabase
         .from('contacts')
+        .select('*', { count: 'exact', head: true });
+
+      if (error) throw error;
+      return count ?? 0;
+    },
+  });
+
+  // Fetch children count
+  const { data: childrenCount = 0, isLoading: isChildrenLoading } = useQuery({
+    queryKey: ['children-count'],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('children')
         .select('*', { count: 'exact', head: true });
 
       if (error) throw error;
@@ -99,6 +112,34 @@ export default function Dashboard() {
                       '1 contato'
                     ) : (
                       `${contactsCount} contatos`
+                    )}
+                  </p>
+                </div>
+              </div>
+              <CaretRight weight="thin" className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-all duration-150" />
+            </div>
+          </div>
+        </Link>
+
+        {/* Meus Filhos Card */}
+        <Link to="/filhos" className="block group">
+          <div className="annia-glass p-4 rounded-lg border border-border/30 transition-all duration-150 group-hover:border-primary/30">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <Baby weight="thin" className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-medium text-foreground">Meus Filhos</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {isChildrenLoading ? (
+                      'Carregando...'
+                    ) : childrenCount === 0 ? (
+                      'Nenhuma criança'
+                    ) : childrenCount === 1 ? (
+                      '1 criança'
+                    ) : (
+                      `${childrenCount} crianças`
                     )}
                   </p>
                 </div>

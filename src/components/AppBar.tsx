@@ -1,11 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
-import { ListChecks, UsersThree } from '@phosphor-icons/react';
+import { ListChecks, UsersThree, Baby } from '@phosphor-icons/react';
 import { UserMenu } from './UserMenu';
 
 export function AppBar() {
   const location = useLocation();
   const isListActive = location.pathname === '/lista';
   const isNetworkActive = location.pathname === '/rede-apoio';
+  const isChildrenActive = location.pathname === '/filhos';
   return (
     <header className="sticky top-0 z-50 w-full h-14 bg-background border-b border-border">
       <div className="h-full max-w-7xl mx-auto px-4 flex items-center justify-between">
@@ -37,6 +38,16 @@ export function AppBar() {
             }`}
           >
             <UsersThree weight="thin" className="h-5 w-5" />
+          </Link>
+          <Link
+            to="/filhos"
+            className={`p-2 rounded-lg transition-all duration-150 ${
+              isChildrenActive
+                ? 'text-primary'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <Baby weight="thin" className="h-5 w-5" />
           </Link>
         </nav>
 

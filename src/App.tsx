@@ -10,6 +10,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import ShoppingList from "./pages/ShoppingList";
 import SupportNetwork from "./pages/SupportNetwork";
+import MyChildren from "./pages/MyChildren";
 import Theme from "./pages/Theme";
 import NotFound from "./pages/NotFound";
 
@@ -31,6 +32,7 @@ const App = () => (
               <Route path="/" element={<Dashboard />} />
               <Route path="/lista" element={<ShoppingList />} />
               <Route path="/rede-apoio" element={<SupportNetwork />} />
+              <Route path="/filhos" element={<MyChildren />} />
               <Route path="/theme" element={<Theme />} />
             </Route>
             

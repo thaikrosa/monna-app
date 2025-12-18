@@ -1,155 +1,160 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
+import type {
+  Reminder,
+  ReminderInsert,
+  ReminderUpdate,
+  ReminderOccurrence,
+  TodayReminder,
+  UpcomingReminder,
+} from '@/types/reminders';
 
-export type Reminder = Tables<'reminders'>;
-export type ReminderInsert = TablesInsert<'reminders'>;
-export type ReminderUpdate = TablesUpdate<'reminders'>;
+// ===== QUERIES =====
 
-export function useReminders() {
-  return useQuery({
-    queryKey: ['reminders'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('reminders')
-        .select('*')
-        .order('due_date', { ascending: true });
-      if (error) throw error;
-      return data as Reminder[];
-    },
-  });
-}
-
+/**
+ * Busca lembretes de hoje via view `today_reminders`
+ */
 export function useTodayReminders() {
   return useQuery({
-    queryKey: ['reminders-today'],
+    queryKey: ['reminders', 'today'],
     queryFn: async () => {
-      const today = new Date();
-      const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0).toISOString();
-      const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59).toISOString();
-
       const { data, error } = await supabase
-        .from('reminders')
+        .from('today_reminders')
         .select('*')
-        .gte('due_date', startOfDay)
-        .lte('due_date', endOfDay)
-        .order('due_date', { ascending: true });
+        .order('scheduled_at', { ascending: true });
       if (error) throw error;
-      return data as Reminder[];
+      return data as TodayReminder[];
     },
   });
 }
 
-export function useWeekReminders(startDate: Date) {
+/**
+ * Busca próximos lembretes via view `upcoming_reminders`
+ */
+export function useUpcomingReminders() {
   return useQuery({
-    queryKey: ['reminders-week', startDate.toISOString()],
+    queryKey: ['reminders', 'upcoming'],
     queryFn: async () => {
-      const start = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0).toISOString();
-      const endDate = new Date(startDate);
-      endDate.setDate(endDate.getDate() + 6);
-      const end = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59).toISOString();
-
       const { data, error } = await supabase
-        .from('reminders')
+        .from('upcoming_reminders')
         .select('*')
-        .gte('due_date', start)
-        .lte('due_date', end)
-        .order('due_date', { ascending: true });
+        .order('scheduled_at', { ascending: true });
       if (error) throw error;
-      return data as Reminder[];
+      return data as UpcomingReminder[];
     },
   });
 }
 
+/**
+ * Busca lembretes de uma data específica
+ */
 export function useRemindersByDate(date: Date) {
+  const dateStr = date.toISOString().split('T')[0];
+  
   return useQuery({
-    queryKey: ['reminders-date', date.toDateString()],
+    queryKey: ['reminders', 'date', dateStr],
     queryFn: async () => {
-      const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0).toISOString();
-      const endOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59).toISOString();
-
+      const startOfDay = `${dateStr}T00:00:00`;
+      const endOfDay = `${dateStr}T23:59:59`;
+      
       const { data, error } = await supabase
-        .from('reminders')
+        .from('upcoming_reminders')
         .select('*')
-        .gte('due_date', startOfDay)
-        .lte('due_date', endOfDay)
-        .order('due_date', { ascending: true });
+        .gte('scheduled_at', startOfDay)
+        .lte('scheduled_at', endOfDay)
+        .order('scheduled_at', { ascending: true });
       if (error) throw error;
-      return data as Reminder[];
+      return data as UpcomingReminder[];
     },
+    enabled: !!date,
   });
 }
 
+/**
+ * Busca um reminder específico com suas occurrences
+ */
+export function useReminder(id: string | undefined) {
+  return useQuery({
+    queryKey: ['reminders', 'detail', id],
+    queryFn: async () => {
+      if (!id) return null;
+      
+      const { data: reminder, error: reminderError } = await supabase
+        .from('reminders')
+        .select('*')
+        .eq('id', id)
+        .single();
+      if (reminderError) throw reminderError;
+
+      const { data: occurrences, error: occError } = await supabase
+        .from('reminder_occurrences')
+        .select('*')
+        .eq('reminder_id', id)
+        .order('scheduled_at', { ascending: true });
+      if (occError) throw occError;
+
+      return {
+        reminder: reminder as Reminder,
+        occurrences: occurrences as ReminderOccurrence[],
+      };
+    },
+    enabled: !!id,
+  });
+}
+
+// ===== MUTATIONS =====
+
+/**
+ * Adiciona novo reminder (trigger gera occurrences automaticamente)
+ */
 export function useAddReminder() {
   const queryClient = useQueryClient();
+  
   return useMutation({
     mutationFn: async (reminder: ReminderInsert) => {
       const { data, error } = await supabase
         .from('reminders')
-        .insert(reminder)
+        .insert(reminder as any)
         .select()
         .single();
       if (error) throw error;
-      return data;
+      return data as Reminder;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reminders'] });
-      queryClient.invalidateQueries({ queryKey: ['reminders-today'] });
-      queryClient.invalidateQueries({ queryKey: ['reminders-week'] });
-      queryClient.invalidateQueries({ queryKey: ['reminders-date'] });
-      queryClient.invalidateQueries({ queryKey: ['reminders-today-count'] });
     },
   });
 }
 
+/**
+ * Atualiza reminder existente
+ */
 export function useUpdateReminder() {
   const queryClient = useQueryClient();
+  
   return useMutation({
     mutationFn: async ({ id, ...updates }: ReminderUpdate & { id: string }) => {
       const { data, error } = await supabase
         .from('reminders')
-        .update(updates)
+        .update(updates as any)
         .eq('id', id)
         .select()
         .single();
       if (error) throw error;
-      return data;
+      return data as Reminder;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reminders'] });
-      queryClient.invalidateQueries({ queryKey: ['reminders-today'] });
-      queryClient.invalidateQueries({ queryKey: ['reminders-week'] });
-      queryClient.invalidateQueries({ queryKey: ['reminders-date'] });
-      queryClient.invalidateQueries({ queryKey: ['reminders-today-count'] });
     },
   });
 }
 
-export function useCompleteReminder() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (id: string) => {
-      const { data, error } = await supabase
-        .from('reminders')
-        .update({ status: 'completed' })
-        .eq('id', id)
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['reminders'] });
-      queryClient.invalidateQueries({ queryKey: ['reminders-today'] });
-      queryClient.invalidateQueries({ queryKey: ['reminders-week'] });
-      queryClient.invalidateQueries({ queryKey: ['reminders-date'] });
-      queryClient.invalidateQueries({ queryKey: ['reminders-today-count'] });
-    },
-  });
-}
-
+/**
+ * Deleta reminder (cascade deleta occurrences)
+ */
 export function useDeleteReminder() {
   const queryClient = useQueryClient();
+  
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
@@ -160,10 +165,88 @@ export function useDeleteReminder() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reminders'] });
-      queryClient.invalidateQueries({ queryKey: ['reminders-today'] });
-      queryClient.invalidateQueries({ queryKey: ['reminders-week'] });
-      queryClient.invalidateQueries({ queryKey: ['reminders-date'] });
-      queryClient.invalidateQueries({ queryKey: ['reminders-today-count'] });
     },
   });
 }
+
+/**
+ * Marca occurrence como acknowledged (concluída)
+ */
+export function useAcknowledgeOccurrence() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (occurrenceId: string) => {
+      const { data, error } = await supabase
+        .from('reminder_occurrences')
+        .update({
+          status: 'acknowledged',
+          acknowledged_at: new Date().toISOString(),
+        })
+        .eq('id', occurrenceId)
+        .select()
+        .single();
+      if (error) throw error;
+      return data as ReminderOccurrence;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reminders'] });
+    },
+  });
+}
+
+/**
+ * Adia uma occurrence por X minutos
+ */
+export function useSnoozeOccurrence() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ occurrenceId, minutes }: { occurrenceId: string; minutes: number }) => {
+      // Primeiro busca o snooze_count atual
+      const { data: current, error: fetchError } = await supabase
+        .from('reminder_occurrences')
+        .select('snooze_count')
+        .eq('id', occurrenceId)
+        .single();
+      if (fetchError) throw fetchError;
+      
+      const snoozedUntil = new Date(Date.now() + minutes * 60 * 1000).toISOString();
+      
+      const { data, error } = await supabase
+        .from('reminder_occurrences')
+        .update({
+          status: 'snoozed',
+          snoozed_until: snoozedUntil,
+          snooze_count: (current?.snooze_count ?? 0) + 1,
+        })
+        .eq('id', occurrenceId)
+        .select()
+        .single();
+      if (error) throw error;
+      return data as ReminderOccurrence;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reminders'] });
+    },
+  });
+}
+
+// ===== CONTADOR PARA DASHBOARD =====
+
+export function useTodayRemindersCount() {
+  return useQuery({
+    queryKey: ['reminders', 'today-count'],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('today_reminders')
+        .select('*', { count: 'exact', head: true })
+        .eq('occurrence_status', 'pending');
+      if (error) throw error;
+      return count ?? 0;
+    },
+  });
+}
+
+// ===== RE-EXPORTS para compatibilidade =====
+export type { Reminder, ReminderInsert, ReminderUpdate, ReminderOccurrence, TodayReminder, UpcomingReminder };

@@ -152,83 +152,150 @@ export type Database = {
         }
         Relationships: []
       }
+      reminder_occurrences: {
+        Row: {
+          acknowledged_at: string | null
+          call_answered: boolean | null
+          call_attempts: number | null
+          created_at: string
+          id: string
+          last_call_at: string | null
+          notification_sent_at: string | null
+          reminder_id: string
+          response_text: string | null
+          scheduled_at: string
+          snooze_count: number | null
+          snoozed_until: string | null
+          status: Database["public"]["Enums"]["occurrence_status"] | null
+          updated_at: string
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          call_answered?: boolean | null
+          call_attempts?: number | null
+          created_at?: string
+          id?: string
+          last_call_at?: string | null
+          notification_sent_at?: string | null
+          reminder_id: string
+          response_text?: string | null
+          scheduled_at: string
+          snooze_count?: number | null
+          snoozed_until?: string | null
+          status?: Database["public"]["Enums"]["occurrence_status"] | null
+          updated_at?: string
+        }
+        Update: {
+          acknowledged_at?: string | null
+          call_answered?: boolean | null
+          call_attempts?: number | null
+          created_at?: string
+          id?: string
+          last_call_at?: string | null
+          notification_sent_at?: string | null
+          reminder_id?: string
+          response_text?: string | null
+          scheduled_at?: string
+          snooze_count?: number | null
+          snoozed_until?: string | null
+          status?: Database["public"]["Enums"]["occurrence_status"] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reminder_occurrences_reminder_id_fkey"
+            columns: ["reminder_id"]
+            isOneToOne: false
+            referencedRelation: "reminders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reminder_occurrences_reminder_id_fkey"
+            columns: ["reminder_id"]
+            isOneToOne: false
+            referencedRelation: "today_reminders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reminder_occurrences_reminder_id_fkey"
+            columns: ["reminder_id"]
+            isOneToOne: false
+            referencedRelation: "upcoming_reminders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reminders: {
         Row: {
-          child_id: string | null
-          contact_id: string | null
+          call_guarantee: boolean | null
+          category: Database["public"]["Enums"]["reminder_category"] | null
           created_at: string
+          datetime: string
           description: string | null
-          due_date: string
           effort_level: number | null
           id: string
-          interval_type: string | null
-          interval_value: number | null
-          is_critical: boolean | null
-          is_recurring: boolean | null
           metadata: Json | null
+          notify_minutes_before: number | null
+          priority: Database["public"]["Enums"]["reminder_priority"] | null
+          recurrence_config: Json | null
+          recurrence_end: string | null
+          recurrence_type: Database["public"]["Enums"]["recurrence_type"]
           send_whatsapp: boolean | null
-          status: string | null
-          suggested_by_ia: boolean | null
+          source: Database["public"]["Enums"]["reminder_source"] | null
+          status: Database["public"]["Enums"]["reminder_status"] | null
+          suggested_by_ai: boolean | null
+          timezone: string | null
           title: string
           updated_at: string
           user_id: string
         }
         Insert: {
-          child_id?: string | null
-          contact_id?: string | null
+          call_guarantee?: boolean | null
+          category?: Database["public"]["Enums"]["reminder_category"] | null
           created_at?: string
+          datetime: string
           description?: string | null
-          due_date: string
           effort_level?: number | null
           id?: string
-          interval_type?: string | null
-          interval_value?: number | null
-          is_critical?: boolean | null
-          is_recurring?: boolean | null
           metadata?: Json | null
+          notify_minutes_before?: number | null
+          priority?: Database["public"]["Enums"]["reminder_priority"] | null
+          recurrence_config?: Json | null
+          recurrence_end?: string | null
+          recurrence_type?: Database["public"]["Enums"]["recurrence_type"]
           send_whatsapp?: boolean | null
-          status?: string | null
-          suggested_by_ia?: boolean | null
+          source?: Database["public"]["Enums"]["reminder_source"] | null
+          status?: Database["public"]["Enums"]["reminder_status"] | null
+          suggested_by_ai?: boolean | null
+          timezone?: string | null
           title: string
           updated_at?: string
           user_id?: string
         }
         Update: {
-          child_id?: string | null
-          contact_id?: string | null
+          call_guarantee?: boolean | null
+          category?: Database["public"]["Enums"]["reminder_category"] | null
           created_at?: string
+          datetime?: string
           description?: string | null
-          due_date?: string
           effort_level?: number | null
           id?: string
-          interval_type?: string | null
-          interval_value?: number | null
-          is_critical?: boolean | null
-          is_recurring?: boolean | null
           metadata?: Json | null
+          notify_minutes_before?: number | null
+          priority?: Database["public"]["Enums"]["reminder_priority"] | null
+          recurrence_config?: Json | null
+          recurrence_end?: string | null
+          recurrence_type?: Database["public"]["Enums"]["recurrence_type"]
           send_whatsapp?: boolean | null
-          status?: string | null
-          suggested_by_ia?: boolean | null
+          source?: Database["public"]["Enums"]["reminder_source"] | null
+          status?: Database["public"]["Enums"]["reminder_status"] | null
+          suggested_by_ai?: boolean | null
+          timezone?: string | null
           title?: string
           updated_at?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "reminders_child_id_fkey"
-            columns: ["child_id"]
-            isOneToOne: false
-            referencedRelation: "children"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reminders_contact_id_fkey"
-            columns: ["contact_id"]
-            isOneToOne: false
-            referencedRelation: "contacts"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       shopping_item_events: {
         Row: {
@@ -504,55 +571,39 @@ export type Database = {
       }
     }
     Views: {
-      v_daily_mental_load: {
+      today_reminders: {
         Row: {
-          critical_tasks: number | null
-          pending_tasks: number | null
-          reference_date: string | null
-          total_effort_score: number | null
+          call_guarantee: boolean | null
+          category: Database["public"]["Enums"]["reminder_category"] | null
+          description: string | null
+          id: string | null
+          occurrence_id: string | null
+          occurrence_status:
+            | Database["public"]["Enums"]["occurrence_status"]
+            | null
+          priority: Database["public"]["Enums"]["reminder_priority"] | null
+          scheduled_at: string | null
+          title: string | null
           user_id: string | null
         }
         Relationships: []
       }
-      v_n8n_upcoming_reminders: {
+      upcoming_reminders: {
         Row: {
-          child_id: string | null
-          child_name: string | null
-          contact_id: string | null
-          contact_name: string | null
-          created_at: string | null
+          call_guarantee: boolean | null
+          category: Database["public"]["Enums"]["reminder_category"] | null
           description: string | null
-          due_date: string | null
-          effort_level: number | null
           id: string | null
-          interval_type: string | null
-          interval_value: number | null
-          is_critical: boolean | null
-          is_recurring: boolean | null
-          metadata: Json | null
-          send_whatsapp: boolean | null
-          status: string | null
-          suggested_by_ia: boolean | null
+          occurrence_id: string | null
+          occurrence_status:
+            | Database["public"]["Enums"]["occurrence_status"]
+            | null
+          priority: Database["public"]["Enums"]["reminder_priority"] | null
+          scheduled_at: string | null
           title: string | null
-          updated_at: string | null
           user_id: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "reminders_child_id_fkey"
-            columns: ["child_id"]
-            isOneToOne: false
-            referencedRelation: "children"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reminders_contact_id_fkey"
-            columns: ["contact_id"]
-            isOneToOne: false
-            referencedRelation: "contacts"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       v_shopping_items_with_frequency: {
         Row: {
@@ -585,7 +636,26 @@ export type Database = {
       }
     }
     Functions: {
+      generate_reminder_occurrences: {
+        Args: { p_count?: number; p_reminder_id: string }
+        Returns: number
+      }
       get_complete_schema: { Args: never; Returns: Json }
+      get_pending_notifications: {
+        Args: { p_minutes_ahead?: number }
+        Returns: {
+          call_guarantee: boolean
+          category: Database["public"]["Enums"]["reminder_category"]
+          description: string
+          occurrence_id: string
+          priority: Database["public"]["Enums"]["reminder_priority"]
+          reminder_id: string
+          scheduled_at: string
+          send_whatsapp: boolean
+          title: string
+          user_id: string
+        }[]
+      }
       shopping_add_item: {
         Args: {
           p_name: string
@@ -614,7 +684,36 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      occurrence_status:
+        | "pending"
+        | "notified"
+        | "acknowledged"
+        | "snoozed"
+        | "missed"
+        | "skipped"
+      recurrence_type:
+        | "once"
+        | "daily"
+        | "weekly"
+        | "monthly"
+        | "yearly"
+        | "interval"
+      reminder_category:
+        | "health"
+        | "school"
+        | "home"
+        | "work"
+        | "personal"
+        | "family"
+        | "finance"
+        | "other"
+      reminder_priority: "normal" | "important" | "urgent"
+      reminder_source:
+        | "whatsapp_audio"
+        | "whatsapp_text"
+        | "webapp"
+        | "ai_suggestion"
+      reminder_status: "active" | "paused" | "completed" | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -741,6 +840,41 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      occurrence_status: [
+        "pending",
+        "notified",
+        "acknowledged",
+        "snoozed",
+        "missed",
+        "skipped",
+      ],
+      recurrence_type: [
+        "once",
+        "daily",
+        "weekly",
+        "monthly",
+        "yearly",
+        "interval",
+      ],
+      reminder_category: [
+        "health",
+        "school",
+        "home",
+        "work",
+        "personal",
+        "family",
+        "finance",
+        "other",
+      ],
+      reminder_priority: ["normal", "important", "urgent"],
+      reminder_source: [
+        "whatsapp_audio",
+        "whatsapp_text",
+        "webapp",
+        "ai_suggestion",
+      ],
+      reminder_status: ["active", "paused", "completed", "cancelled"],
+    },
   },
 } as const

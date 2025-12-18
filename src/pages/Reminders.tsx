@@ -154,7 +154,7 @@ export default function Reminders() {
               ) : remindersToShow.length === 0 ? (
                 <div className="annia-glass p-6 rounded-lg border border-border/30 text-center">
                   <p className="text-muted-foreground text-sm">
-                    Nenhum lembrete para este dia.
+                    Sua mente está livre para este dia.
                   </p>
                 </div>
               ) : (

@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      contacts: {
+        Row: {
+          alias: string
+          can_annia_message: boolean | null
+          category: string | null
+          created_at: string
+          formal_name: string
+          id: string
+          intimacy_level: number | null
+          notes: string | null
+          phone: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alias: string
+          can_annia_message?: boolean | null
+          category?: string | null
+          created_at?: string
+          formal_name: string
+          id?: string
+          intimacy_level?: number | null
+          notes?: string | null
+          phone: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          alias?: string
+          can_annia_message?: boolean | null
+          category?: string | null
+          created_at?: string
+          formal_name?: string
+          id?: string
+          intimacy_level?: number | null
+          notes?: string | null
+          phone?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

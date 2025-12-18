@@ -6,7 +6,9 @@ export interface ShoppingItem {
   id: string;
   name: string;
   quantity_text: string | null;
+  tag_id: string | null;
   tag_name: string | null;
+  notes: string | null;
   is_checked: boolean;
   avg_days_between: number | null;
 }
@@ -22,7 +24,7 @@ export function useShoppingItems() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('v_shopping_items_with_frequency')
-        .select('id, name, quantity_text, tag_name, is_checked, avg_days_between')
+        .select('id, name, quantity_text, tag_id, tag_name, notes, is_checked, avg_days_between')
         .order('is_checked', { ascending: true })
         .order('created_at', { ascending: false });
 
@@ -157,6 +159,47 @@ export function useClearChecked() {
     onError: (error: Error) => {
       console.log('[Annia Debug] clearChecked onError:', error);
       toast.error('Erro ao limpar itens');
+    },
+  });
+}
+
+export function useUpdateItem() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      tag_id,
+      quantity_text,
+      notes,
+    }: {
+      id: string;
+      tag_id?: string | null;
+      quantity_text?: string | null;
+      notes?: string | null;
+    }) => {
+      const { error } = await supabase
+        .from('shopping_items')
+        .update({
+          tag_id: tag_id || null,
+          quantity_text: quantity_text?.trim() || null,
+          notes: notes?.trim() || null,
+        })
+        .eq('id', id);
+
+      if (error) {
+        console.log('[Annia Debug] updateItem error:', error.message, error);
+        throw error;
+      }
+      console.log('[Annia Debug] updateItem success:', id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['shopping-items'] });
+      queryClient.invalidateQueries({ queryKey: ['shopping-tags'] });
+    },
+    onError: (error: Error) => {
+      console.log('[Annia Debug] updateItem onError:', error);
+      toast.error('Erro ao atualizar item');
     },
   });
 }

@@ -1,12 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Trash } from '@phosphor-icons/react';
+import { Trash, PencilSimple } from '@phosphor-icons/react';
 import type { ShoppingItem } from '@/hooks/useShoppingList';
 
 interface ShoppingItemCardProps {
   item: ShoppingItem;
   onToggle: (id: string, checked: boolean) => void;
   onDelete: (id: string) => void;
+  onEdit: (item: ShoppingItem) => void;
 }
 
 function formatFrequency(days: number | null) {
@@ -15,7 +16,7 @@ function formatFrequency(days: number | null) {
   return `aprox. a cada ${rounded} ${rounded === 1 ? 'dia' : 'dias'}`;
 }
 
-export function ShoppingItemCard({ item, onToggle, onDelete }: ShoppingItemCardProps) {
+export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingItemCardProps) {
   return (
     <div
       className={`group flex items-center gap-3 py-3 px-1 border-b border-border/30 last:border-b-0 transition-all duration-150 ${
@@ -58,14 +59,25 @@ export function ShoppingItemCard({ item, onToggle, onDelete }: ShoppingItemCardP
         </div>
       </div>
 
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-all duration-150 text-muted-foreground hover:text-foreground hover:bg-transparent"
-        onClick={() => onDelete(item.id)}
-      >
-        <Trash weight="thin" className="h-4 w-4" />
-      </Button>
+      <div className="flex items-center gap-1">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-all duration-150 text-muted-foreground hover:text-foreground hover:bg-transparent"
+          onClick={() => onEdit(item)}
+        >
+          <PencilSimple weight="thin" className="h-4 w-4" />
+        </Button>
+
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-all duration-150 text-muted-foreground hover:text-foreground hover:bg-transparent"
+          onClick={() => onDelete(item.id)}
+        >
+          <Trash weight="thin" className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   );
 }

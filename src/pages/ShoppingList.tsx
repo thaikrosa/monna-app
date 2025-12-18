@@ -1,16 +1,21 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CaretLeft, Broom } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { AddItemForm } from '@/components/shopping/AddItemForm';
 import { ShoppingItemCard } from '@/components/shopping/ShoppingItemCard';
+import { EditItemSheet } from '@/components/shopping/EditItemSheet';
 import {
   useShoppingItems,
   useToggleChecked,
   useDeleteItem,
   useClearChecked,
+  type ShoppingItem,
 } from '@/hooks/useShoppingList';
 
 export default function ShoppingList() {
+  const [editingItem, setEditingItem] = useState<ShoppingItem | null>(null);
+  
   const { data: items = [], isLoading } = useShoppingItems();
   const toggleChecked = useToggleChecked();
   const deleteItem = useDeleteItem();
@@ -74,10 +79,18 @@ export default function ShoppingList() {
               item={item}
               onToggle={(id, checked) => toggleChecked.mutate({ id, checked })}
               onDelete={(id) => deleteItem.mutate(id)}
+              onEdit={(item) => setEditingItem(item)}
             />
           ))
         )}
       </div>
+
+      {/* Sheet de edição */}
+      <EditItemSheet
+        item={editingItem}
+        open={!!editingItem}
+        onOpenChange={(open) => !open && setEditingItem(null)}
+      />
     </div>
   );
 }

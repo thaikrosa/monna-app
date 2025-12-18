@@ -89,3 +89,111 @@
   letter-spacing: 0.05em;
   color: var(--annia-text-muted);
 }
+
+/* ============================================
+   TIME MAP GRID - Mobile First
+   ============================================ */
+
+/* Day selector pills */
+.day-pill {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 150ms ease;
+  background: var(--annia-glass-bg);
+  color: var(--annia-text-secondary);
+  border: 1px solid var(--annia-glass-border);
+}
+
+.day-pill:hover {
+  background: var(--annia-glass-hover);
+}
+
+.day-pill.selected {
+  background: var(--annia-olive);
+  color: white;
+  border-color: var(--annia-olive);
+}
+
+/* Category button (56x56) */
+.category-button {
+  width: 100%;
+  aspect-ratio: 1;
+  min-height: 72px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 150ms ease;
+  background: var(--annia-glass-bg);
+  color: var(--annia-text-secondary);
+  border: 1px solid var(--annia-glass-border);
+}
+
+.category-button:hover {
+  background: var(--annia-glass-hover);
+  color: var(--annia-text-primary);
+}
+
+.category-button.selected {
+  background: var(--annia-olive);
+  border-color: var(--annia-olive);
+  color: white;
+}
+
+/* Timeline hour row */
+.timeline-hour-row {
+  height: 48px;
+  display: flex;
+  align-items: flex-start;
+  border-bottom: 0.5px solid var(--annia-navy-light);
+}
+
+.timeline-hour-label {
+  width: 48px;
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--annia-text-muted);
+  padding-top: 4px;
+}
+
+/* Routine block positioning */
+.routine-block {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  overflow: hidden;
+  cursor: pointer;
+  z-index: 1;
+}
+
+/* Swipe delete animation */
+.routine-block-swipe {
+  transition: transform 200ms ease;
+}
+
+.routine-block-swipe.swiped {
+  transform: translateX(-72px);
+}
+
+/* Delete button revealed on swipe */
+.routine-delete-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 72px;
+  background: var(--annia-terracotta);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  border-radius: 0 var(--annia-radius-md) var(--annia-radius-md) 0;
+}

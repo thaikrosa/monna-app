@@ -108,19 +108,20 @@ export default function ShoppingList() {
         </p>
       </header>
 
-      {/* Add item form */}
-      <form onSubmit={handleSubmit} className="flex gap-2 mb-6">
+      {/* Add item form - com annia-glass */}
+      <form onSubmit={handleSubmit} className="flex gap-2 mb-8 p-3 annia-glass rounded-lg">
         <Input
           type="text"
           placeholder="Adicionar item…"
           value={newItem}
           onChange={(e) => setNewItem(e.target.value)}
-          className="flex-1 bg-card border-border"
+          className="flex-1 bg-transparent border-border/50 focus:border-primary/50"
         />
         <Button
           type="submit"
           size="icon"
-          variant="secondary"
+          variant="ghost"
+          className="text-muted-foreground hover:text-foreground hover:bg-transparent"
           disabled={!newItem.trim() || addItem.isPending}
         >
           <Plus weight="thin" className="h-5 w-5" />
@@ -128,7 +129,7 @@ export default function ShoppingList() {
       </form>
 
       {/* Items list */}
-      <div className="space-y-1">
+      <div className="space-y-0">
         {isLoading ? (
           <div className="py-8 text-center text-muted-foreground text-sm">
             Carregando...
@@ -141,8 +142,8 @@ export default function ShoppingList() {
           items.map((item) => (
             <div
               key={item.id}
-              className={`group flex items-center gap-3 py-3 px-3 rounded-lg transition-colors hover:bg-card/50 ${
-                item.is_checked ? 'opacity-50' : ''
+              className={`group flex items-center gap-3 py-3 px-1 border-b border-border/30 last:border-b-0 transition-all duration-150 ${
+                item.is_checked ? 'opacity-60' : ''
               }`}
             >
               <Checkbox
@@ -150,14 +151,14 @@ export default function ShoppingList() {
                 onCheckedChange={(checked) =>
                   toggleChecked.mutate({ id: item.id, checked: !!checked })
                 }
-                className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                className="data-[state=checked]:bg-primary data-[state=checked]:border-primary transition-all duration-150"
               />
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span
-                    className={`text-foreground ${
-                      item.is_checked ? 'line-through text-muted-foreground' : ''
+                    className={`text-foreground transition-all duration-150 ${
+                      item.is_checked ? 'line-through decoration-muted-foreground/50 text-muted-foreground' : ''
                     }`}
                   >
                     {item.name}
@@ -184,7 +185,7 @@ export default function ShoppingList() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
+                className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-all duration-150 text-muted-foreground hover:text-foreground hover:bg-transparent"
                 onClick={() => deleteItem.mutate(item.id)}
               >
                 <Trash weight="thin" className="h-4 w-4" />

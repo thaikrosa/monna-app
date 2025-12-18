@@ -17,8 +17,12 @@ export default function Dashboard() {
         .select('*', { count: 'exact', head: true })
         .eq('is_checked', false);
 
-      if (error) throw error;
-      return count || 0;
+      if (error) {
+        console.log('[Annia Debug] pendingCount error:', error.message, error);
+        throw error;
+      }
+      console.log('[Annia Debug] pendingCount:', count);
+      return count ?? 0;
     },
   });
 

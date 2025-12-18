@@ -38,16 +38,23 @@ export default function ShoppingList() {
   // Add item mutation
   const addItem = useMutation({
     mutationFn: async (name: string) => {
-      const { error } = await supabase.rpc('shopping_add_item', {
+      const { data, error } = await supabase.rpc('shopping_add_item', {
         p_name: name.trim(),
       });
-      if (error) throw error;
+      if (error) {
+        console.log('[Annia Debug] addItem error:', error.message, error);
+        throw error;
+      }
+      console.log('[Annia Debug] addItem success:', data);
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shopping-items'] });
+      queryClient.invalidateQueries({ queryKey: ['shopping-pending-count'] });
       setNewItem('');
     },
-    onError: () => {
+    onError: (error: Error) => {
+      console.log('[Annia Debug] addItem onError:', error);
       toast.error('Erro ao adicionar item');
     },
   });
@@ -59,12 +66,18 @@ export default function ShoppingList() {
         p_item_id: id,
         p_checked: checked,
       });
-      if (error) throw error;
+      if (error) {
+        console.log('[Annia Debug] toggleChecked error:', error.message, error);
+        throw error;
+      }
+      console.log('[Annia Debug] toggleChecked success:', id, checked);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shopping-items'] });
+      queryClient.invalidateQueries({ queryKey: ['shopping-pending-count'] });
     },
-    onError: () => {
+    onError: (error: Error) => {
+      console.log('[Annia Debug] toggleChecked onError:', error);
       toast.error('Erro ao atualizar item');
     },
   });
@@ -75,12 +88,18 @@ export default function ShoppingList() {
       const { error } = await supabase.rpc('shopping_delete_item', {
         p_item_id: id,
       });
-      if (error) throw error;
+      if (error) {
+        console.log('[Annia Debug] deleteItem error:', error.message, error);
+        throw error;
+      }
+      console.log('[Annia Debug] deleteItem success:', id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shopping-items'] });
+      queryClient.invalidateQueries({ queryKey: ['shopping-pending-count'] });
     },
-    onError: () => {
+    onError: (error: Error) => {
+      console.log('[Annia Debug] deleteItem onError:', error);
       toast.error('Erro ao remover item');
     },
   });

@@ -131,24 +131,29 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
       };
     }
 
+    const payload = {
+      title: title.trim(),
+      description: description.trim() || null,
+      datetime: datetime.toISOString(),
+      category,
+      priority,
+      recurrence_type: showRecurrence ? recurrenceType : 'once',
+      recurrence_config,
+      recurrence_end: recurrenceEnd || null,
+      effort_level: effortLevel,
+      call_guarantee: callGuarantee,
+      send_whatsapp: sendWhatsapp,
+    };
+
+    console.log('[DEBUG] Creating reminder with payload:', payload);
+
     try {
-      await addReminder.mutateAsync({
-        title: title.trim(),
-        description: description.trim() || null,
-        datetime: datetime.toISOString(),
-        category,
-        priority,
-        recurrence_type: showRecurrence ? recurrenceType : 'once',
-        recurrence_config,
-        recurrence_end: recurrenceEnd || null,
-        effort_level: effortLevel,
-        call_guarantee: callGuarantee,
-        send_whatsapp: sendWhatsapp,
-      });
+      await addReminder.mutateAsync(payload);
       toast.success('Lembrete criado');
       resetForm();
       onOpenChange(false);
-    } catch {
+    } catch (error) {
+      console.error('[DEBUG] Error creating reminder:', error);
       toast.error('Erro ao criar lembrete');
     }
   };

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
 export interface Child {
@@ -27,6 +28,8 @@ export type ChildInsert = Omit<Child, 'id' | 'user_id' | 'created_at' | 'updated
 export type ChildUpdate = Partial<ChildInsert>;
 
 export function useChildren() {
+  const { user } = useAuth();
+  
   return useQuery({
     queryKey: ['children'],
     queryFn: async () => {
@@ -38,6 +41,7 @@ export function useChildren() {
       if (error) throw error;
       return data as Child[];
     },
+    enabled: !!user,
   });
 }
 

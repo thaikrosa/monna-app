@@ -159,6 +159,7 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
 
   // Classes de seleção
   const selectedClass = "bg-[#6B7F5E]/20 text-[#6B7F5E]";
+  const selectedSolidClass = "bg-[#6B7F5E] text-white"; // Para botões pequenos (pills, dias)
   const urgentSelectedClass = "bg-[#C4754B]/20 text-[#C4754B]";
   const unselectedClass = "bg-muted/20 text-muted-foreground hover:bg-muted/40";
 
@@ -247,7 +248,7 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                       onClick={() => setRecurrenceType(opt.value)}
                       className={`
                         px-3 py-1.5 rounded-full text-sm transition-all duration-150
-                        ${recurrenceType === opt.value ? selectedClass : unselectedClass}
+                        ${recurrenceType === opt.value ? selectedSolidClass : unselectedClass}
                       `}
                     >
                       {opt.label}
@@ -267,7 +268,7 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                           onClick={() => toggleDayOfWeek(index)}
                           className={`
                             w-9 h-9 rounded-full text-xs font-medium transition-all duration-150
-                            ${daysOfWeek.includes(index) ? selectedClass : unselectedClass}
+                            ${daysOfWeek.includes(index) ? selectedSolidClass : unselectedClass}
                           `}
                         >
                           {day}
@@ -323,7 +324,47 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
           </div>
 
           {/* ═══════════════════════════════════════════════════════════════
-              ETAPA 3 - MAIS OPÇÕES (colapsável)
+              ETAPA 3 - NOTIFICAÇÕES (sempre visível)
+          ═══════════════════════════════════════════════════════════════ */}
+          <div className="space-y-3 py-2">
+            {/* WhatsApp toggle */}
+            <div className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-2">
+                <WhatsappLogo weight="thin" className="h-4 w-4 text-[#6B7F5E]/70" />
+                <Label htmlFor="whatsapp" className="text-sm text-muted-foreground">
+                  Notificar por WhatsApp
+                </Label>
+              </div>
+              <Switch
+                id="whatsapp"
+                checked={sendWhatsapp}
+                onCheckedChange={setSendWhatsapp}
+              />
+            </div>
+
+            {/* Call Guarantee */}
+            <div className="flex items-center justify-between py-2">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Phone weight="thin" className="h-4 w-4 text-[#6B7F5E]/70" />
+                  <Label htmlFor="call" className="text-sm text-muted-foreground">
+                    Garantir com ligação
+                  </Label>
+                </div>
+                <p className="text-xs text-muted-foreground/50 mt-1 ml-6">
+                  Vou te ligar para garantir que não esqueça
+                </p>
+              </div>
+              <Switch
+                id="call"
+                checked={callGuarantee}
+                onCheckedChange={setCallGuarantee}
+              />
+            </div>
+          </div>
+
+          {/* ═══════════════════════════════════════════════════════════════
+              ETAPA 4 - MAIS OPÇÕES (colapsável)
           ═══════════════════════════════════════════════════════════════ */}
           <Collapsible open={showMoreOptions} onOpenChange={setShowMoreOptions}>
             <CollapsibleTrigger asChild>
@@ -418,41 +459,6 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Notas adicionais..."
                   className={`${inputClass} min-h-[60px] resize-none`}
-                />
-              </div>
-
-              {/* WhatsApp toggle */}
-              <div className="flex items-center justify-between py-2">
-                <div className="flex items-center gap-2">
-                  <WhatsappLogo weight="thin" className="h-4 w-4 text-[#6B7F5E]/70" />
-                  <Label htmlFor="whatsapp" className="text-sm text-muted-foreground">
-                    Notificar por WhatsApp
-                  </Label>
-                </div>
-                <Switch
-                  id="whatsapp"
-                  checked={sendWhatsapp}
-                  onCheckedChange={setSendWhatsapp}
-                />
-              </div>
-
-              {/* Call Guarantee */}
-              <div className="flex items-center justify-between py-2">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <Phone weight="thin" className="h-4 w-4 text-[#6B7F5E]/70" />
-                    <Label htmlFor="call" className="text-sm text-muted-foreground">
-                      Garantir com ligação
-                    </Label>
-                  </div>
-                  <p className="text-xs text-muted-foreground/50 mt-1 ml-6">
-                    Vou te ligar para garantir que não esqueça
-                  </p>
-                </div>
-                <Switch
-                  id="call"
-                  checked={callGuarantee}
-                  onCheckedChange={setCallGuarantee}
                 />
               </div>
             </CollapsibleContent>

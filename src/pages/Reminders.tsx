@@ -10,8 +10,10 @@ import {
   useRemindersByDate,
   useUpcomingReminders,
   useAcknowledgeOccurrence,
+  useSnoozeOccurrence,
   useDeleteReminder,
 } from '@/hooks/useReminders';
+import { toast } from 'sonner';
 import type { UpcomingReminder } from '@/types/reminders';
 import { format, startOfWeek, addWeeks } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -29,6 +31,7 @@ export default function Reminders() {
   const { data: selectedDateReminders = [], isLoading } = useRemindersByDate(selectedDate);
 
   const acknowledgeOccurrence = useAcknowledgeOccurrence();
+  const snoozeOccurrence = useSnoozeOccurrence();
   const deleteReminder = useDeleteReminder();
 
   const handleEdit = (reminder: UpcomingReminder) => {
@@ -38,10 +41,17 @@ export default function Reminders() {
 
   const handleComplete = async (occurrenceId: string) => {
     await acknowledgeOccurrence.mutateAsync(occurrenceId);
+    toast.success('Lembrete concluído');
+  };
+
+  const handleSnooze = async (occurrenceId: string) => {
+    await snoozeOccurrence.mutateAsync({ occurrenceId, minutes: 60 });
+    toast.success('Lembrete adiado por 1 hora');
   };
 
   const handleDelete = async (id: string) => {
     await deleteReminder.mutateAsync(id);
+    toast.success('Lembrete excluído');
   };
 
   const handlePrevWeek = () => {
@@ -119,6 +129,7 @@ export default function Reminders() {
                   key={reminder.occurrence_id}
                   reminder={reminder}
                   onComplete={handleComplete}
+                  onSnooze={handleSnooze}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
                 />

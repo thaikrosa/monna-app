@@ -197,3 +197,57 @@
   color: white;
   border-radius: 0 var(--annia-radius-md) var(--annia-radius-md) 0;
 }
+
+/* ============================================
+   KICKSTART ONBOARDING
+   ============================================ */
+
+/* Progress dots */
+.kickstart-dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.kickstart-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--annia-glass-border);
+  transition: all 300ms ease;
+}
+
+.kickstart-dot.active {
+  background: var(--annia-olive);
+  width: 24px;
+  border-radius: 4px;
+}
+
+.kickstart-dot.completed {
+  background: var(--annia-olive);
+}
+
+/* Step transitions */
+.kickstart-step {
+  animation: kickstartSlideIn 300ms ease-out;
+}
+
+@keyframes kickstartSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* CTA Button style */
+.kickstart-cta {
+  height: 56px;
+  width: 100%;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+}

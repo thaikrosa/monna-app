@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AppLayout } from "@/layouts/AppLayout";
 import Auth from "./pages/Auth";
+import Kickstart from "./pages/Kickstart";
 import Dashboard from "./pages/Dashboard";
 import ShoppingList from "./pages/ShoppingList";
 import SupportNetwork from "./pages/SupportNetwork";
@@ -34,6 +35,9 @@ const App = () => (
           <Routes>
             {/* Public route */}
             <Route path="/auth" element={<Auth />} />
+            
+            {/* Kickstart - protected but without AppLayout */}
+            <Route path="/kickstart" element={<ProtectedRoute><Kickstart /></ProtectedRoute>} />
             
             {/* Protected routes */}
             <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>

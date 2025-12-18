@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import {
   Sheet,
   SheetContent,
@@ -14,7 +14,9 @@ import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { PhoneInput, PhoneErrorMessage } from '@/components/ui/phone-input';
 import { useAddContact } from '@/hooks/useContacts';
+import { countries, getDigitsOnly, formatFullPhone } from '@/lib/phone-countries';
 
 interface AddContactSheetProps {
   open: boolean;
@@ -24,7 +26,10 @@ interface AddContactSheetProps {
 export function AddContactSheet({ open, onOpenChange }: AddContactSheetProps) {
   const [alias, setAlias] = useState('');
   const [formalName, setFormalName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [countryCode, setCountryCode] = useState('BR');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneError, setPhoneError] = useState(false);
+  const [phoneValid, setPhoneValid] = useState(false);
   const [intimacyLevel, setIntimacyLevel] = useState('2');
   const [canAnniaMessage, setCanAnniaMessage] = useState(false);
   const [category, setCategory] = useState('Outros');
@@ -32,16 +37,30 @@ export function AddContactSheet({ open, onOpenChange }: AddContactSheetProps) {
 
   const addContact = useAddContact();
 
+  const handleValidationChange = useCallback((isValid: boolean) => {
+    setPhoneValid(isValid);
+    if (isValid) setPhoneError(false);
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!alias.trim() || !formalName.trim() || !phone.trim()) return;
+    if (!alias.trim() || !formalName.trim()) return;
+
+    // Validate phone
+    if (!phoneValid) {
+      setPhoneError(true);
+      return;
+    }
+
+    const country = countries.find((c) => c.code === countryCode) || countries[0];
+    const fullPhone = formatFullPhone(country.dialCode, phoneNumber);
 
     addContact.mutate(
       {
         alias: alias.trim(),
         formal_name: formalName.trim(),
-        phone: phone.trim(),
+        phone: fullPhone,
         intimacy_level: parseInt(intimacyLevel),
         can_annia_message: canAnniaMessage,
         category: category,
@@ -52,7 +71,8 @@ export function AddContactSheet({ open, onOpenChange }: AddContactSheetProps) {
           // Reset form
           setAlias('');
           setFormalName('');
-          setPhone('');
+          setPhoneNumber('');
+          setPhoneError(false);
           setIntimacyLevel('2');
           setCanAnniaMessage(false);
           setCategory('Outros');
@@ -102,18 +122,20 @@ export function AddContactSheet({ open, onOpenChange }: AddContactSheetProps) {
             />
           </div>
 
-          {/* Telefone */}
+          {/* Telefone com seletor de país */}
           <div className="space-y-2">
-            <Label htmlFor="phone" className="text-xs text-muted-foreground">
+            <Label className="text-xs text-muted-foreground">
               Telefone (WhatsApp)
             </Label>
-            <Input
-              id="phone"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="5511999999999"
-              className="bg-background/50"
+            <PhoneInput
+              value={phoneNumber}
+              onChange={setPhoneNumber}
+              countryCode={countryCode}
+              onCountryChange={setCountryCode}
+              error={phoneError}
+              onValidationChange={handleValidationChange}
             />
+            <PhoneErrorMessage show={phoneError} />
           </div>
 
           {/* Categoria */}
@@ -202,7 +224,7 @@ export function AddContactSheet({ open, onOpenChange }: AddContactSheetProps) {
             <Button 
               type="submit" 
               className="w-full"
-              disabled={!alias.trim() || !formalName.trim() || !phone.trim() || addContact.isPending}
+              disabled={!alias.trim() || !formalName.trim() || !phoneNumber.trim() || addContact.isPending}
             >
               {addContact.isPending ? 'Salvando...' : 'Salvar contato'}
             </Button>

@@ -9,6 +9,7 @@ import { AppLayout } from "@/layouts/AppLayout";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import ShoppingList from "./pages/ShoppingList";
+import SupportNetwork from "./pages/SupportNetwork";
 import Theme from "./pages/Theme";
 import NotFound from "./pages/NotFound";
 
@@ -29,6 +30,7 @@ const App = () => (
             <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
               <Route path="/" element={<Dashboard />} />
               <Route path="/lista" element={<ShoppingList />} />
+              <Route path="/rede-apoio" element={<SupportNetwork />} />
               <Route path="/theme" element={<Theme />} />
             </Route>
             

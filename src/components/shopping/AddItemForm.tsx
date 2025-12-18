@@ -23,16 +23,21 @@ export function AddItemForm() {
     e.preventDefault();
     if (newItem.trim()) {
       // Determina a tag a usar: nova tag > tag selecionada > nenhuma
-      const tagName = newTagInput.trim() 
+      const usedTagName = newTagInput.trim() 
         ? newTagInput.trim() 
         : (selectedTag !== '__none__' ? selectedTag : undefined);
 
       addItem.mutate(
-        { name: newItem, tagName },
+        { name: newItem, tagName: usedTagName },
         {
           onSuccess: () => {
+            // Sticky Tag: mantém a tag selecionada, limpa apenas o nome
             setNewItem('');
-            setSelectedTag('__none__');
+            
+            // Se criou nova tag, ela vira a selecionada para próximos itens
+            if (newTagInput.trim()) {
+              setSelectedTag(newTagInput.trim());
+            }
             setNewTagInput('');
           },
         }

@@ -149,12 +149,12 @@ export function EditReminderSheet({ open, onOpenChange, reminder }: EditReminder
 
             <div className="space-y-2">
               <Label>Filho</Label>
-              <Select value={childId} onValueChange={setChildId}>
+              <Select value={childId || "__none__"} onValueChange={(val) => setChildId(val === "__none__" ? "" : val)}>
                 <SelectTrigger className="bg-background/50">
                   <SelectValue placeholder="Nenhum" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Nenhum</SelectItem>
+                  <SelectItem value="__none__">Nenhum</SelectItem>
                   {children.map((child) => (
                     <SelectItem key={child.id} value={child.id}>
                       {child.nickname || child.name}
@@ -166,12 +166,12 @@ export function EditReminderSheet({ open, onOpenChange, reminder }: EditReminder
 
             <div className="space-y-2">
               <Label>Contato</Label>
-              <Select value={contactId} onValueChange={setContactId}>
+              <Select value={contactId || "__none__"} onValueChange={(val) => setContactId(val === "__none__" ? "" : val)}>
                 <SelectTrigger className="bg-background/50">
                   <SelectValue placeholder="Nenhum" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Nenhum</SelectItem>
+                  <SelectItem value="__none__">Nenhum</SelectItem>
                   {contacts.map((contact) => (
                     <SelectItem key={contact.id} value={contact.id}>
                       {contact.alias}

@@ -8,10 +8,9 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
 import { useAddReminder } from '@/hooks/useReminders';
-import { useChildren } from '@/hooks/useChildren';
-import { useContacts } from '@/hooks/useContacts';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import type { ReminderCategory, ReminderPriority, RecurrenceType } from '@/types/reminders';
 
 interface AddReminderSheetProps {
   open: boolean;
@@ -23,16 +22,14 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [dueTime, setDueTime] = useState('09:00');
-  const [childId, setChildId] = useState<string>('');
-  const [contactId, setContactId] = useState<string>('');
+  const [category, setCategory] = useState<ReminderCategory>('other');
+  const [priority, setPriority] = useState<ReminderPriority>('normal');
   const [isRecurring, setIsRecurring] = useState(false);
-  const [intervalType, setIntervalType] = useState<string>('days');
+  const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>('daily');
   const [intervalValue, setIntervalValue] = useState<number>(1);
   const [effortLevel, setEffortLevel] = useState<number>(1);
-  const [isCritical, setIsCritical] = useState(false);
+  const [callGuarantee, setCallGuarantee] = useState(false);
 
-  const { data: children = [] } = useChildren();
-  const { data: contacts = [] } = useContacts();
   const addReminder = useAddReminder();
 
   const resetForm = () => {
@@ -40,32 +37,33 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
     setDescription('');
     setDueDate(format(new Date(), 'yyyy-MM-dd'));
     setDueTime('09:00');
-    setChildId('');
-    setContactId('');
+    setCategory('other');
+    setPriority('normal');
     setIsRecurring(false);
-    setIntervalType('days');
+    setRecurrenceType('daily');
     setIntervalValue(1);
     setEffortLevel(1);
-    setIsCritical(false);
+    setCallGuarantee(false);
   };
 
   const handleSubmit = async () => {
     if (!title.trim() || !dueDate) return;
 
-    const dueDatetime = new Date(`${dueDate}T${dueTime}:00`);
+    const datetime = new Date(`${dueDate}T${dueTime}:00`);
 
     try {
       await addReminder.mutateAsync({
         title: title.trim(),
         description: description.trim() || null,
-        due_date: dueDatetime.toISOString(),
-        child_id: childId || null,
-        contact_id: contactId || null,
-        is_recurring: isRecurring,
-        interval_type: isRecurring ? intervalType : null,
-        interval_value: isRecurring ? intervalValue : null,
+        datetime: datetime.toISOString(),
+        category,
+        priority,
+        recurrence_type: isRecurring ? recurrenceType : 'once',
+        recurrence_config: isRecurring && recurrenceType === 'interval' 
+          ? { interval_value: intervalValue } 
+          : null,
         effort_level: effortLevel,
-        is_critical: isCritical,
+        call_guarantee: callGuarantee,
       });
       toast.success('Lembrete criado');
       resetForm();
@@ -77,7 +75,6 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
 
   const isValid = title.trim() && dueDate;
 
-  // Input style for border-bottom subtle
   const inputClass = "bg-transparent border-0 border-b border-border/30 rounded-none focus:border-primary/50 focus:ring-0 transition-colors duration-150 placeholder:text-muted-foreground/40";
 
   return (
@@ -147,43 +144,47 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
             </div>
           </div>
 
-          {/* Vínculos - Grid 2 columns */}
+          {/* Classificação */}
           <div className="space-y-4">
             <h4 className="text-xs text-muted-foreground/50 uppercase tracking-wider">
-              Vínculos
+              Classificação
             </h4>
             <div className="grid grid-cols-2 gap-3">
-              <Select value={childId || "__none__"} onValueChange={(val) => setChildId(val === "__none__" ? "" : val)}>
-                <SelectTrigger className="bg-transparent border-0 border-b border-border/30 rounded-none h-10">
-                  <SelectValue placeholder="Filho" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__none__">Opcional</SelectItem>
-                  {children.map((child) => (
-                    <SelectItem key={child.id} value={child.id}>
-                      {child.nickname || child.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select value={contactId || "__none__"} onValueChange={(val) => setContactId(val === "__none__" ? "" : val)}>
-                <SelectTrigger className="bg-transparent border-0 border-b border-border/30 rounded-none h-10">
-                  <SelectValue placeholder="Contato" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__none__">Opcional</SelectItem>
-                  {contacts.map((contact) => (
-                    <SelectItem key={contact.id} value={contact.id}>
-                      {contact.alias}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground/70">Categoria</Label>
+                <Select value={category} onValueChange={(val) => setCategory(val as ReminderCategory)}>
+                  <SelectTrigger className="bg-transparent border-0 border-b border-border/30 rounded-none h-10">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="health">Saúde</SelectItem>
+                    <SelectItem value="school">Escola</SelectItem>
+                    <SelectItem value="home">Casa</SelectItem>
+                    <SelectItem value="work">Trabalho</SelectItem>
+                    <SelectItem value="personal">Pessoal</SelectItem>
+                    <SelectItem value="family">Família</SelectItem>
+                    <SelectItem value="finance">Finanças</SelectItem>
+                    <SelectItem value="other">Outros</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground/70">Prioridade</Label>
+                <Select value={priority} onValueChange={(val) => setPriority(val as ReminderPriority)}>
+                  <SelectTrigger className="bg-transparent border-0 border-b border-border/30 rounded-none h-10">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="normal">Normal</SelectItem>
+                    <SelectItem value="important">Importante</SelectItem>
+                    <SelectItem value="urgent">Urgente</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
-          {/* Recorrência - Collapsible */}
+          {/* Recorrência */}
           <div className="space-y-4">
             <div className="flex items-center justify-between py-2">
               <Label htmlFor="recurring" className="text-sm text-muted-foreground">
@@ -198,9 +199,24 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
 
             <Collapsible open={isRecurring}>
               <CollapsibleContent className="space-y-3 pt-2">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label className="text-xs text-muted-foreground/70">Frequência</Label>
+                  <Select value={recurrenceType} onValueChange={(val) => setRecurrenceType(val as RecurrenceType)}>
+                    <SelectTrigger className="bg-transparent border-0 border-b border-border/30 rounded-none h-10">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="daily">Diariamente</SelectItem>
+                      <SelectItem value="weekly">Semanalmente</SelectItem>
+                      <SelectItem value="monthly">Mensalmente</SelectItem>
+                      <SelectItem value="yearly">Anualmente</SelectItem>
+                      <SelectItem value="interval">Intervalo personalizado</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {recurrenceType === 'interval' && (
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground/70">A cada</Label>
+                    <Label className="text-xs text-muted-foreground/70">A cada X dias</Label>
                     <Input
                       type="number"
                       min={1}
@@ -209,21 +225,7 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                       className={inputClass}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground/70">Período</Label>
-                    <Select value={intervalType} onValueChange={setIntervalType}>
-                      <SelectTrigger className="bg-transparent border-0 border-b border-border/30 rounded-none h-10">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="hours">Horas</SelectItem>
-                        <SelectItem value="days">Dias</SelectItem>
-                        <SelectItem value="weeks">Semanas</SelectItem>
-                        <SelectItem value="months">Meses</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
+                )}
               </CollapsibleContent>
             </Collapsible>
           </div>
@@ -264,8 +266,8 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
               </div>
               <Switch
                 id="critical"
-                checked={isCritical}
-                onCheckedChange={setIsCritical}
+                checked={callGuarantee}
+                onCheckedChange={setCallGuarantee}
               />
             </div>
           </div>

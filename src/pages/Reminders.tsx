@@ -8,36 +8,36 @@ import { AddReminderSheet } from '@/components/reminders/AddReminderSheet';
 import { EditReminderSheet } from '@/components/reminders/EditReminderSheet';
 import {
   useRemindersByDate,
-  useWeekReminders,
-  useCompleteReminder,
+  useUpcomingReminders,
+  useAcknowledgeOccurrence,
   useDeleteReminder,
-  type Reminder,
 } from '@/hooks/useReminders';
+import type { UpcomingReminder } from '@/types/reminders';
 import { format, startOfWeek, addWeeks } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 export default function Reminders() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [editingReminder, setEditingReminder] = useState<Reminder | null>(null);
+  const [editingReminder, setEditingReminder] = useState<UpcomingReminder | null>(null);
   const [weekStart, setWeekStart] = useState(() =>
     startOfWeek(new Date(), { weekStartsOn: 1 })
   );
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const { data: weekReminders = [] } = useWeekReminders(weekStart);
+  const { data: upcomingReminders = [] } = useUpcomingReminders();
   const { data: selectedDateReminders = [], isLoading } = useRemindersByDate(selectedDate);
 
-  const completeReminder = useCompleteReminder();
+  const acknowledgeOccurrence = useAcknowledgeOccurrence();
   const deleteReminder = useDeleteReminder();
 
-  const handleEdit = (reminder: Reminder) => {
+  const handleEdit = (reminder: UpcomingReminder) => {
     setEditingReminder(reminder);
     setIsEditOpen(true);
   };
 
-  const handleComplete = async (id: string) => {
-    await completeReminder.mutateAsync(id);
+  const handleComplete = async (occurrenceId: string) => {
+    await acknowledgeOccurrence.mutateAsync(occurrenceId);
   };
 
   const handleDelete = async (id: string) => {
@@ -56,7 +56,7 @@ export default function Reminders() {
     setSelectedDate(date);
   };
 
-  const pendingCount = selectedDateReminders.filter((r) => r.status === 'pending').length;
+  const pendingCount = selectedDateReminders.filter((r) => r.occurrence_status === 'pending').length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -89,7 +89,7 @@ export default function Reminders() {
             onSelectDate={handleSelectDate}
             onPrevWeek={handlePrevWeek}
             onNextWeek={handleNextWeek}
-            reminders={weekReminders}
+            reminders={upcomingReminders}
           />
         </div>
 
@@ -116,7 +116,7 @@ export default function Reminders() {
               )}
               {selectedDateReminders.map((reminder) => (
                 <ReminderCard
-                  key={reminder.id}
+                  key={reminder.occurrence_id}
                   reminder={reminder}
                   onComplete={handleComplete}
                   onEdit={handleEdit}

@@ -5,11 +5,23 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useAddReminder } from '@/hooks/useReminders';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import { 
+  Heart, 
+  GraduationCap, 
+  House, 
+  Briefcase, 
+  User, 
+  UsersThree, 
+  Bank, 
+  DotsThree,
+  CaretDown,
+  Phone,
+  WhatsappLogo
+} from '@phosphor-icons/react';
 import type { ReminderCategory, ReminderPriority, RecurrenceType } from '@/types/reminders';
 
 interface AddReminderSheetProps {
@@ -17,39 +29,107 @@ interface AddReminderSheetProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const categoryIcons: Record<ReminderCategory, React.ElementType> = {
+  health: Heart,
+  school: GraduationCap,
+  home: House,
+  work: Briefcase,
+  personal: User,
+  family: UsersThree,
+  finance: Bank,
+  other: DotsThree,
+};
+
+const categoryLabels: Record<ReminderCategory, string> = {
+  health: 'Saúde',
+  school: 'Escola',
+  home: 'Casa',
+  work: 'Trabalho',
+  personal: 'Pessoal',
+  family: 'Família',
+  finance: 'Finanças',
+  other: 'Outros',
+};
+
+const recurrenceOptions: { value: RecurrenceType; label: string }[] = [
+  { value: 'once', label: 'Uma vez' },
+  { value: 'daily', label: 'Diário' },
+  { value: 'weekly', label: 'Semanal' },
+  { value: 'monthly', label: 'Mensal' },
+  { value: 'yearly', label: 'Anual' },
+  { value: 'interval', label: 'Intervalo' },
+];
+
+const weekDays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+
 export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) {
+  // Etapa 1 - Essenciais
   const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [dueTime, setDueTime] = useState('09:00');
+
+  // Etapa 2 - Recorrência
+  const [showRecurrence, setShowRecurrence] = useState(false);
+  const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>('once');
+  const [daysOfWeek, setDaysOfWeek] = useState<number[]>([]);
+  const [intervalHours, setIntervalHours] = useState<number>(24);
+  const [durationDays, setDurationDays] = useState<number>(7);
+  const [recurrenceEnd, setRecurrenceEnd] = useState('');
+
+  // Etapa 3 - Mais opções
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
   const [category, setCategory] = useState<ReminderCategory>('other');
   const [priority, setPriority] = useState<ReminderPriority>('normal');
-  const [isRecurring, setIsRecurring] = useState(false);
-  const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>('daily');
-  const [intervalValue, setIntervalValue] = useState<number>(1);
   const [effortLevel, setEffortLevel] = useState<number>(1);
+  const [description, setDescription] = useState('');
+  const [sendWhatsapp, setSendWhatsapp] = useState(true);
   const [callGuarantee, setCallGuarantee] = useState(false);
 
   const addReminder = useAddReminder();
 
   const resetForm = () => {
     setTitle('');
-    setDescription('');
     setDueDate(format(new Date(), 'yyyy-MM-dd'));
     setDueTime('09:00');
+    setShowRecurrence(false);
+    setRecurrenceType('once');
+    setDaysOfWeek([]);
+    setIntervalHours(24);
+    setDurationDays(7);
+    setRecurrenceEnd('');
+    setShowMoreOptions(false);
     setCategory('other');
     setPriority('normal');
-    setIsRecurring(false);
-    setRecurrenceType('daily');
-    setIntervalValue(1);
     setEffortLevel(1);
+    setDescription('');
+    setSendWhatsapp(true);
     setCallGuarantee(false);
+  };
+
+  const toggleDayOfWeek = (day: number) => {
+    setDaysOfWeek(prev => 
+      prev.includes(day) 
+        ? prev.filter(d => d !== day) 
+        : [...prev, day].sort()
+    );
   };
 
   const handleSubmit = async () => {
     if (!title.trim() || !dueDate) return;
 
     const datetime = new Date(`${dueDate}T${dueTime}:00`);
+
+    // Montar recurrence_config baseado no tipo
+    let recurrence_config: Record<string, unknown> | null = null;
+    
+    if (recurrenceType === 'weekly' && daysOfWeek.length > 0) {
+      recurrence_config = { days_of_week: daysOfWeek };
+    } else if (recurrenceType === 'interval') {
+      recurrence_config = { 
+        interval_hours: intervalHours, 
+        duration_days: durationDays 
+      };
+    }
 
     try {
       await addReminder.mutateAsync({
@@ -58,12 +138,12 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
         datetime: datetime.toISOString(),
         category,
         priority,
-        recurrence_type: isRecurring ? recurrenceType : 'once',
-        recurrence_config: isRecurring && recurrenceType === 'interval' 
-          ? { interval_value: intervalValue } 
-          : null,
+        recurrence_type: showRecurrence ? recurrenceType : 'once',
+        recurrence_config,
+        recurrence_end: recurrenceEnd || null,
         effort_level: effortLevel,
         call_guarantee: callGuarantee,
+        send_whatsapp: sendWhatsapp,
       });
       toast.success('Lembrete criado');
       resetForm();
@@ -75,7 +155,12 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
 
   const isValid = title.trim() && dueDate;
 
-  const inputClass = "bg-transparent border-0 border-b border-border/30 rounded-none focus:border-primary/50 focus:ring-0 transition-colors duration-150 placeholder:text-muted-foreground/40";
+  const inputClass = "bg-transparent border-0 border-b border-border/30 rounded-none focus:border-[#6B7F5E]/50 focus:ring-0 transition-colors duration-150 placeholder:text-muted-foreground/40";
+
+  // Classes de seleção
+  const selectedClass = "bg-[#6B7F5E]/20 text-[#6B7F5E]";
+  const urgentSelectedClass = "bg-[#C4754B]/20 text-[#C4754B]";
+  const unselectedClass = "bg-muted/20 text-muted-foreground hover:bg-muted/40";
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -88,11 +173,13 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
         </SheetHeader>
 
         <div className="mt-8 space-y-8">
-          {/* Essenciais */}
+          {/* ═══════════════════════════════════════════════════════════════
+              ETAPA 1 - ESSENCIAIS (sempre visível)
+          ═══════════════════════════════════════════════════════════════ */}
           <div className="space-y-5">
             <div className="space-y-3">
               <Label htmlFor="title" className="text-xs text-muted-foreground/70">
-                O que precisa lembrar?
+                O que você quer lembrar?
               </Label>
               <Input
                 id="title"
@@ -100,19 +187,6 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Ex: Consulta pediatra"
                 className={inputClass}
-              />
-            </div>
-
-            <div className="space-y-3">
-              <Label htmlFor="description" className="text-xs text-muted-foreground/70">
-                Detalhes (opcional)
-              </Label>
-              <Textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Notas adicionais..."
-                className={`${inputClass} min-h-[60px] resize-none`}
               />
             </div>
 
@@ -144,84 +218,102 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
             </div>
           </div>
 
-          {/* Classificação */}
-          <div className="space-y-4">
-            <h4 className="text-xs text-muted-foreground/50 uppercase tracking-wider">
-              Classificação
-            </h4>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground/70">Categoria</Label>
-                <Select value={category} onValueChange={(val) => setCategory(val as ReminderCategory)}>
-                  <SelectTrigger className="bg-transparent border-0 border-b border-border/30 rounded-none h-10">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="health">Saúde</SelectItem>
-                    <SelectItem value="school">Escola</SelectItem>
-                    <SelectItem value="home">Casa</SelectItem>
-                    <SelectItem value="work">Trabalho</SelectItem>
-                    <SelectItem value="personal">Pessoal</SelectItem>
-                    <SelectItem value="family">Família</SelectItem>
-                    <SelectItem value="finance">Finanças</SelectItem>
-                    <SelectItem value="other">Outros</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground/70">Prioridade</Label>
-                <Select value={priority} onValueChange={(val) => setPriority(val as ReminderPriority)}>
-                  <SelectTrigger className="bg-transparent border-0 border-b border-border/30 rounded-none h-10">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="normal">Normal</SelectItem>
-                    <SelectItem value="important">Importante</SelectItem>
-                    <SelectItem value="urgent">Urgente</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-
-          {/* Recorrência */}
+          {/* ═══════════════════════════════════════════════════════════════
+              ETAPA 2 - REPETIR? (toggle + opções)
+          ═══════════════════════════════════════════════════════════════ */}
           <div className="space-y-4">
             <div className="flex items-center justify-between py-2">
               <Label htmlFor="recurring" className="text-sm text-muted-foreground">
-                Repetir lembrete
+                Repetir?
               </Label>
               <Switch
                 id="recurring"
-                checked={isRecurring}
-                onCheckedChange={setIsRecurring}
+                checked={showRecurrence}
+                onCheckedChange={(checked) => {
+                  setShowRecurrence(checked);
+                  if (!checked) setRecurrenceType('once');
+                }}
               />
             </div>
 
-            <Collapsible open={isRecurring}>
-              <CollapsibleContent className="space-y-3 pt-2">
-                <div className="space-y-2">
-                  <Label className="text-xs text-muted-foreground/70">Frequência</Label>
-                  <Select value={recurrenceType} onValueChange={(val) => setRecurrenceType(val as RecurrenceType)}>
-                    <SelectTrigger className="bg-transparent border-0 border-b border-border/30 rounded-none h-10">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="daily">Diariamente</SelectItem>
-                      <SelectItem value="weekly">Semanalmente</SelectItem>
-                      <SelectItem value="monthly">Mensalmente</SelectItem>
-                      <SelectItem value="yearly">Anualmente</SelectItem>
-                      <SelectItem value="interval">Intervalo personalizado</SelectItem>
-                    </SelectContent>
-                  </Select>
+            <Collapsible open={showRecurrence}>
+              <CollapsibleContent className="space-y-5 pt-2">
+                {/* Seletor visual de frequência */}
+                <div className="flex flex-wrap gap-2">
+                  {recurrenceOptions.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setRecurrenceType(opt.value)}
+                      className={`
+                        px-3 py-1.5 rounded-full text-sm transition-all duration-150
+                        ${recurrenceType === opt.value ? selectedClass : unselectedClass}
+                      `}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
                 </div>
+
+                {/* Seletor de dias da semana (para weekly) */}
+                {recurrenceType === 'weekly' && (
+                  <div className="space-y-3">
+                    <Label className="text-xs text-muted-foreground/70">Quais dias?</Label>
+                    <div className="flex justify-center gap-2">
+                      {weekDays.map((day, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => toggleDayOfWeek(index)}
+                          className={`
+                            w-9 h-9 rounded-full text-xs font-medium transition-all duration-150
+                            ${daysOfWeek.includes(index) ? selectedClass : unselectedClass}
+                          `}
+                        >
+                          {day}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Campos para interval */}
                 {recurrenceType === 'interval' && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-xs text-muted-foreground/70">A cada</Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="number"
+                          min={1}
+                          value={intervalHours}
+                          onChange={(e) => setIntervalHours(parseInt(e.target.value) || 1)}
+                          className={`${inputClass} w-16`}
+                        />
+                        <span className="text-sm text-muted-foreground">horas</span>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-xs text-muted-foreground/70">Por quantos dias</Label>
+                      <Input
+                        type="number"
+                        min={1}
+                        value={durationDays}
+                        onChange={(e) => setDurationDays(parseInt(e.target.value) || 1)}
+                        className={inputClass}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Até quando? (para recorrentes) */}
+                {recurrenceType !== 'once' && (
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground/70">A cada X dias</Label>
+                    <Label className="text-xs text-muted-foreground/70">Até quando? (opcional)</Label>
                     <Input
-                      type="number"
-                      min={1}
-                      value={intervalValue}
-                      onChange={(e) => setIntervalValue(parseInt(e.target.value) || 1)}
+                      type="date"
+                      value={recurrenceEnd}
+                      onChange={(e) => setRecurrenceEnd(e.target.value)}
                       className={inputClass}
                     />
                   </div>
@@ -230,47 +322,141 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
             </Collapsible>
           </div>
 
-          {/* Configurações */}
-          <div className="space-y-5">
-            <h4 className="text-xs text-muted-foreground/50 uppercase tracking-wider">
-              Configurações
-            </h4>
-
-            <div className="space-y-3">
-              <Label className="text-xs text-muted-foreground/70">
-                Esforço
-              </Label>
-              <div className="flex gap-3 justify-center py-2">
-                {[1, 2, 3, 4, 5].map((level) => (
-                  <button
-                    key={level}
-                    type="button"
-                    onClick={() => setEffortLevel(level)}
-                    className={`
-                      w-3 h-3 rounded-full transition-all duration-150
-                      ${effortLevel === level 
-                        ? 'bg-primary scale-125' 
-                        : 'bg-muted-foreground/20 hover:bg-muted-foreground/40'}
-                    `}
-                  />
-                ))}
+          {/* ═══════════════════════════════════════════════════════════════
+              ETAPA 3 - MAIS OPÇÕES (colapsável)
+          ═══════════════════════════════════════════════════════════════ */}
+          <Collapsible open={showMoreOptions} onOpenChange={setShowMoreOptions}>
+            <CollapsibleTrigger asChild>
+              <button 
+                type="button"
+                className="flex items-center gap-2 text-sm text-muted-foreground/70 hover:text-muted-foreground transition-colors duration-150"
+              >
+                <CaretDown 
+                  weight="thin" 
+                  className={`h-4 w-4 transition-transform duration-150 ${showMoreOptions ? 'rotate-180' : ''}`} 
+                />
+                Mais opções
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="space-y-6 pt-6">
+              {/* Categoria com ícones */}
+              <div className="space-y-3">
+                <Label className="text-xs text-muted-foreground/70">Categoria</Label>
+                <div className="grid grid-cols-4 gap-2">
+                  {(Object.keys(categoryIcons) as ReminderCategory[]).map((cat) => {
+                    const Icon = categoryIcons[cat];
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => setCategory(cat)}
+                        className={`
+                          flex flex-col items-center gap-1.5 p-3 rounded-lg
+                          transition-all duration-150
+                          ${category === cat ? selectedClass : unselectedClass}
+                        `}
+                      >
+                        <Icon weight="thin" className="h-5 w-5" />
+                        <span className="text-[10px]">{categoryLabels[cat]}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
 
-            <div className="flex items-center justify-between py-2">
-              <div>
-                <Label htmlFor="critical" className="text-sm text-muted-foreground">
-                  Lembrete crítico
+              {/* Prioridade */}
+              <div className="space-y-3">
+                <Label className="text-xs text-muted-foreground/70">Prioridade</Label>
+                <div className="flex gap-2">
+                  {(['normal', 'important', 'urgent'] as ReminderPriority[]).map((p) => (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => setPriority(p)}
+                      className={`
+                        flex-1 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-150
+                        ${priority === p
+                          ? p === 'urgent' ? urgentSelectedClass : selectedClass
+                          : unselectedClass
+                        }
+                      `}
+                    >
+                      {p === 'normal' ? 'Normal' : p === 'important' ? 'Importante' : 'Urgente'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Esforço */}
+              <div className="space-y-3">
+                <Label className="text-xs text-muted-foreground/70">Nível de esforço</Label>
+                <div className="flex gap-3 justify-center py-2">
+                  {[1, 2, 3, 4, 5].map((level) => (
+                    <button
+                      key={level}
+                      type="button"
+                      onClick={() => setEffortLevel(level)}
+                      className={`
+                        w-3 h-3 rounded-full transition-all duration-150
+                        ${effortLevel >= level 
+                          ? 'bg-[#6B7F5E] scale-110' 
+                          : 'bg-muted-foreground/20 hover:bg-muted-foreground/40'}
+                      `}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Descrição */}
+              <div className="space-y-3">
+                <Label htmlFor="description" className="text-xs text-muted-foreground/70">
+                  Detalhes (opcional)
                 </Label>
-                <p className="text-xs text-muted-foreground/50">A Annia pode me ligar</p>
+                <Textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Notas adicionais..."
+                  className={`${inputClass} min-h-[60px] resize-none`}
+                />
               </div>
-              <Switch
-                id="critical"
-                checked={callGuarantee}
-                onCheckedChange={setCallGuarantee}
-              />
-            </div>
-          </div>
+
+              {/* WhatsApp toggle */}
+              <div className="flex items-center justify-between py-2">
+                <div className="flex items-center gap-2">
+                  <WhatsappLogo weight="thin" className="h-4 w-4 text-[#6B7F5E]/70" />
+                  <Label htmlFor="whatsapp" className="text-sm text-muted-foreground">
+                    Notificar por WhatsApp
+                  </Label>
+                </div>
+                <Switch
+                  id="whatsapp"
+                  checked={sendWhatsapp}
+                  onCheckedChange={setSendWhatsapp}
+                />
+              </div>
+
+              {/* Call Guarantee */}
+              <div className="flex items-center justify-between py-2">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Phone weight="thin" className="h-4 w-4 text-[#6B7F5E]/70" />
+                    <Label htmlFor="call" className="text-sm text-muted-foreground">
+                      Garantir com ligação
+                    </Label>
+                  </div>
+                  <p className="text-xs text-muted-foreground/50 mt-1 ml-6">
+                    Vou te ligar para garantir que não esqueça
+                  </p>
+                </div>
+                <Switch
+                  id="call"
+                  checked={callGuarantee}
+                  onCheckedChange={setCallGuarantee}
+                />
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
 
           {/* Submit */}
           <Button

@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
 import { useAddReminder } from '@/hooks/useReminders';
 import { useChildren } from '@/hooks/useChildren';
 import { useContacts } from '@/hooks/useContacts';
@@ -76,81 +77,88 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
 
   const isValid = title.trim() && dueDate;
 
+  // Input style for border-bottom subtle
+  const inputClass = "bg-transparent border-0 border-b border-border/30 rounded-none focus:border-primary/50 focus:ring-0 transition-colors duration-150 placeholder:text-muted-foreground/40";
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="overflow-y-auto">
+      <SheetContent className="overflow-y-auto px-5 py-6">
         <SheetHeader>
-          <SheetTitle>Novo Lembrete</SheetTitle>
-          <SheetDescription>Organize seu dia com tranquilidade</SheetDescription>
+          <SheetTitle className="text-lg font-medium">Novo Lembrete</SheetTitle>
+          <SheetDescription className="text-muted-foreground/70">
+            Organize sua mente
+          </SheetDescription>
         </SheetHeader>
 
-        <div className="mt-6 space-y-6">
+        <div className="mt-8 space-y-8">
           {/* Essenciais */}
-          <div className="space-y-4">
-            <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Essenciais
-            </h4>
-
-            <div className="space-y-2">
-              <Label htmlFor="title">Título</Label>
+          <div className="space-y-5">
+            <div className="space-y-3">
+              <Label htmlFor="title" className="text-xs text-muted-foreground/70">
+                O que precisa lembrar?
+              </Label>
               <Input
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Ex: Consulta pediatra"
-                className="bg-background/50"
+                className={inputClass}
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="description">Descrição</Label>
+            <div className="space-y-3">
+              <Label htmlFor="description" className="text-xs text-muted-foreground/70">
+                Detalhes (opcional)
+              </Label>
               <Textarea
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Detalhes adicionais..."
-                className="bg-background/50 min-h-[80px]"
+                placeholder="Notas adicionais..."
+                className={`${inputClass} min-h-[60px] resize-none`}
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label htmlFor="date">Data</Label>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <Label htmlFor="date" className="text-xs text-muted-foreground/70">
+                  Quando?
+                </Label>
                 <Input
                   id="date"
                   type="date"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="bg-background/50"
+                  className={inputClass}
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="time">Hora</Label>
+              <div className="space-y-3">
+                <Label htmlFor="time" className="text-xs text-muted-foreground/70">
+                  Hora
+                </Label>
                 <Input
                   id="time"
                   type="time"
                   value={dueTime}
                   onChange={(e) => setDueTime(e.target.value)}
-                  className="bg-background/50"
+                  className={inputClass}
                 />
               </div>
             </div>
           </div>
 
-          {/* Vínculos */}
+          {/* Vínculos - Grid 2 columns */}
           <div className="space-y-4">
-            <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Vínculos (opcional)
+            <h4 className="text-xs text-muted-foreground/50 uppercase tracking-wider">
+              Vínculos
             </h4>
-
-            <div className="space-y-2">
-              <Label>Filho</Label>
+            <div className="grid grid-cols-2 gap-3">
               <Select value={childId || "__none__"} onValueChange={(val) => setChildId(val === "__none__" ? "" : val)}>
-                <SelectTrigger className="bg-background/50">
-                  <SelectValue placeholder="Nenhum" />
+                <SelectTrigger className="bg-transparent border-0 border-b border-border/30 rounded-none h-10">
+                  <SelectValue placeholder="Filho" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__none__">Nenhum</SelectItem>
+                  <SelectItem value="__none__">Opcional</SelectItem>
                   {children.map((child) => (
                     <SelectItem key={child.id} value={child.id}>
                       {child.nickname || child.name}
@@ -158,16 +166,13 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                   ))}
                 </SelectContent>
               </Select>
-            </div>
 
-            <div className="space-y-2">
-              <Label>Contato</Label>
               <Select value={contactId || "__none__"} onValueChange={(val) => setContactId(val === "__none__" ? "" : val)}>
-                <SelectTrigger className="bg-background/50">
-                  <SelectValue placeholder="Nenhum" />
+                <SelectTrigger className="bg-transparent border-0 border-b border-border/30 rounded-none h-10">
+                  <SelectValue placeholder="Contato" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__none__">Nenhum</SelectItem>
+                  <SelectItem value="__none__">Opcional</SelectItem>
                   {contacts.map((contact) => (
                     <SelectItem key={contact.id} value={contact.id}>
                       {contact.alias}
@@ -178,14 +183,12 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
             </div>
           </div>
 
-          {/* Recorrência */}
+          {/* Recorrência - Collapsible */}
           <div className="space-y-4">
-            <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Recorrência
-            </h4>
-
-            <div className="flex items-center justify-between">
-              <Label htmlFor="recurring">Repetir este lembrete</Label>
+            <div className="flex items-center justify-between py-2">
+              <Label htmlFor="recurring" className="text-sm text-muted-foreground">
+                Repetir lembrete
+              </Label>
               <Switch
                 id="recurring"
                 checked={isRecurring}
@@ -193,70 +196,71 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
               />
             </div>
 
-            {isRecurring && (
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2">
-                  <Label>A cada</Label>
-                  <Input
-                    type="number"
-                    min={1}
-                    value={intervalValue}
-                    onChange={(e) => setIntervalValue(parseInt(e.target.value) || 1)}
-                    className="bg-background/50"
-                  />
+            <Collapsible open={isRecurring}>
+              <CollapsibleContent className="space-y-3 pt-2">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground/70">A cada</Label>
+                    <Input
+                      type="number"
+                      min={1}
+                      value={intervalValue}
+                      onChange={(e) => setIntervalValue(parseInt(e.target.value) || 1)}
+                      className={inputClass}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground/70">Período</Label>
+                    <Select value={intervalType} onValueChange={setIntervalType}>
+                      <SelectTrigger className="bg-transparent border-0 border-b border-border/30 rounded-none h-10">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="hours">Horas</SelectItem>
+                        <SelectItem value="days">Dias</SelectItem>
+                        <SelectItem value="weeks">Semanas</SelectItem>
+                        <SelectItem value="months">Meses</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label>Período</Label>
-                  <Select value={intervalType} onValueChange={setIntervalType}>
-                    <SelectTrigger className="bg-background/50">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="hours">Horas</SelectItem>
-                      <SelectItem value="days">Dias</SelectItem>
-                      <SelectItem value="weeks">Semanas</SelectItem>
-                      <SelectItem value="months">Meses</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            )}
+              </CollapsibleContent>
+            </Collapsible>
           </div>
 
           {/* Configurações */}
-          <div className="space-y-4">
-            <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <div className="space-y-5">
+            <h4 className="text-xs text-muted-foreground/50 uppercase tracking-wider">
               Configurações
             </h4>
 
-            <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">
-                Nível de esforço (uso interno)
+            <div className="space-y-3">
+              <Label className="text-xs text-muted-foreground/70">
+                Esforço
               </Label>
-              <div className="flex gap-2">
+              <div className="flex gap-3 justify-center py-2">
                 {[1, 2, 3, 4, 5].map((level) => (
                   <button
                     key={level}
+                    type="button"
                     onClick={() => setEffortLevel(level)}
                     className={`
-                      w-8 h-8 rounded-full text-xs font-medium
-                      transition-all duration-150
-                      ${effortLevel === level
-                        ? 'bg-primary/30 text-primary border border-primary/50'
-                        : 'bg-background/50 text-muted-foreground border border-border/30 hover:border-primary/30'
-                      }
+                      w-3 h-3 rounded-full transition-all duration-150
+                      ${effortLevel === level 
+                        ? 'bg-primary scale-125' 
+                        : 'bg-muted-foreground/20 hover:bg-muted-foreground/40'}
                     `}
-                  >
-                    {level}
-                  </button>
+                  />
                 ))}
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between py-2">
               <div>
-                <Label htmlFor="critical">Lembrete crítico</Label>
-                <p className="text-xs text-muted-foreground">A Annia pode me ligar</p>
+                <Label htmlFor="critical" className="text-sm text-muted-foreground">
+                  Lembrete crítico
+                </Label>
+                <p className="text-xs text-muted-foreground/50">A Annia pode me ligar</p>
               </div>
               <Switch
                 id="critical"
@@ -270,9 +274,9 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
           <Button
             onClick={handleSubmit}
             disabled={!isValid || addReminder.isPending}
-            className="w-full"
+            className="w-full mt-4"
           >
-            {addReminder.isPending ? 'Salvando...' : 'Salvar lembrete'}
+            {addReminder.isPending ? 'Salvando...' : 'Salvar'}
           </Button>
         </div>
       </SheetContent>

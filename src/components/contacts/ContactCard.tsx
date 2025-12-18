@@ -11,7 +11,7 @@ interface ContactCardProps {
 const intimacyLabels: Record<number, string> = {
   1: 'Formal',
   2: 'Amigável',
-  3: 'Íntimo',
+  3: 'Próximo',
 };
 
 export function ContactCard({ contact, onEdit, onDelete }: ContactCardProps) {
@@ -21,9 +21,17 @@ export function ContactCard({ contact, onEdit, onDelete }: ContactCardProps) {
     <div className="annia-glass p-4 rounded-lg border border-border/30 group transition-all duration-150 hover:border-border/50">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          {/* Alias em destaque */}
-          <div className="flex items-center gap-2">
+          {/* Alias + Category Badge + Annia indicator */}
+          <div className="flex items-center gap-2 flex-wrap">
             <h3 className="font-medium text-foreground truncate">{contact.alias}</h3>
+            
+            {/* Category badge */}
+            {contact.category && contact.category !== 'Outros' && (
+              <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary/80">
+                {contact.category}
+              </span>
+            )}
+            
             {/* Indicador verde oliva se can_annia_message */}
             {contact.can_annia_message && (
               <div 
@@ -37,6 +45,13 @@ export function ContactCard({ contact, onEdit, onDelete }: ContactCardProps) {
           <p className="text-sm text-muted-foreground truncate">
             {contact.formal_name} · {intimacyLabels[contact.intimacy_level] || 'Amigável'}
           </p>
+
+          {/* Notas (se existirem) */}
+          {contact.notes && (
+            <p className="text-xs text-muted-foreground/70 mt-1 line-clamp-1 italic">
+              {contact.notes}
+            </p>
+          )}
         </div>
         
         <div className="flex items-center gap-1 flex-shrink-0">

@@ -152,6 +152,84 @@ export type Database = {
         }
         Relationships: []
       }
+      reminders: {
+        Row: {
+          child_id: string | null
+          contact_id: string | null
+          created_at: string
+          description: string | null
+          due_date: string
+          effort_level: number | null
+          id: string
+          interval_type: string | null
+          interval_value: number | null
+          is_critical: boolean | null
+          is_recurring: boolean | null
+          metadata: Json | null
+          send_whatsapp: boolean | null
+          status: string | null
+          suggested_by_ia: boolean | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          child_id?: string | null
+          contact_id?: string | null
+          created_at?: string
+          description?: string | null
+          due_date: string
+          effort_level?: number | null
+          id?: string
+          interval_type?: string | null
+          interval_value?: number | null
+          is_critical?: boolean | null
+          is_recurring?: boolean | null
+          metadata?: Json | null
+          send_whatsapp?: boolean | null
+          status?: string | null
+          suggested_by_ia?: boolean | null
+          title: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          child_id?: string | null
+          contact_id?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string
+          effort_level?: number | null
+          id?: string
+          interval_type?: string | null
+          interval_value?: number | null
+          is_critical?: boolean | null
+          is_recurring?: boolean | null
+          metadata?: Json | null
+          send_whatsapp?: boolean | null
+          status?: string | null
+          suggested_by_ia?: boolean | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reminders_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reminders_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shopping_item_events: {
         Row: {
           event_type: string
@@ -426,6 +504,56 @@ export type Database = {
       }
     }
     Views: {
+      v_daily_mental_load: {
+        Row: {
+          critical_tasks: number | null
+          pending_tasks: number | null
+          reference_date: string | null
+          total_effort_score: number | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
+      v_n8n_upcoming_reminders: {
+        Row: {
+          child_id: string | null
+          child_name: string | null
+          contact_id: string | null
+          contact_name: string | null
+          created_at: string | null
+          description: string | null
+          due_date: string | null
+          effort_level: number | null
+          id: string | null
+          interval_type: string | null
+          interval_value: number | null
+          is_critical: boolean | null
+          is_recurring: boolean | null
+          metadata: Json | null
+          send_whatsapp: boolean | null
+          status: string | null
+          suggested_by_ia: boolean | null
+          title: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reminders_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reminders_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_shopping_items_with_frequency: {
         Row: {
           avg_days_between: number | null

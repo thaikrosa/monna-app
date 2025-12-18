@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
 export interface Contact {
@@ -19,6 +20,8 @@ export type ContactInsert = Omit<Contact, 'id' | 'created_at' | 'updated_at'>;
 export type ContactUpdate = Partial<ContactInsert>;
 
 export function useContacts() {
+  const { user } = useAuth();
+  
   return useQuery({
     queryKey: ['contacts'],
     queryFn: async () => {
@@ -30,6 +33,7 @@ export function useContacts() {
       if (error) throw error;
       return data as Contact[];
     },
+    enabled: !!user,
   });
 }
 

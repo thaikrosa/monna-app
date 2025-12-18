@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 import type {
   Reminder,
   ReminderInsert,
@@ -15,6 +16,8 @@ import type {
  * Busca lembretes de hoje via view `today_reminders`
  */
 export function useTodayReminders() {
+  const { user } = useAuth();
+  
   return useQuery({
     queryKey: ['reminders', 'today'],
     queryFn: async () => {
@@ -25,6 +28,7 @@ export function useTodayReminders() {
       if (error) throw error;
       return data as TodayReminder[];
     },
+    enabled: !!user,
   });
 }
 
@@ -32,6 +36,8 @@ export function useTodayReminders() {
  * Busca próximos lembretes via view `upcoming_reminders`
  */
 export function useUpcomingReminders() {
+  const { user } = useAuth();
+  
   return useQuery({
     queryKey: ['reminders', 'upcoming'],
     queryFn: async () => {
@@ -42,6 +48,7 @@ export function useUpcomingReminders() {
       if (error) throw error;
       return data as UpcomingReminder[];
     },
+    enabled: !!user,
   });
 }
 
@@ -49,6 +56,7 @@ export function useUpcomingReminders() {
  * Busca lembretes de uma data específica
  */
 export function useRemindersByDate(date: Date) {
+  const { user } = useAuth();
   const dateStr = date.toISOString().split('T')[0];
   
   return useQuery({
@@ -66,7 +74,7 @@ export function useRemindersByDate(date: Date) {
       if (error) throw error;
       return data as UpcomingReminder[];
     },
-    enabled: !!date,
+    enabled: !!user && !!date,
   });
 }
 
@@ -235,6 +243,8 @@ export function useSnoozeOccurrence() {
 // ===== CONTADOR PARA DASHBOARD =====
 
 export function useTodayRemindersCount() {
+  const { user } = useAuth();
+  
   return useQuery({
     queryKey: ['reminders', 'today-count'],
     queryFn: async () => {
@@ -245,6 +255,7 @@ export function useTodayRemindersCount() {
       if (error) throw error;
       return count ?? 0;
     },
+    enabled: !!user,
   });
 }
 

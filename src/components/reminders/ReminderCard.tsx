@@ -1,19 +1,18 @@
-import { Check, Baby, User, PencilSimple, TrashSimple, Phone } from '@phosphor-icons/react';
+import { Check, Phone, PencilSimple, TrashSimple } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-import type { Reminder } from '@/hooks/useReminders';
+import type { UpcomingReminder } from '@/types/reminders';
 
 interface ReminderCardProps {
-  reminder: Reminder;
-  onComplete: (id: string) => void;
-  onEdit: (reminder: Reminder) => void;
+  reminder: UpcomingReminder;
+  onComplete: (occurrenceId: string) => void;
+  onEdit: (reminder: UpcomingReminder) => void;
   onDelete: (id: string) => void;
 }
 
 export function ReminderCard({ reminder, onComplete, onEdit, onDelete }: ReminderCardProps) {
-  const isCompleted = reminder.status === 'completed';
-  const time = format(new Date(reminder.due_date), 'HH:mm');
-  const effortOpacity = (reminder.effort_level || 1) * 0.15;
+  const isCompleted = reminder.occurrence_status === 'acknowledged';
+  const time = format(new Date(reminder.scheduled_at), 'HH:mm');
 
   return (
     <div
@@ -31,7 +30,7 @@ export function ReminderCard({ reminder, onComplete, onEdit, onDelete }: Reminde
 
         {/* Checkbox */}
         <button
-          onClick={() => !isCompleted && onComplete(reminder.id)}
+          onClick={() => !isCompleted && onComplete(reminder.occurrence_id)}
           disabled={isCompleted}
           className={`
             w-4 h-4 rounded-full border flex items-center justify-center
@@ -55,20 +54,20 @@ export function ReminderCard({ reminder, onComplete, onEdit, onDelete }: Reminde
           >
             {reminder.title}
           </h3>
-          {reminder.is_critical && (
+          {reminder.call_guarantee && (
             <Phone weight="thin" className="h-4 w-4 text-primary/70 flex-shrink-0" />
           )}
         </div>
 
-        {/* Link badges - subtle */}
-        <div className="flex items-center gap-1 flex-shrink-0">
-          {reminder.child_id && (
-            <Baby weight="thin" className="h-4 w-4 text-primary/50" />
-          )}
-          {reminder.contact_id && (
-            <User weight="thin" className="h-4 w-4 text-primary/50" />
-          )}
-        </div>
+        {/* Priority badge - subtle */}
+        {reminder.priority !== 'normal' && (
+          <span className={`
+            text-[10px] px-1.5 py-0.5 rounded uppercase tracking-wider flex-shrink-0
+            ${reminder.priority === 'urgent' ? 'bg-destructive/20 text-destructive' : 'bg-primary/10 text-primary/70'}
+          `}>
+            {reminder.priority === 'urgent' ? 'Urgente' : 'Importante'}
+          </span>
+        )}
 
         {/* Actions - revealed on hover */}
         <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
@@ -90,12 +89,6 @@ export function ReminderCard({ reminder, onComplete, onEdit, onDelete }: Reminde
           </Button>
         </div>
       </div>
-
-      {/* Effort level line at base */}
-      <div 
-        className="absolute bottom-0 left-0 right-0 h-[1px] bg-primary rounded-b-lg"
-        style={{ opacity: effortOpacity }}
-      />
     </div>
   );
 }

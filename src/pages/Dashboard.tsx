@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ListChecks, UsersThree, Baby, Bell, CaretRight } from '@phosphor-icons/react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import { useTodayRemindersCount } from '@/hooks/useReminders';
 
 export default function Dashboard() {
   const { profile } = useAuth();
@@ -48,25 +49,8 @@ export default function Dashboard() {
     },
   });
 
-  // Fetch today's reminders count
-  const { data: todayRemindersCount = 0, isLoading: isRemindersLoading } = useQuery({
-    queryKey: ['reminders-today-count'],
-    queryFn: async () => {
-      const today = new Date();
-      const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0).toISOString();
-      const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59).toISOString();
-
-      const { count, error } = await supabase
-        .from('reminders')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'pending')
-        .gte('due_date', startOfDay)
-        .lte('due_date', endOfDay);
-
-      if (error) throw error;
-      return count ?? 0;
-    },
-  });
+  // Fetch today's reminders count using the new hook
+  const { data: todayRemindersCount = 0, isLoading: isRemindersLoading } = useTodayRemindersCount();
 
   return (
     <div className="max-w-2xl mx-auto py-12 animate-fade-in">

@@ -2,7 +2,7 @@ import { CaretLeft, CaretRight } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { format, addDays, isSameDay, isToday, startOfDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import type { Reminder } from '@/hooks/useReminders';
+import type { UpcomingReminder } from '@/types/reminders';
 
 interface WeekSelectorProps {
   weekStart: Date;
@@ -10,7 +10,7 @@ interface WeekSelectorProps {
   onSelectDate: (date: Date) => void;
   onPrevWeek: () => void;
   onNextWeek: () => void;
-  reminders?: Reminder[];
+  reminders?: UpcomingReminder[];
 }
 
 export function WeekSelector({
@@ -26,7 +26,7 @@ export function WeekSelector({
   const hasRemindersOnDate = (date: Date) => {
     const dayStart = startOfDay(date);
     return reminders.some((r) => {
-      const reminderDate = startOfDay(new Date(r.due_date));
+      const reminderDate = startOfDay(new Date(r.scheduled_at));
       return isSameDay(reminderDate, dayStart);
     });
   };

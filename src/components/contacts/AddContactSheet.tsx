@@ -12,6 +12,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { useAddContact } from '@/hooks/useContacts';
 
 interface AddContactSheetProps {
@@ -25,6 +27,8 @@ export function AddContactSheet({ open, onOpenChange }: AddContactSheetProps) {
   const [phone, setPhone] = useState('');
   const [intimacyLevel, setIntimacyLevel] = useState('2');
   const [canAnniaMessage, setCanAnniaMessage] = useState(false);
+  const [category, setCategory] = useState('Outros');
+  const [notes, setNotes] = useState('');
 
   const addContact = useAddContact();
 
@@ -40,8 +44,8 @@ export function AddContactSheet({ open, onOpenChange }: AddContactSheetProps) {
         phone: phone.trim(),
         intimacy_level: parseInt(intimacyLevel),
         can_annia_message: canAnniaMessage,
-        category: null,
-        notes: null,
+        category: category,
+        notes: notes.trim() || null,
       },
       {
         onSuccess: () => {
@@ -51,6 +55,8 @@ export function AddContactSheet({ open, onOpenChange }: AddContactSheetProps) {
           setPhone('');
           setIntimacyLevel('2');
           setCanAnniaMessage(false);
+          setCategory('Outros');
+          setNotes('');
           onOpenChange(false);
         },
       }
@@ -59,7 +65,7 @@ export function AddContactSheet({ open, onOpenChange }: AddContactSheetProps) {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-md">
+      <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
         <SheetHeader>
           <SheetTitle>Novo Contato</SheetTitle>
           <SheetDescription>
@@ -67,7 +73,7 @@ export function AddContactSheet({ open, onOpenChange }: AddContactSheetProps) {
           </SheetDescription>
         </SheetHeader>
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-6">
+        <form onSubmit={handleSubmit} className="mt-6 space-y-5">
           {/* Como eu chamo */}
           <div className="space-y-2">
             <Label htmlFor="alias" className="text-xs text-muted-foreground">
@@ -110,10 +116,29 @@ export function AddContactSheet({ open, onOpenChange }: AddContactSheetProps) {
             />
           </div>
 
-          {/* Nível de Intimidade */}
+          {/* Categoria */}
+          <div className="space-y-2">
+            <Label className="text-xs text-muted-foreground">
+              Categoria
+            </Label>
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger className="bg-background/50">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Família">Família</SelectItem>
+                <SelectItem value="Escola">Escola</SelectItem>
+                <SelectItem value="Saúde">Saúde</SelectItem>
+                <SelectItem value="Prestadores">Prestadores</SelectItem>
+                <SelectItem value="Outros">Outros</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Como a Annia deve falar */}
           <div className="space-y-3">
             <Label className="text-xs text-muted-foreground">
-              Nível de Intimidade
+              Como a Annia deve falar com este contato?
             </Label>
             <RadioGroup
               value={intimacyLevel}
@@ -135,7 +160,7 @@ export function AddContactSheet({ open, onOpenChange }: AddContactSheetProps) {
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="3" id="intimate" />
                 <Label htmlFor="intimate" className="text-sm font-normal cursor-pointer">
-                  Íntimo
+                  Próximo
                 </Label>
               </div>
             </RadioGroup>
@@ -155,6 +180,21 @@ export function AddContactSheet({ open, onOpenChange }: AddContactSheetProps) {
               id="canAnnia"
               checked={canAnniaMessage}
               onCheckedChange={setCanAnniaMessage}
+            />
+          </div>
+
+          {/* Notas */}
+          <div className="space-y-2">
+            <Label htmlFor="notes" className="text-xs text-muted-foreground">
+              Notas
+            </Label>
+            <Textarea
+              id="notes"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Observações sobre este contato..."
+              className="bg-background/50 resize-none"
+              rows={3}
             />
           </div>
 

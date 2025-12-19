@@ -101,58 +101,72 @@ export function useHomeDashboard() {
   return useQuery({
     queryKey: ['home-dashboard', user?.id],
     queryFn: async (): Promise<HomeDashboard> => {
-      if (!user) throw new Error('Not authenticated');
+      console.log('🔍 [1] Iniciando query... user:', user?.id);
+      
+      if (!user) {
+        console.log('🔍 [1.1] ❌ User não existe, lançando erro');
+        throw new Error('Not authenticated');
+      }
 
-      // Check subscription
-      const { data: subscription } = await supabase
+      console.log('🔍 [2] Buscando subscription...');
+      const { data: subscription, error: subError } = await supabase
         .from('subscriptions')
         .select('status')
         .eq('user_id', user.id)
         .maybeSingle();
+      console.log('🔍 [3] Subscription resultado:', { subscription, error: subError });
 
       const isSubscriber = subscription?.status === 'active';
+      console.log('🔍 [4] isSubscriber:', isSubscriber);
 
-      // Get profile for name
-      const { data: profile } = await supabase
+      console.log('🔍 [5] Buscando profile...');
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('first_name, nickname')
         .eq('id', user.id)
         .maybeSingle();
+      console.log('🔍 [6] Profile resultado:', { profile, error: profileError });
 
-      // Try to call RPC - if it doesn't exist, use mock
+      console.log('🔍 [7] Tentando RPC get_home_dashboard...');
       try {
         const { data: rpcData, error: rpcError } = await supabase.rpc('get_home_dashboard');
+        console.log('🔍 [8] RPC resultado:', { rpcData, rpcError });
         
         if (!rpcError && rpcData && typeof rpcData === 'object') {
-          // RPC exists and returned data
+          console.log('🔍 [9] ✅ RPC funcionou, retornando dados');
           const dashboardData = rpcData as unknown as HomeDashboard;
           return {
             ...dashboardData,
             paywall: { is_subscriber: isSubscriber }
           };
         }
-      } catch {
-        // RPC doesn't exist, fall through to mock
+      } catch (e) {
+        console.log('🔍 [8.1] ⚠️ RPC falhou, usando mock:', e);
       }
 
-      // Use mock data with real profile info
+      console.log('🔍 [10] Criando mock dashboard...');
       const mockData = createMockDashboard(profile?.nickname || profile?.first_name);
       
-      // Get real data where available
-      const { data: reminders } = await supabase
+      console.log('🔍 [11] Buscando today_reminders...');
+      const { data: reminders, error: remError } = await supabase
         .from('today_reminders')
         .select('*')
         .limit(5);
+      console.log('🔍 [12] Reminders:', { reminders, error: remError });
 
-      const { data: shoppingItems } = await supabase
+      console.log('🔍 [13] Buscando shopping_items...');
+      const { data: shoppingItems, error: shopError } = await supabase
         .from('v_shopping_items_with_frequency')
         .select('*')
         .eq('is_checked', false);
+      console.log('🔍 [14] Shopping:', { shoppingItems, error: shopError });
 
-      const { data: children } = await supabase
+      console.log('🔍 [15] Buscando children...');
+      const { data: children, error: childError } = await supabase
         .from('children')
         .select('*')
         .limit(2);
+      console.log('🔍 [16] Children:', { children, error: childError });
 
       // Merge real data into mock
       if (reminders && reminders.length > 0) {
@@ -194,6 +208,7 @@ export function useHomeDashboard() {
         }));
       }
 
+      console.log('🔍 [17] ✅ Retornando dados finais');
       return {
         ...mockData,
         paywall: { is_subscriber: isSubscriber }

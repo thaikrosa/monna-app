@@ -119,103 +119,34 @@ export type Database = {
         }
         Relationships: []
       }
-      onboarding_progress: {
-        Row: {
-          created_at: string | null
-          id: string
-          kickstart_completed_at: string | null
-          last_prompt_shown_at: string | null
-          prompts_dismissed: number | null
-          step_calendar: boolean | null
-          step_children: boolean | null
-          step_desires: boolean | null
-          step_feelings: boolean | null
-          step_routines: boolean | null
-          step_support_areas: boolean | null
-          step_welcome: boolean | null
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          kickstart_completed_at?: string | null
-          last_prompt_shown_at?: string | null
-          prompts_dismissed?: number | null
-          step_calendar?: boolean | null
-          step_children?: boolean | null
-          step_desires?: boolean | null
-          step_feelings?: boolean | null
-          step_routines?: boolean | null
-          step_support_areas?: boolean | null
-          step_welcome?: boolean | null
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          kickstart_completed_at?: string | null
-          last_prompt_shown_at?: string | null
-          prompts_dismissed?: number | null
-          step_calendar?: boolean | null
-          step_children?: boolean | null
-          step_desires?: boolean | null
-          step_feelings?: boolean | null
-          step_routines?: boolean | null
-          step_support_areas?: boolean | null
-          step_welcome?: boolean | null
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
       profiles: {
         Row: {
           avatar_url: string | null
-          city: string | null
-          communication_style: string | null
           created_at: string | null
           first_name: string | null
           id: string
           last_name: string | null
           nickname: string | null
-          onboarding_completed: boolean | null
-          onboarding_completed_at: string | null
-          state: string | null
-          timezone: string | null
           updated_at: string | null
           whatsapp: string | null
         }
         Insert: {
           avatar_url?: string | null
-          city?: string | null
-          communication_style?: string | null
           created_at?: string | null
           first_name?: string | null
           id: string
           last_name?: string | null
           nickname?: string | null
-          onboarding_completed?: boolean | null
-          onboarding_completed_at?: string | null
-          state?: string | null
-          timezone?: string | null
           updated_at?: string | null
           whatsapp?: string | null
         }
         Update: {
           avatar_url?: string | null
-          city?: string | null
-          communication_style?: string | null
           created_at?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
           nickname?: string | null
-          onboarding_completed?: boolean | null
-          onboarding_completed_at?: string | null
-          state?: string | null
-          timezone?: string | null
           updated_at?: string | null
           whatsapp?: string | null
         }
@@ -635,48 +566,6 @@ export type Database = {
           q24?: string | null
           q9?: string | null
           updated_at?: string
-        }
-        Relationships: []
-      }
-      user_routines: {
-        Row: {
-          color: string | null
-          created_at: string | null
-          days_of_week: number[]
-          end_time: string
-          id: string
-          is_flexible: boolean | null
-          name: string
-          routine_type: string
-          start_time: string
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          color?: string | null
-          created_at?: string | null
-          days_of_week: number[]
-          end_time: string
-          id?: string
-          is_flexible?: boolean | null
-          name: string
-          routine_type?: string
-          start_time: string
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          color?: string | null
-          created_at?: string | null
-          days_of_week?: number[]
-          end_time?: string
-          id?: string
-          is_flexible?: boolean | null
-          name?: string
-          routine_type?: string
-          start_time?: string
-          updated_at?: string | null
-          user_id?: string
         }
         Relationships: []
       }

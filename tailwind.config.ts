@@ -60,21 +60,11 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        annia: {
-          navy: '#0E1A2B',
-          'navy-light': '#1A2B3C',
-          olive: '#6B7C3A',
-          'olive-50': 'rgba(107, 124, 58, 0.5)',
-          terracotta: '#C4754B',
-        },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-        'annia-sm': '8px',
-        'annia-md': '12px',
-        'annia-lg': '16px',
       },
       keyframes: {
         "accordion-down": {

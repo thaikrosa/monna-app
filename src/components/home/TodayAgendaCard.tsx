@@ -1,4 +1,4 @@
-import { CalendarBlank, CaretRight } from '@phosphor-icons/react';
+import { CalendarBlank, CaretRight, Plus } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { AgendaEvent } from '@/types/home-dashboard';
 import { useNavigate } from 'react-router-dom';
@@ -14,24 +14,34 @@ export function TodayAgendaCard({ events, isTeaser = false }: TodayAgendaCardPro
 
   if (events.length === 0) {
     return (
-      <div className="bg-card border border-border/60 rounded-lg p-4">
+      <div className="bg-card border border-border/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <CalendarBlank weight="regular" className="w-5 h-5 text-muted-foreground" />
-            <h3 className="font-semibold text-card-foreground">Agenda de hoje</h3>
+            <h3 className="text-lg font-semibold text-foreground">Agenda de hoje</h3>
           </div>
         </div>
-        <p className="text-sm text-muted-foreground">Nenhum evento agendado.</p>
+        <div className="text-center py-6">
+          <p className="text-lg font-medium text-foreground">Seu dia está livre ✨</p>
+          <p className="text-sm text-muted-foreground mt-1">Que tal planejar algo especial?</p>
+          <Button 
+            onClick={() => navigate('/lembretes')}
+            className="mt-4 bg-primary text-primary-foreground rounded-full px-5"
+          >
+            <Plus weight="bold" className="w-4 h-4 mr-1" />
+            Adicionar evento
+          </Button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-card border border-border/60 rounded-lg p-4">
+    <div className="bg-card border border-border/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <CalendarBlank weight="regular" className="w-5 h-5 text-muted-foreground" />
-          <h3 className="font-semibold text-card-foreground">Agenda de hoje</h3>
+          <h3 className="text-lg font-semibold text-foreground">Agenda de hoje</h3>
         </div>
         <Button 
           variant="ghost" 
@@ -50,7 +60,7 @@ export function TodayAgendaCard({ events, isTeaser = false }: TodayAgendaCardPro
             <span className="text-sm font-medium text-muted-foreground w-16">
               {event.start_time}
             </span>
-            <span className="text-sm text-card-foreground">{event.title}</span>
+            <span className="text-sm text-foreground">{event.title}</span>
           </div>
         ))}
       </div>

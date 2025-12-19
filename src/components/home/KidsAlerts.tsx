@@ -1,4 +1,3 @@
-import { Baby } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { KidAlert } from '@/types/home-dashboard';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +5,15 @@ import { useNavigate } from 'react-router-dom';
 interface KidsAlertsProps {
   kids: KidAlert[];
 }
+
+const getAvatarColors = (index: number) => {
+  const colors = [
+    'bg-primary/10 text-primary',
+    'bg-secondary text-secondary-foreground', 
+    'bg-accent text-accent-foreground',
+  ];
+  return colors[index % colors.length];
+};
 
 export function KidsAlerts({ kids }: KidsAlertsProps) {
   const navigate = useNavigate();
@@ -17,16 +25,19 @@ export function KidsAlerts({ kids }: KidsAlertsProps) {
 
   return (
     <div className="space-y-3">
-      {displayKids.map((kid) => (
-        <div key={kid.id} className="bg-card border border-border/60 rounded-lg p-4">
+      {displayKids.map((kid, index) => (
+        <div 
+          key={kid.id} 
+          className="bg-card border border-border/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+        >
           <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <Baby weight="regular" className="w-5 h-5 text-primary" />
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${getAvatarColors(index)}`}>
+              <span className="font-semibold">{kid.child_name.charAt(0).toUpperCase()}</span>
             </div>
             
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <h4 className="font-semibold text-card-foreground">{kid.child_name}</h4>
+                <h4 className="text-lg font-semibold text-foreground">{kid.child_name}</h4>
                 <span className="text-xs text-muted-foreground">{kid.age_label}</span>
               </div>
               
@@ -42,7 +53,7 @@ export function KidsAlerts({ kids }: KidsAlertsProps) {
                       navigate('/filhos');
                     }
                   }}
-                  className="bg-annia-olive hover:bg-annia-olive-hover text-primary-foreground transition-colors duration-200"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200"
                 >
                   {kid.primaryCta.label}
                 </Button>

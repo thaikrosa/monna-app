@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { HomeDashboard } from '@/types/home-dashboard';
-import { useAuth } from '@/hooks/useAuth';
 
 function getGreetingByTime(): { title: string; insight: string; primaryLabel: string; primaryAction: "create_event" | "review_reminders"; secondaryLabel: string } {
   const hour = new Date().getHours();
@@ -91,132 +90,8 @@ function createMockDashboard(firstName?: string): HomeDashboard {
         }
       ]
     },
-    paywall: { is_subscriber: true }
+    paywall: { is_subscriber: false }
   };
-}
-
-export function useHomeDashboard() {
-  const { user } = useAuth();
-  
-  return useQuery({
-    queryKey: ['home-dashboard', user?.id],
-    queryFn: async (): Promise<HomeDashboard> => {
-      console.log('🔍 [1] Iniciando query... user:', user?.id);
-      
-      if (!user) {
-        console.log('🔍 [1.1] ❌ User não existe, lançando erro');
-        throw new Error('Not authenticated');
-      }
-
-      console.log('🔍 [2] Buscando subscription...');
-      const { data: subscription, error: subError } = await supabase
-        .from('subscriptions')
-        .select('status')
-        .eq('user_id', user.id)
-        .maybeSingle();
-      console.log('🔍 [3] Subscription resultado:', { subscription, error: subError });
-
-      const isSubscriber = subscription?.status === 'active';
-      console.log('🔍 [4] isSubscriber:', isSubscriber);
-
-      console.log('🔍 [5] Buscando profile...');
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('first_name, nickname')
-        .eq('id', user.id)
-        .maybeSingle();
-      console.log('🔍 [6] Profile resultado:', { profile, error: profileError });
-
-      console.log('🔍 [7] Tentando RPC get_home_dashboard...');
-      try {
-        const { data: rpcData, error: rpcError } = await supabase.rpc('get_home_dashboard');
-        console.log('🔍 [8] RPC resultado:', { rpcData, rpcError });
-        
-        if (!rpcError && rpcData && typeof rpcData === 'object') {
-          console.log('🔍 [9] ✅ RPC funcionou, retornando dados');
-          const dashboardData = rpcData as unknown as HomeDashboard;
-          return {
-            ...dashboardData,
-            paywall: { is_subscriber: isSubscriber }
-          };
-        }
-      } catch (e) {
-        console.log('🔍 [8.1] ⚠️ RPC falhou, usando mock:', e);
-      }
-
-      console.log('🔍 [10] Criando mock dashboard...');
-      const mockData = createMockDashboard(profile?.nickname || profile?.first_name);
-      
-      console.log('🔍 [11] Buscando today_reminders...');
-      const { data: reminders, error: remError } = await supabase
-        .from('today_reminders')
-        .select('*')
-        .limit(5);
-      console.log('🔍 [12] Reminders:', { reminders, error: remError });
-
-      console.log('🔍 [13] Buscando shopping_items...');
-      const { data: shoppingItems, error: shopError } = await supabase
-        .from('v_shopping_items_with_frequency')
-        .select('*')
-        .eq('is_checked', false);
-      console.log('🔍 [14] Shopping:', { shoppingItems, error: shopError });
-
-      console.log('🔍 [15] Buscando children...');
-      const { data: children, error: childError } = await supabase
-        .from('children')
-        .select('*')
-        .limit(2);
-      console.log('🔍 [16] Children:', { children, error: childError });
-
-      // Merge real data into mock
-      if (reminders && reminders.length > 0) {
-        mockData.today.reminders = reminders.slice(0, 3).map(r => ({
-          id: r.id || '',
-          title: r.title || '',
-          priority: r.priority || 'normal',
-          is_overdue: false
-        }));
-        mockData.today.urgent_overdue = reminders
-          .filter(r => r.occurrence_status === 'missed')
-          .slice(0, 2)
-          .map(r => ({
-            id: r.id || '',
-            title: r.title || '',
-            days_overdue: 1
-          }));
-      }
-
-      if (shoppingItems) {
-        mockData.today.shopping = {
-          total_items: shoppingItems.length,
-          top_items: shoppingItems.slice(0, 3).map(i => ({
-            id: i.id || '',
-            name: i.name || '',
-            qty: i.quantity_text
-          }))
-        };
-      }
-
-      if (children && children.length > 0) {
-        mockData.today.kids = children.slice(0, 2).map(c => ({
-          id: c.id,
-          child_name: c.nickname || c.name,
-          age_label: calculateAge(c.birth_date),
-          message: 'Eu lembrei: confira os próximos marcos de desenvolvimento.',
-          primaryCta: { label: 'Ver perfil', action: 'open_child' as const },
-          secondaryCta: { label: 'Depois', action: 'dismiss' as const }
-        }));
-      }
-
-      console.log('🔍 [17] ✅ Retornando dados finais');
-      return {
-        ...mockData,
-        paywall: { is_subscriber: isSubscriber }
-      };
-    },
-    enabled: !!user,
-    staleTime: 2 * 60 * 1000, // 2 minutes
-  });
 }
 
 function calculateAge(birthDate: string): string {
@@ -229,4 +104,95 @@ function calculateAge(birthDate: string): string {
     return `${months} ${months === 1 ? 'mês' : 'meses'}`;
   }
   return `${years} ${years === 1 ? 'ano' : 'anos'}`;
+}
+
+export function useHomeDashboard() {
+  return useQuery({
+    queryKey: ['home-dashboard'],
+    queryFn: async (): Promise<HomeDashboard> => {
+      // 1. Pegar usuário logado
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      // 2. Verificar assinatura
+      const { data: subscription } = await supabase
+        .from('subscriptions')
+        .select('status')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      const isSubscriber = subscription?.status === 'active';
+
+      // 3. Buscar profile para o nome
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('first_name, nickname')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      const displayName = profile?.nickname || profile?.first_name;
+
+      // 4. Se NÃO é assinante → retorna MOCKUP
+      if (!isSubscriber) {
+        const mockData = createMockDashboard(displayName);
+        return {
+          ...mockData,
+          paywall: { is_subscriber: false }
+        };
+      }
+
+      // 5. Se É assinante → busca dados REAIS em paralelo
+      const [remindersResult, shoppingResult, childrenResult] = await Promise.all([
+        supabase.from('today_reminders').select('*').limit(5),
+        supabase.from('v_shopping_items_with_frequency').select('*').eq('is_checked', false),
+        supabase.from('children').select('*').limit(2)
+      ]);
+
+      // 6. Montar resposta com dados reais
+      const greetingData = getGreetingByTime();
+
+      return {
+        profile: { first_name: profile?.first_name, nickname: profile?.nickname },
+        greeting: {
+          title: `${greetingData.title}, ${displayName || 'você'}.`,
+          insight: greetingData.insight,
+          microcopy: 'Atualizado agora',
+          primaryCta: { label: greetingData.primaryLabel, action: greetingData.primaryAction },
+          secondaryCta: { label: greetingData.secondaryLabel, action: 'adjust' }
+        },
+        today: {
+          agenda: [], // TODO: buscar de calendar_events quando existir
+          reminders: (remindersResult.data || []).slice(0, 3).map(r => ({
+            id: r.id || '',
+            title: r.title || '',
+            priority: r.priority || 'normal',
+            is_overdue: r.occurrence_status === 'missed'
+          })),
+          urgent_overdue: (remindersResult.data || [])
+            .filter(r => r.occurrence_status === 'missed')
+            .slice(0, 2)
+            .map(r => ({ id: r.id || '', title: r.title || '', days_overdue: 1 })),
+          shopping: {
+            total_items: shoppingResult.data?.length || 0,
+            top_items: (shoppingResult.data || []).slice(0, 3).map(i => ({
+              id: i.id || '',
+              name: i.name || '',
+              qty: i.quantity_text
+            }))
+          },
+          kids: (childrenResult.data || []).slice(0, 2).map(c => ({
+            id: c.id,
+            child_name: c.nickname || c.name,
+            age_label: calculateAge(c.birth_date),
+            message: 'Confira os próximos marcos de desenvolvimento.',
+            primaryCta: { label: 'Ver perfil', action: 'open_child' as const },
+            secondaryCta: { label: 'Depois', action: 'dismiss' as const }
+          })),
+          annia_moment: []
+        },
+        paywall: { is_subscriber: true }
+      };
+    },
+    staleTime: 2 * 60 * 1000,
+  });
 }

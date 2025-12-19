@@ -49,9 +49,18 @@ export default function Home() {
     );
   }
 
+  // Safety check for incomplete data
+  if (!data.today || !data.greeting || !data.paywall) {
+    return (
+      <div className="max-w-2xl mx-auto pb-20">
+        <HomeSkeleton />
+      </div>
+    );
+  }
+
   const { greeting, today, paywall } = data;
   const isSubscriber = paywall.is_subscriber;
-  const displayName = data.profile.nickname || data.profile.first_name || 'você';
+  const displayName = data.profile?.nickname || data.profile?.first_name || 'você';
 
   // Check if this is first access (no data at all)
   const isEmpty = today.agenda.length === 0 && today.reminders.length === 0 && today.kids.length === 0;

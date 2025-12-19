@@ -29,11 +29,11 @@ export function TodayRemindersCard({ reminders, isTeaser = false }: TodayReminde
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Bell weight="regular" className="w-5 h-5 text-muted-foreground" />
-            <h3 className="text-lg font-semibold text-foreground">Lembretes de hoje</h3>
+            <h3 className="text-base font-medium text-foreground">Lembretes de hoje</h3>
           </div>
         </div>
         <div className="text-center py-6">
-          <p className="text-lg font-medium text-foreground">Tudo em dia! 🎯</p>
+          <p className="text-base font-medium text-foreground">Tudo em dia</p>
           <p className="text-sm text-muted-foreground mt-1">Nenhum lembrete pendente</p>
         </div>
       </div>
@@ -45,7 +45,7 @@ export function TodayRemindersCard({ reminders, isTeaser = false }: TodayReminde
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Bell weight="regular" className="w-5 h-5 text-muted-foreground" />
-          <h3 className="text-lg font-semibold text-foreground">Lembretes de hoje</h3>
+          <h3 className="text-base font-medium text-foreground">Lembretes de hoje</h3>
         </div>
         <Button 
           variant="ghost" 

@@ -22,7 +22,7 @@ export function ShoppingCard({ shopping }: ShoppingCardProps) {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <ShoppingCart weight="regular" className="w-5 h-5 text-muted-foreground" />
-            <h3 className="text-lg font-semibold text-foreground">Lista de compras</h3>
+            <h3 className="text-base font-medium text-foreground">Lista de compras</h3>
           </div>
         </div>
         

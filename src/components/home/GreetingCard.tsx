@@ -1,4 +1,4 @@
-import { CalendarPlus, Gear } from '@phosphor-icons/react';
+import { CalendarPlus } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { GreetingData } from '@/types/home-dashboard';
 
@@ -19,16 +19,18 @@ export function GreetingCard({ greeting, displayName, onPrimaryCta, onSecondaryC
   const title = rawTitle.replace(/,\s*,/g, ',').replace(/\?,\s*/g, '? ');
 
   return (
-    <div className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground p-6 rounded-3xl shadow-lg">
-      <h1 className="text-xl font-bold mb-2">{title}</h1>
-      <p className="text-primary-foreground/90 text-sm mb-4">
-        {greeting.insight}
-      </p>
+    <div className="bg-card border border-border rounded-3xl p-6 shadow-sm">
+      <div className="bg-primary/5 rounded-2xl p-4 mb-4">
+        <h1 className="text-xl font-semibold text-foreground">{title}</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          {greeting.insight}
+        </p>
+      </div>
       
-      <div className="flex flex-col gap-2">
+      <div className="flex gap-3">
         <Button 
           onClick={onPrimaryCta}
-          className="w-full bg-primary-foreground/20 hover:bg-primary-foreground/30 text-primary-foreground transition-colors duration-200"
+          className="bg-primary text-primary-foreground rounded-full px-5"
         >
           <CalendarPlus weight="regular" className="w-4 h-4 mr-2" />
           Revisar lembretes
@@ -38,17 +40,16 @@ export function GreetingCard({ greeting, displayName, onPrimaryCta, onSecondaryC
           <Button 
             variant="ghost" 
             onClick={onSecondaryCta}
-            className="w-full text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 transition-colors duration-200"
+            className="text-muted-foreground hover:text-foreground"
           >
-            <Gear weight="regular" className="w-4 h-4 mr-2" />
             {greeting.secondaryCta.label}
           </Button>
         )}
       </div>
       
-      <p className="text-xs text-primary-foreground/60 mt-4">
+      <span className="text-xs text-muted-foreground/60 mt-4 block">
         {greeting.microcopy}
-      </p>
+      </span>
     </div>
   );
 }

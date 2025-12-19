@@ -31,18 +31,18 @@ export function KidsAlerts({ kids }: KidsAlertsProps) {
           className="bg-card border border-border/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
         >
           <div className="flex items-start gap-3">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${getAvatarColors(index)}`}>
-              <span className="font-semibold">{kid.child_name.charAt(0).toUpperCase()}</span>
+            <div className={`w-9 h-9 rounded-full flex items-center justify-center ${getAvatarColors(index)}`}>
+              <span className="text-sm font-semibold">{kid.child_name.charAt(0).toUpperCase()}</span>
             </div>
             
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <h4 className="text-lg font-semibold text-foreground">{kid.child_name}</h4>
+                <h4 className="text-base font-medium text-foreground">{kid.child_name}</h4>
                 <span className="text-xs text-muted-foreground">{kid.age_label}</span>
               </div>
               
               <p className="text-sm text-muted-foreground mb-3">
-                {kid.message}
+                Próximos marcos de desenvolvimento
               </p>
               
               <div className="flex gap-2">

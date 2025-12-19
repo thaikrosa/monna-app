@@ -18,11 +18,11 @@ export function TodayAgendaCard({ events, isTeaser = false }: TodayAgendaCardPro
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <CalendarBlank weight="regular" className="w-5 h-5 text-muted-foreground" />
-            <h3 className="text-lg font-semibold text-foreground">Agenda de hoje</h3>
+            <h3 className="text-base font-medium text-foreground">Agenda de hoje</h3>
           </div>
         </div>
         <div className="text-center py-6">
-          <p className="text-lg font-medium text-foreground">Seu dia está livre ✨</p>
+          <p className="text-base font-medium text-foreground">Seu dia está livre</p>
           <p className="text-sm text-muted-foreground mt-1">Que tal planejar algo especial?</p>
           <Button 
             onClick={() => navigate('/lembretes')}
@@ -39,9 +39,9 @@ export function TodayAgendaCard({ events, isTeaser = false }: TodayAgendaCardPro
   return (
     <div className="bg-card border border-border/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300">
       <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <CalendarBlank weight="regular" className="w-5 h-5 text-muted-foreground" />
-          <h3 className="text-lg font-semibold text-foreground">Agenda de hoje</h3>
+          <div className="flex items-center gap-2">
+            <CalendarBlank weight="regular" className="w-5 h-5 text-muted-foreground" />
+            <h3 className="text-base font-medium text-foreground">Agenda de hoje</h3>
         </div>
         <Button 
           variant="ghost" 

@@ -7,7 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AppLayout } from "@/layouts/AppLayout";
 import Auth from "./pages/Auth";
-import Dashboard from "./pages/Dashboard";
+import Home from "./pages/Home";
 import ShoppingList from "./pages/ShoppingList";
 import SupportNetwork from "./pages/SupportNetwork";
 import MyChildren from "./pages/MyChildren";
@@ -37,7 +37,7 @@ const App = () => (
             
             {/* Protected routes */}
             <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/" element={<Home />} />
               <Route path="/lista" element={<ShoppingList />} />
               <Route path="/rede-apoio" element={<SupportNetwork />} />
               <Route path="/filhos" element={<MyChildren />} />

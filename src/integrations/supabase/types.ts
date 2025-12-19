@@ -14,6 +14,96 @@ export type Database = {
   }
   public: {
     Tables: {
+      calendar_connections: {
+        Row: {
+          created_at: string
+          external_calendar_id: string
+          id: string
+          last_error: string | null
+          last_synced_at: string | null
+          provider: string
+          scopes: string[]
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          external_calendar_id?: string
+          id?: string
+          last_error?: string | null
+          last_synced_at?: string | null
+          provider?: string
+          scopes?: string[]
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          external_calendar_id?: string
+          id?: string
+          last_error?: string | null
+          last_synced_at?: string | null
+          provider?: string
+          scopes?: string[]
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      calendar_events: {
+        Row: {
+          created_at: string
+          ends_at: string
+          external_calendar_id: string
+          external_event_id: string
+          id: string
+          is_all_day: boolean
+          location: string | null
+          provider: string
+          starts_at: string
+          status: string
+          title: string | null
+          updated_at: string
+          updated_from_provider_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          external_calendar_id?: string
+          external_event_id: string
+          id?: string
+          is_all_day?: boolean
+          location?: string | null
+          provider?: string
+          starts_at: string
+          status?: string
+          title?: string | null
+          updated_at?: string
+          updated_from_provider_at?: string | null
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          external_calendar_id?: string
+          external_event_id?: string
+          id?: string
+          is_all_day?: boolean
+          location?: string | null
+          provider?: string
+          starts_at?: string
+          status?: string
+          title?: string | null
+          updated_at?: string
+          updated_from_provider_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       children: {
         Row: {
           accepted_health_disclaimer: boolean | null
@@ -119,34 +209,136 @@ export type Database = {
         }
         Relationships: []
       }
+      free_time_slots: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          duration_min: number
+          ends_at: string
+          id: string
+          source: string
+          starts_at: string
+          user_id: string
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          duration_min: number
+          ends_at: string
+          id?: string
+          source?: string
+          starts_at: string
+          user_id?: string
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          duration_min?: number
+          ends_at?: string
+          id?: string
+          source?: string
+          starts_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      onboarding_progress: {
+        Row: {
+          created_at: string | null
+          id: string
+          kickstart_completed_at: string | null
+          last_prompt_shown_at: string | null
+          prompts_dismissed: number | null
+          step_calendar: boolean | null
+          step_children: boolean | null
+          step_desires: boolean | null
+          step_feelings: boolean | null
+          step_routines: boolean | null
+          step_support_areas: boolean | null
+          step_welcome: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          kickstart_completed_at?: string | null
+          last_prompt_shown_at?: string | null
+          prompts_dismissed?: number | null
+          step_calendar?: boolean | null
+          step_children?: boolean | null
+          step_desires?: boolean | null
+          step_feelings?: boolean | null
+          step_routines?: boolean | null
+          step_support_areas?: boolean | null
+          step_welcome?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          kickstart_completed_at?: string | null
+          last_prompt_shown_at?: string | null
+          prompts_dismissed?: number | null
+          step_calendar?: boolean | null
+          step_children?: boolean | null
+          step_desires?: boolean | null
+          step_feelings?: boolean | null
+          step_routines?: boolean | null
+          step_support_areas?: boolean | null
+          step_welcome?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
+          city: string | null
+          communication_style: string | null
           created_at: string | null
           first_name: string | null
           id: string
           last_name: string | null
           nickname: string | null
+          onboarding_completed: boolean | null
+          onboarding_completed_at: string | null
+          state: string | null
+          timezone: string | null
           updated_at: string | null
           whatsapp: string | null
         }
         Insert: {
           avatar_url?: string | null
+          city?: string | null
+          communication_style?: string | null
           created_at?: string | null
           first_name?: string | null
           id: string
           last_name?: string | null
           nickname?: string | null
+          onboarding_completed?: boolean | null
+          onboarding_completed_at?: string | null
+          state?: string | null
+          timezone?: string | null
           updated_at?: string | null
           whatsapp?: string | null
         }
         Update: {
           avatar_url?: string | null
+          city?: string | null
+          communication_style?: string | null
           created_at?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
           nickname?: string | null
+          onboarding_completed?: boolean | null
+          onboarding_completed_at?: string | null
+          state?: string | null
+          timezone?: string | null
           updated_at?: string | null
           whatsapp?: string | null
         }
@@ -464,6 +656,41 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          plan: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          plan?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          plan?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       survey_responses: {
         Row: {
           age: string | null
@@ -569,6 +796,48 @@ export type Database = {
         }
         Relationships: []
       }
+      user_routines: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          days_of_week: number[]
+          end_time: string
+          id: string
+          is_flexible: boolean | null
+          name: string
+          routine_type: string
+          start_time: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          days_of_week: number[]
+          end_time: string
+          id?: string
+          is_flexible?: boolean | null
+          name: string
+          routine_type?: string
+          start_time: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          days_of_week?: number[]
+          end_time?: string
+          id?: string
+          is_flexible?: boolean | null
+          name?: string
+          routine_type?: string
+          start_time?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       today_reminders: {
@@ -641,6 +910,7 @@ export type Database = {
         Returns: number
       }
       get_complete_schema: { Args: never; Returns: Json }
+      get_home_dashboard: { Args: never; Returns: Json }
       get_pending_notifications: {
         Args: { p_minutes_ahead?: number }
         Returns: {

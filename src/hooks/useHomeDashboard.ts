@@ -96,7 +96,7 @@ function createMockDashboard(firstName?: string): HomeDashboard {
 }
 
 export function useHomeDashboard() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   
   return useQuery({
     queryKey: ['home-dashboard', user?.id],
@@ -199,7 +199,7 @@ export function useHomeDashboard() {
         paywall: { is_subscriber: isSubscriber }
       };
     },
-    enabled: !!user,
+    enabled: !!user && !authLoading,
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 }

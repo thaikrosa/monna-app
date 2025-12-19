@@ -1,50 +1,35 @@
-import { useState } from 'react';
-import { useHomeDashboard } from '@/hooks/useHomeDashboard';
-import { useAuth } from '@/hooks/useAuth';
-import { GreetingCard } from '@/components/home/GreetingCard';
-import { TodayAgendaCard } from '@/components/home/TodayAgendaCard';
-import { TodayRemindersCard } from '@/components/home/TodayRemindersCard';
-import { UrgentRemindersCard } from '@/components/home/UrgentRemindersCard';
-import { ShoppingCard } from '@/components/home/ShoppingCard';
-import { KidsAlerts } from '@/components/home/KidsAlerts';
-import { AnniaMoment } from '@/components/home/AnniaMoment';
-import { PaywallTeaser } from '@/components/home/PaywallTeaser';
-import { BottomBar } from '@/components/home/BottomBar';
-import { ConnectCalendarSheet } from '@/components/home/ConnectCalendarSheet';
-import { HomeSkeleton } from '@/components/home/HomeSkeleton';
-import { HomeError } from '@/components/home/HomeError';
-import { HomeEmpty } from '@/components/home/HomeEmpty';
+import { useState } from "react";
+import { useHomeDashboard } from "@/hooks/useHomeDashboard";
+import { GreetingCard } from "@/components/home/GreetingCard";
+import { TodayAgendaCard } from "@/components/home/TodayAgendaCard";
+import { TodayRemindersCard } from "@/components/home/TodayRemindersCard";
+import { UrgentRemindersCard } from "@/components/home/UrgentRemindersCard";
+import { ShoppingCard } from "@/components/home/ShoppingCard";
+import { KidsAlerts } from "@/components/home/KidsAlerts";
+import { AnniaMoment } from "@/components/home/AnniaMoment";
+import { PaywallTeaser } from "@/components/home/PaywallTeaser";
+import { BottomBar } from "@/components/home/BottomBar";
+import { ConnectCalendarSheet } from "@/components/home/ConnectCalendarSheet";
+import { HomeSkeleton } from "@/components/home/HomeSkeleton";
+import { HomeError } from "@/components/home/HomeError";
+import { HomeEmpty } from "@/components/home/HomeEmpty";
 
 export default function Home() {
-  const { user, loading: authLoading } = useAuth();
   const { data, isLoading, isError, refetch } = useHomeDashboard();
+  console.log("🏠 Home render:", {
+    isLoading,
+    isError,
+    hasData: !!data,
+    data: data,
+  });
   const [isCalendarSheetOpen, setIsCalendarSheetOpen] = useState(false);
 
   const handlePaywall = () => {
     // Placeholder - open paywall/subscription flow
-    console.log('Open paywall');
+    console.log("Open paywall");
   };
 
-  // Show skeleton while auth is loading
-  if (authLoading) {
-    return (
-      <div className="max-w-2xl mx-auto pb-20">
-        <HomeSkeleton />
-      </div>
-    );
-  }
-
-  // Show skeleton if no user (shouldn't happen due to ProtectedRoute)
-  if (!user) {
-    return (
-      <div className="max-w-2xl mx-auto pb-20">
-        <HomeSkeleton />
-      </div>
-    );
-  }
-
-  // Show skeleton only when actively fetching data for the first time
-  if (isLoading && !data) {
+  if (isLoading) {
     return (
       <div className="max-w-2xl mx-auto pb-20">
         <HomeSkeleton />
@@ -70,18 +55,9 @@ export default function Home() {
     );
   }
 
-  // Safety check for incomplete data
-  if (!data.today || !data.greeting || !data.paywall) {
-    return (
-      <div className="max-w-2xl mx-auto pb-20">
-        <HomeSkeleton />
-      </div>
-    );
-  }
-
   const { greeting, today, paywall } = data;
   const isSubscriber = paywall.is_subscriber;
-  const displayName = data.profile?.nickname || data.profile?.first_name || 'você';
+  const displayName = data.profile.nickname || data.profile.first_name || "você";
 
   // Check if this is first access (no data at all)
   const isEmpty = today.agenda.length === 0 && today.reminders.length === 0 && today.kids.length === 0;
@@ -89,7 +65,7 @@ export default function Home() {
   if (isEmpty) {
     return (
       <div className="max-w-2xl mx-auto pb-20">
-        <GreetingCard 
+        <GreetingCard
           greeting={greeting}
           displayName={displayName}
           onPrimaryCta={() => setIsCalendarSheetOpen(true)}
@@ -107,11 +83,11 @@ export default function Home() {
   return (
     <div className="max-w-2xl mx-auto pb-20 space-y-4 animate-fade-in">
       {/* A) Saudação Inteligente */}
-      <GreetingCard 
+      <GreetingCard
         greeting={greeting}
         displayName={displayName}
         onPrimaryCta={() => {
-          if (greeting.primaryCta.action === 'open_paywall') {
+          if (greeting.primaryCta.action === "open_paywall") {
             handlePaywall();
           } else {
             setIsCalendarSheetOpen(true);
@@ -132,11 +108,7 @@ export default function Home() {
       <KidsAlerts kids={today.kids} />
 
       {/* E) Momento com a Annia */}
-      <AnniaMoment 
-        suggestions={today.annia_moment} 
-        isSubscriber={isSubscriber}
-        onPaywall={handlePaywall}
-      />
+      <AnniaMoment suggestions={today.annia_moment} isSubscriber={isSubscriber} onPaywall={handlePaywall} />
 
       {/* Paywall teaser for non-subscribers */}
       {!isSubscriber && <PaywallTeaser onSubscribe={handlePaywall} />}

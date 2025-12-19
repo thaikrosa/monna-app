@@ -24,6 +24,7 @@ export default {
         foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
+          hover: "hsl(var(--primary-hover))",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
@@ -49,6 +50,12 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        // Annia-specific colors
+        annia: {
+          navy: "hsl(var(--annia-navy))",
+          olive: "hsl(var(--annia-olive))",
+          "olive-hover": "hsl(var(--annia-olive-hover))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

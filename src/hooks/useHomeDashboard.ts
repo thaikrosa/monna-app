@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { HomeDashboard } from '@/types/home-dashboard';
+import { useAuth } from '@/hooks/useAuth';
 
 function getGreetingByTime(): { title: string; insight: string; primaryLabel: string; primaryAction: "create_event" | "review_reminders"; secondaryLabel: string } {
   const hour = new Date().getHours();
@@ -95,11 +96,11 @@ function createMockDashboard(firstName?: string): HomeDashboard {
 }
 
 export function useHomeDashboard() {
+  const { user } = useAuth();
+  
   return useQuery({
-    queryKey: ['home-dashboard'],
+    queryKey: ['home-dashboard', user?.id],
     queryFn: async (): Promise<HomeDashboard> => {
-      // First check subscription status
-      const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
       // Check subscription
@@ -198,6 +199,7 @@ export function useHomeDashboard() {
         paywall: { is_subscriber: isSubscriber }
       };
     },
+    enabled: !!user,
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 }

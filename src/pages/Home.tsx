@@ -16,7 +16,7 @@ import { HomeError } from '@/components/home/HomeError';
 import { HomeEmpty } from '@/components/home/HomeEmpty';
 
 export default function Home() {
-  const { loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { data, isLoading, isError, refetch } = useHomeDashboard();
   const [isCalendarSheetOpen, setIsCalendarSheetOpen] = useState(false);
 
@@ -25,7 +25,26 @@ export default function Home() {
     console.log('Open paywall');
   };
 
-  if (authLoading || isLoading) {
+  // Show skeleton while auth is loading
+  if (authLoading) {
+    return (
+      <div className="max-w-2xl mx-auto pb-20">
+        <HomeSkeleton />
+      </div>
+    );
+  }
+
+  // Show skeleton if no user (shouldn't happen due to ProtectedRoute)
+  if (!user) {
+    return (
+      <div className="max-w-2xl mx-auto pb-20">
+        <HomeSkeleton />
+      </div>
+    );
+  }
+
+  // Show skeleton only when actively fetching data for the first time
+  if (isLoading && !data) {
     return (
       <div className="max-w-2xl mx-auto pb-20">
         <HomeSkeleton />

@@ -18,31 +18,34 @@ export function TodayRemindersCard({ reminders, isTeaser = false }: TodayReminde
       return <Badge variant="destructive" className="text-xs">Urgente</Badge>;
     }
     if (priority === 'important') {
-      return <Badge className="bg-amber-500/20 text-amber-700 border-amber-500/30 text-xs">Importante</Badge>;
+      return <Badge className="bg-accent text-accent-foreground text-xs">Importante</Badge>;
     }
     return null;
   };
 
   if (reminders.length === 0) {
     return (
-      <div className="bg-card border border-border/60 rounded-lg p-4">
+      <div className="bg-card border border-border/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Bell weight="regular" className="w-5 h-5 text-muted-foreground" />
-            <h3 className="font-semibold text-card-foreground">Lembretes de hoje</h3>
+            <h3 className="text-lg font-semibold text-foreground">Lembretes de hoje</h3>
           </div>
         </div>
-        <p className="text-sm text-muted-foreground">Mente livre hoje.</p>
+        <div className="text-center py-6">
+          <p className="text-lg font-medium text-foreground">Tudo em dia! 🎯</p>
+          <p className="text-sm text-muted-foreground mt-1">Nenhum lembrete pendente</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-card border border-border/60 rounded-lg p-4">
+    <div className="bg-card border border-border/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Bell weight="regular" className="w-5 h-5 text-muted-foreground" />
-          <h3 className="font-semibold text-card-foreground">Lembretes de hoje</h3>
+          <h3 className="text-lg font-semibold text-foreground">Lembretes de hoje</h3>
         </div>
         <Button 
           variant="ghost" 
@@ -58,7 +61,7 @@ export function TodayRemindersCard({ reminders, isTeaser = false }: TodayReminde
       <div className="space-y-2">
         {displayReminders.map((reminder) => (
           <div key={reminder.id} className="flex items-center justify-between py-2 border-b border-border/40 last:border-0">
-            <span className="text-sm text-card-foreground">{reminder.title}</span>
+            <span className="text-sm text-foreground">{reminder.title}</span>
             {getPriorityBadge(reminder.priority)}
           </div>
         ))}

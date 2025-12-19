@@ -81,7 +81,7 @@ export default function Home() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto pb-20 space-y-4 animate-fade-in">
+    <div className="max-w-2xl mx-auto pb-20 space-y-5 animate-fade-in">
       {/* A) Saudação Inteligente */}
       <GreetingCard
         greeting={greeting}

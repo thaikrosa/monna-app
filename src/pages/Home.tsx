@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useHomeDashboard } from '@/hooks/useHomeDashboard';
+import { useAuth } from '@/hooks/useAuth';
 import { GreetingCard } from '@/components/home/GreetingCard';
 import { TodayAgendaCard } from '@/components/home/TodayAgendaCard';
 import { TodayRemindersCard } from '@/components/home/TodayRemindersCard';
@@ -15,6 +16,7 @@ import { HomeError } from '@/components/home/HomeError';
 import { HomeEmpty } from '@/components/home/HomeEmpty';
 
 export default function Home() {
+  const { loading: authLoading } = useAuth();
   const { data, isLoading, isError, refetch } = useHomeDashboard();
   const [isCalendarSheetOpen, setIsCalendarSheetOpen] = useState(false);
 
@@ -23,7 +25,7 @@ export default function Home() {
     console.log('Open paywall');
   };
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
       <div className="max-w-2xl mx-auto pb-20">
         <HomeSkeleton />

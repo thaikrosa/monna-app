@@ -12,6 +12,8 @@ import ShoppingList from "./pages/ShoppingList";
 import SupportNetwork from "./pages/SupportNetwork";
 import MyChildren from "./pages/MyChildren";
 import Reminders from "./pages/Reminders";
+import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 import Theme from "./pages/Theme";
 import NotFound from "./pages/NotFound";
 
@@ -42,6 +44,8 @@ const App = () => (
               <Route path="/rede-apoio" element={<SupportNetwork />} />
               <Route path="/filhos" element={<MyChildren />} />
               <Route path="/lembretes" element={<Reminders />} />
+              <Route path="/perfil" element={<Profile />} />
+              <Route path="/configuracoes" element={<Settings />} />
               <Route path="/theme" element={<Theme />} />
             </Route>
             

@@ -1,4 +1,4 @@
-import { Plus, CalendarBlank, ShoppingCart, ChatCircle } from '@phosphor-icons/react';
+import { Plus, CalendarBlank, ShoppingCart, House } from '@phosphor-icons/react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 export function BottomBar() {
@@ -6,10 +6,10 @@ export function BottomBar() {
   const location = useLocation();
 
   const navItems = [
-    { icon: Plus, path: '/lembretes', action: 'add' },
-    { icon: CalendarBlank, path: '/lembretes' },
-    { icon: ShoppingCart, path: '/lista' },
-    { icon: ChatCircle, path: '/', action: 'chat' },
+    { icon: House, path: '/', label: 'Home' },
+    { icon: CalendarBlank, path: '/lembretes', label: 'Lembretes' },
+    { icon: ShoppingCart, path: '/lista', label: 'Compras' },
+    { icon: Plus, path: '/lembretes', action: 'add', label: 'Novo' },
   ];
 
   const handleClick = (item: typeof navItems[0]) => {

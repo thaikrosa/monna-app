@@ -169,12 +169,12 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
   const isDateInPast = selectedDateTime < new Date();
   const isValid = title.trim() && dueDate && !isDateInPast;
 
-  const inputClass = "bg-transparent border-0 border-b border-border/30 rounded-none focus:border-[#6B7F5E]/50 focus:ring-0 transition-colors duration-150 placeholder:text-muted-foreground/40";
+  const inputClass = "bg-transparent border-0 border-b border-border/30 rounded-none focus:border-primary/50 focus:ring-0 transition-colors duration-150 placeholder:text-muted-foreground/40";
 
   // Classes de seleção
-  const selectedClass = "bg-[#6B7F5E]/20 text-[#6B7F5E]";
-  const selectedSolidClass = "bg-[#6B7F5E] text-white"; // Para botões pequenos (pills, dias)
-  const urgentSelectedClass = "bg-[#C4754B]/20 text-[#C4754B]";
+  const selectedClass = "bg-primary/20 text-primary";
+  const selectedSolidClass = "bg-primary text-primary-foreground"; // Para botões pequenos (pills, dias)
+  const urgentSelectedClass = "bg-destructive/20 text-destructive";
   const unselectedClass = "bg-muted/20 text-muted-foreground hover:bg-muted/40";
 
   return (
@@ -234,7 +234,7 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
             
             {/* Mensagem de erro inline para data passada */}
             {isDateInPast && (
-              <p className="text-xs text-[#C4754B]/80 mt-2">
+              <p className="text-xs text-destructive/80 mt-2">
                 Essa data já passou. Escolhe um horário a partir de agora?
               </p>
             )}
@@ -351,7 +351,7 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
             {/* WhatsApp toggle */}
             <div className="flex items-center justify-between py-2">
               <div className="flex items-center gap-2">
-                <WhatsappLogo weight="thin" className="h-4 w-4 text-[#6B7F5E]/70" />
+                <WhatsappLogo weight="thin" className="h-4 w-4 text-primary/70" />
                 <Label htmlFor="whatsapp" className="text-sm text-muted-foreground">
                   Notificar por WhatsApp
                 </Label>
@@ -367,7 +367,7 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
             <div className="flex items-center justify-between py-2">
               <div>
                 <div className="flex items-center gap-2">
-                  <Phone weight="thin" className="h-4 w-4 text-[#6B7F5E]/70" />
+                  <Phone weight="thin" className="h-4 w-4 text-primary/70" />
                   <Label htmlFor="call" className="text-sm text-muted-foreground">
                     Garantir com ligação
                   </Label>
@@ -461,7 +461,7 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                       className={`
                         w-3 h-3 rounded-full transition-all duration-150
                         ${effortLevel >= level 
-                          ? 'bg-[#6B7F5E] scale-110' 
+                          ? 'bg-primary scale-110' 
                           : 'bg-muted-foreground/20 hover:bg-muted-foreground/40'}
                       `}
                     />

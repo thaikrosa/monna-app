@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_suggestions: {
+        Row: {
+          action_metadata: Json | null
+          created_at: string | null
+          description: string | null
+          expires_at: string | null
+          id: string
+          status: string | null
+          suggestion_type: string | null
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          action_metadata?: Json | null
+          created_at?: string | null
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          status?: string | null
+          suggestion_type?: string | null
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          action_metadata?: Json | null
+          created_at?: string | null
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          status?: string | null
+          suggestion_type?: string | null
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       calendar_connections: {
         Row: {
           created_at: string
@@ -167,6 +203,50 @@ export type Database = {
         }
         Relationships: []
       }
+      children_insights: {
+        Row: {
+          child_id: string | null
+          created_at: string | null
+          description: string | null
+          display_until: string | null
+          id: string
+          insight_type: string
+          is_urgent: boolean | null
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          child_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_until?: string | null
+          id?: string
+          insight_type: string
+          is_urgent?: boolean | null
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          child_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_until?: string | null
+          id?: string
+          insight_type?: string
+          is_urgent?: boolean | null
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "children_insights_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contacts: {
         Row: {
           alias: string
@@ -206,6 +286,36 @@ export type Database = {
           phone?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      daily_insights: {
+        Row: {
+          action_label: string | null
+          action_url: string | null
+          active_date: string
+          created_at: string | null
+          id: string
+          message: string
+          mood_type: string
+        }
+        Insert: {
+          action_label?: string | null
+          action_url?: string | null
+          active_date: string
+          created_at?: string | null
+          id?: string
+          message: string
+          mood_type: string
+        }
+        Update: {
+          action_label?: string | null
+          action_url?: string | null
+          active_date?: string
+          created_at?: string | null
+          id?: string
+          message?: string
+          mood_type?: string
         }
         Relationships: []
       }

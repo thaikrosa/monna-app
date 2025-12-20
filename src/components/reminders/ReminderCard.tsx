@@ -77,7 +77,7 @@ export function ReminderCard({ reminder, onComplete, onSnooze, onEdit, onDelete 
             {reminder.title}
           </h3>
           {reminder.call_guarantee && (
-            <Phone weight="thin" className="h-4 w-4 text-[#6B7F5E]/70 flex-shrink-0" />
+            <Phone weight="thin" className="h-4 w-4 text-primary/70 flex-shrink-0" />
           )}
           {isSnoozed && (
             <Clock weight="thin" className="h-4 w-4 text-muted-foreground/50 flex-shrink-0" />
@@ -89,8 +89,8 @@ export function ReminderCard({ reminder, onComplete, onSnooze, onEdit, onDelete 
           <span className={`
             text-[10px] px-1.5 py-0.5 rounded uppercase tracking-wider flex-shrink-0
             ${reminder.priority === 'urgent' 
-              ? 'bg-[#C4754B]/20 text-[#C4754B]' 
-              : 'bg-[#6B7F5E]/10 text-[#6B7F5E]/70'}
+              ? 'bg-destructive/20 text-destructive' 
+              : 'bg-primary/10 text-primary/70'}
           `}>
             {reminder.priority === 'urgent' ? 'Urgente' : 'Importante'}
           </span>

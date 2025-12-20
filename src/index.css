@@ -9,108 +9,114 @@
 
 @layer base {
   :root {
-    /* Annia Light Mode - Off-White institutional */
-    --background: 210 20% 96%; /* #F4F6F8 */
-    --foreground: 218 58% 11%; /* #0E1A2B */
+    /* Annia Light Mode - Warm off-white */
+    --background: 48 17% 93%; /* #F1F0EC */
+    --foreground: 215 51% 11%; /* #0E1A2B */
 
     --card: 0 0% 100%; /* White cards */
-    --card-foreground: 218 58% 11%;
+    --card-foreground: 215 51% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 218 58% 11%;
+    --popover-foreground: 215 51% 11%;
 
     /* Olive as primary */
-    --primary: 84 35% 35%; /* #6B7C3A */
-    --primary-hover: 84 35% 39%; /* #7F9249 */
+    --primary: 75 36% 36%; /* #6B7C3A */
+    --primary-hover: 75 36% 42%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 20% 92%;
-    --secondary-foreground: 218 58% 11%;
+    --secondary: 45 13% 89%; /* #E7E5DF - muted surface */
+    --secondary-foreground: 215 51% 11%;
 
-    --muted: 210 20% 88%;
-    --muted-foreground: 218 30% 45%;
+    --muted: 45 13% 89%; /* #E7E5DF */
+    --muted-foreground: 215 8% 47%; /* #6F7782 */
 
-    --accent: 84 35% 40%;
+    --accent: 75 36% 40%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 1 48% 42%; /* #9F3A38 */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 20% 85%;
-    --input: 210 20% 85%;
-    --ring: 84 35% 35%;
+    --warning: 37 50% 58%; /* #CBA15E */
+    --warning-foreground: 215 51% 11%;
+
+    --border: 50 6% 84%; /* #D8D7D2 */
+    --input: 50 6% 84%;
+    --ring: 75 36% 36%;
 
     --radius: 0.75rem;
 
     /* Annia-specific tokens */
-    --annia-navy: 218 58% 11%; /* #0E1A2B */
-    --annia-olive: 84 35% 35%; /* #6B7C3A */
-    --annia-olive-hover: 84 35% 39%; /* #7F9249 */
+    --annia-navy: 215 51% 11%; /* #0E1A2B */
+    --annia-olive: 75 36% 36%; /* #6B7C3A */
+    --annia-olive-hover: 75 36% 42%;
 
     /* Surface tokens */
     --surface-elevated: 0 0% 100%;
-    --shadow-soft: 218 58% 11%;
+    --shadow-soft: 215 51% 11%;
 
     /* Sidebar tokens */
-    --sidebar-background: 218 58% 11%;
+    --sidebar-background: 215 51% 11%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 84 35% 35%;
+    --sidebar-primary: 75 36% 36%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 218 50% 18%;
+    --sidebar-accent: 215 40% 18%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 218 50% 20%;
-    --sidebar-ring: 84 35% 35%;
+    --sidebar-border: 215 40% 20%;
+    --sidebar-ring: 75 36% 36%;
   }
 
   .dark {
     /* Dark mode - Navy base */
-    --background: 218 58% 11%; /* #0E1A2B */
-    --foreground: 210 40% 98%;
+    --background: 215 51% 11%; /* #0E1A2B */
+    --foreground: 48 17% 93%; /* #F1F0EC */
 
-    --card: 218 55% 14%;
-    --card-foreground: 210 40% 98%;
+    --card: 215 45% 14%;
+    --card-foreground: 48 17% 93%;
 
-    --popover: 218 55% 12%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 215 45% 12%;
+    --popover-foreground: 48 17% 93%;
 
-    --primary: 84 35% 39%; /* #7F9249 */
-    --primary-hover: 84 35% 45%;
+    --primary: 75 36% 42%;
+    --primary-hover: 75 36% 48%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 218 45% 18%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 215 40% 18%;
+    --secondary-foreground: 48 17% 93%;
 
-    --muted: 218 45% 22%;
-    --muted-foreground: 210 30% 65%;
+    --muted: 215 40% 22%;
+    --muted-foreground: 215 8% 60%;
 
-    --accent: 84 35% 42%;
+    --accent: 75 36% 45%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 1 48% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 218 45% 22%;
-    --input: 218 45% 22%;
-    --ring: 84 35% 39%;
+    --warning: 37 50% 55%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 215 40% 22%;
+    --input: 215 40% 22%;
+    --ring: 75 36% 42%;
 
     /* Annia-specific tokens dark */
-    --annia-navy: 218 58% 11%;
-    --annia-olive: 84 35% 39%;
-    --annia-olive-hover: 84 35% 45%;
+    --annia-navy: 215 51% 11%;
+    --annia-olive: 75 36% 42%;
+    --annia-olive-hover: 75 36% 48%;
 
     /* Surface tokens dark */
-    --surface-elevated: 218 55% 16%;
-    --shadow-soft: 218 58% 5%;
+    --surface-elevated: 215 45% 16%;
+    --shadow-soft: 215 51% 5%;
 
     /* Sidebar tokens dark */
-    --sidebar-background: 218 58% 8%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 84 35% 39%;
+    --sidebar-background: 215 51% 8%;
+    --sidebar-foreground: 48 17% 93%;
+    --sidebar-primary: 75 36% 42%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 218 50% 20%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 218 50% 22%;
-    --sidebar-ring: 84 35% 39%;
+    --sidebar-accent: 215 40% 20%;
+    --sidebar-accent-foreground: 48 17% 93%;
+    --sidebar-border: 215 40% 22%;
+    --sidebar-ring: 75 36% 42%;
   }
 }
 

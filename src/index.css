@@ -19,13 +19,14 @@
     --popover: 0 0% 100%;
     --popover-foreground: 215 51% 11%;
 
-    /* Olive as primary */
+    /* Olive as primary (actions) */
     --primary: 75 36% 36%; /* #6B7C3A */
     --primary-hover: 75 36% 42%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 45 13% 89%; /* #E7E5DF - muted surface */
-    --secondary-foreground: 215 51% 11%;
+    /* Navy as secondary (structural) */
+    --secondary: 215 51% 11%; /* #0E1A2B */
+    --secondary-foreground: 48 17% 93%; /* #F1F0EC */
 
     --muted: 45 13% 89%; /* #E7E5DF */
     --muted-foreground: 215 8% 47%; /* #6F7782 */
@@ -50,18 +51,23 @@
     --annia-olive: 75 36% 36%; /* #6B7C3A */
     --annia-olive-hover: 75 36% 42%;
 
+    /* Navy-forward: inverse surface for headers/nav/highlight cards */
+    --inverse-surface: 215 51% 11%; /* #0E1A2B */
+    --inverse-foreground: 48 17% 93%; /* #F1F0EC */
+    --inverse-muted: 215 40% 60%;
+
     /* Surface tokens */
     --surface-elevated: 0 0% 100%;
     --shadow-soft: 215 51% 11%;
 
-    /* Sidebar tokens */
+    /* Sidebar/Nav tokens (navy-forward) */
     --sidebar-background: 215 51% 11%;
-    --sidebar-foreground: 0 0% 100%;
+    --sidebar-foreground: 48 17% 93%;
     --sidebar-primary: 75 36% 36%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 215 40% 18%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 215 40% 20%;
+    --sidebar-accent-foreground: 48 17% 93%;
+    --sidebar-border: 215 40% 22%;
     --sidebar-ring: 75 36% 36%;
   }
 
@@ -103,6 +109,11 @@
     --annia-navy: 215 51% 11%;
     --annia-olive: 75 36% 42%;
     --annia-olive-hover: 75 36% 48%;
+
+    /* Navy-forward: inverse surface (lighter in dark mode) */
+    --inverse-surface: 48 17% 93%;
+    --inverse-foreground: 215 51% 11%;
+    --inverse-muted: 215 8% 47%;
 
     /* Surface tokens dark */
     --surface-elevated: 215 45% 16%;

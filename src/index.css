@@ -282,6 +282,22 @@
     animation-fill-mode: forwards;
   }
 
+  /* Fade out animation for suggestions */
+  @keyframes fadeOut {
+    from { 
+      opacity: 1; 
+      transform: scale(1); 
+    }
+    to { 
+      opacity: 0; 
+      transform: scale(0.95); 
+    }
+  }
+
+  .animate-fade-out {
+    animation: fadeOut 0.2s linear forwards;
+  }
+
   /* Category tags - using primary accent variations */
   .tag-financing {
     @apply bg-primary/20 text-foreground;

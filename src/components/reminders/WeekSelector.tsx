@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react';
 import { CaretLeft, CaretRight } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { format, addDays, isSameDay, isToday, startOfDay } from 'date-fns';
@@ -21,6 +22,7 @@ export function WeekSelector({
   onNextWeek,
   reminders = [],
 }: WeekSelectorProps) {
+  const daysContainerRef = useRef<HTMLDivElement>(null);
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
   const hasRemindersOnDate = (date: Date) => {
@@ -30,6 +32,23 @@ export function WeekSelector({
       return isSameDay(reminderDate, dayStart);
     });
   };
+
+  // Auto-scroll to center today's date
+  useEffect(() => {
+    if (!daysContainerRef.current) return;
+    
+    const todayIndex = days.findIndex(d => isToday(d));
+    if (todayIndex >= 0) {
+      const buttons = daysContainerRef.current.children;
+      if (buttons[todayIndex]) {
+        (buttons[todayIndex] as HTMLElement).scrollIntoView({
+          behavior: 'smooth',
+          inline: 'center',
+          block: 'nearest'
+        });
+      }
+    }
+  }, [weekStart, days]);
 
   return (
     <div className="flex items-center gap-1">
@@ -42,7 +61,10 @@ export function WeekSelector({
         <CaretLeft weight="thin" className="h-5 w-5" />
       </Button>
 
-      <div className="flex gap-1.5 flex-1 justify-center overflow-x-auto scrollbar-hide">
+      <div 
+        ref={daysContainerRef}
+        className="flex gap-1.5 flex-1 justify-center overflow-x-auto scrollbar-hide"
+      >
         {days.map((day) => {
           const isSelected = isSameDay(day, selectedDate);
           const isTodayDate = isToday(day);

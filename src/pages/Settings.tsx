@@ -50,14 +50,25 @@ export default function Settings() {
     inventory_alerts_enabled: false,
   });
 
+  // Helper to normalize time format (remove seconds if present)
+  const normalizeTime = (time: string | null | undefined, defaultValue: string): string => {
+    if (!time) return defaultValue;
+    // Handle "HH:mm:ss" format from Supabase - extract just "HH:mm"
+    const parts = time.split(':');
+    if (parts.length >= 2) {
+      return `${parts[0]}:${parts[1]}`;
+    }
+    return defaultValue;
+  };
+
   // Sync with profile data
   useEffect(() => {
     if (profile) {
       setSettings({
         checkin_morning_enabled: profile.checkin_morning_enabled ?? false,
-        checkin_morning_time: profile.checkin_morning_time ?? '08:00',
+        checkin_morning_time: normalizeTime(profile.checkin_morning_time, '08:00'),
         checkin_evening_enabled: profile.checkin_evening_enabled ?? false,
-        checkin_evening_time: profile.checkin_evening_time ?? '21:00',
+        checkin_evening_time: normalizeTime(profile.checkin_evening_time, '21:00'),
         proactive_suggestions_enabled: profile.proactive_suggestions_enabled ?? false,
         inventory_alerts_enabled: profile.inventory_alerts_enabled ?? false,
       });
@@ -65,7 +76,21 @@ export default function Settings() {
   }, [profile]);
 
   const handleSave = () => {
-    updateProfile.mutate(settings);
+    // Format times with seconds for PostgreSQL time type
+    const dataToSave = {
+      ...settings,
+      checkin_morning_time: settings.checkin_morning_time.includes(':') 
+        ? (settings.checkin_morning_time.split(':').length === 2 
+            ? `${settings.checkin_morning_time}:00` 
+            : settings.checkin_morning_time)
+        : `${settings.checkin_morning_time}:00`,
+      checkin_evening_time: settings.checkin_evening_time.includes(':') 
+        ? (settings.checkin_evening_time.split(':').length === 2 
+            ? `${settings.checkin_evening_time}:00` 
+            : settings.checkin_evening_time)
+        : `${settings.checkin_evening_time}:00`,
+    };
+    updateProfile.mutate(dataToSave);
   };
 
   const handleToggle = (key: keyof typeof settings, value: boolean) => {

@@ -80,38 +80,52 @@ export default function Home() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto pb-24 px-4 space-y-5 animate-fade-in">
+    <div className="max-w-2xl mx-auto pb-24 px-4 space-y-5">
       {/* 1. Saudação */}
-      <GreetingCard
-        greeting={greeting}
-        displayName={displayName}
-        onPrimaryCta={() => {}}
-      />
+      <div className="animate-slide-up stagger-1">
+        <GreetingCard
+          greeting={greeting}
+          displayName={displayName}
+          onPrimaryCta={() => {}}
+        />
+      </div>
 
       {/* 2. Voz da Annia (Mensagem do Dia) */}
-      <VoiceOfAnnia insight={dailyInsight} />
+      <div className="animate-slide-up stagger-2">
+        <VoiceOfAnnia insight={dailyInsight} />
+      </div>
 
       {/* 3. Agenda do Dia */}
-      <CalendarSection 
-        connection={calendarConnection} 
-        events={calendarEvents} 
-      />
+      <div className="animate-slide-up stagger-3">
+        <CalendarSection 
+          connection={calendarConnection} 
+          events={calendarEvents} 
+        />
+      </div>
 
       {/* 4. Lembretes e Urgências */}
-      <RemindersSection reminders={pendingReminders} />
+      <div className="animate-slide-up stagger-4">
+        <RemindersSection reminders={pendingReminders} />
+      </div>
 
       {/* 5. Lista de Compras */}
-      <ShoppingSection items={shoppingItems} />
+      <div className="animate-slide-up stagger-5">
+        <ShoppingSection items={shoppingItems} />
+      </div>
 
       {/* 6. Dashboard dos Filhos */}
-      <KidsDashboard 
-        children={children} 
-        insights={childrenInsights}
-      />
+      <div className="animate-slide-up stagger-6">
+        <KidsDashboard 
+          children={children} 
+          insights={childrenInsights}
+        />
+      </div>
 
       {/* 7. Momento Annia (Sugestões) */}
       {suggestions.length > 0 && (
-        <AnniaMomentSection suggestions={suggestions} />
+        <div className="animate-slide-up stagger-6">
+          <AnniaMomentSection suggestions={suggestions} />
+        </div>
       )}
 
       {/* Bottom navigation */}

@@ -40,10 +40,10 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-inverse transition-transform hover:scale-105">
-          <Avatar className="h-10 w-10 border border-inverse-foreground/20">
+        <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background transition-transform hover:scale-105">
+          <Avatar className="h-10 w-10 border border-border">
             <AvatarImage src={profile?.avatar_url || undefined} alt="Avatar" />
-            <AvatarFallback className="bg-inverse-foreground/10 text-inverse-foreground text-sm font-semibold">
+            <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
               {getInitials()}
             </AvatarFallback>
           </Avatar>

@@ -61,12 +61,6 @@ export default {
           olive: "hsl(var(--annia-olive))",
           "olive-hover": "hsl(var(--annia-olive-hover))",
         },
-        // Navy-forward inverse tokens
-        inverse: {
-          DEFAULT: "hsl(var(--inverse-surface))",
-          foreground: "hsl(var(--inverse-foreground))",
-          muted: "hsl(var(--inverse-muted))",
-        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

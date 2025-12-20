@@ -35,7 +35,7 @@ export function TypewriterText({ text, speed = 75, className = '' }: TypewriterT
   }, [text, speed]);
 
   return (
-    <p className={`text-sm ${className || 'text-foreground'}`}>
+    <p className={`text-sm text-foreground ${className}`}>
       {displayedText}
       {!isComplete && <span className="animate-pulse text-primary">|</span>}
     </p>

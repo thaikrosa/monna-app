@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { SignOut, User, Gear } from '@phosphor-icons/react';
+import { SignOut, UserCircle, Gear, CaretRight } from '@phosphor-icons/react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +12,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
 export function UserMenu() {
-  const { profile, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
 
   const handleSignOut = async () => {
     try {
@@ -35,36 +35,75 @@ export function UserMenu() {
     return 'U';
   };
 
+  const displayName = profile?.nickname || profile?.first_name || 'Usuário';
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background">
-          <Avatar className="h-9 w-9 border border-border">
+        <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background transition-transform hover:scale-105">
+          <Avatar className="h-10 w-10 border border-border">
             <AvatarImage src={profile?.avatar_url || undefined} alt="Avatar" />
-            <AvatarFallback className="bg-muted text-foreground text-sm font-medium">
+            <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
               {getInitials()}
             </AvatarFallback>
           </Avatar>
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-40">
-        <DropdownMenuItem asChild className="cursor-pointer">
-          <Link to="/perfil">
-            <User weight="thin" className="mr-2 h-4 w-4" />
-            Meu perfil
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild className="cursor-pointer">
-          <Link to="/configuracoes">
-            <Gear weight="thin" className="mr-2 h-4 w-4" />
-            Configurações
-          </Link>
-        </DropdownMenuItem>
+      
+      <DropdownMenuContent align="end" className="w-64 annia-glass p-0">
+        {/* Header with large avatar */}
+        <div className="p-4 flex items-center gap-3 border-b border-border">
+          <Avatar className="h-12 w-12 border border-border">
+            <AvatarImage src={profile?.avatar_url || undefined} alt="Avatar" />
+            <AvatarFallback className="bg-primary/10 text-primary text-base font-semibold">
+              {getInitials()}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col min-w-0">
+            <span className="text-base font-semibold text-foreground">
+              {displayName}
+            </span>
+            <span className="text-sm text-muted-foreground truncate">
+              {user?.email}
+            </span>
+          </div>
+        </div>
+        
+        {/* Navigation links */}
+        <div className="py-2">
+          <DropdownMenuItem asChild className="cursor-pointer px-4 py-3">
+            <Link to="/perfil" className="flex items-center justify-between w-full">
+              <div className="flex items-center gap-3">
+                <UserCircle weight="thin" className="h-5 w-5 text-muted-foreground" />
+                <span>Meu perfil</span>
+              </div>
+              <CaretRight weight="thin" className="h-4 w-4 text-muted-foreground" />
+            </Link>
+          </DropdownMenuItem>
+          
+          <DropdownMenuItem asChild className="cursor-pointer px-4 py-3">
+            <Link to="/configuracoes" className="flex items-center justify-between w-full">
+              <div className="flex items-center gap-3">
+                <Gear weight="thin" className="h-5 w-5 text-muted-foreground" />
+                <span>Configurações</span>
+              </div>
+              <CaretRight weight="thin" className="h-4 w-4 text-muted-foreground" />
+            </Link>
+          </DropdownMenuItem>
+        </div>
+        
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-          <SignOut weight="thin" className="mr-2 h-4 w-4" />
-          Sair
-        </DropdownMenuItem>
+        
+        {/* Logout */}
+        <div className="py-2">
+          <DropdownMenuItem 
+            onClick={handleSignOut} 
+            className="cursor-pointer px-4 py-3 text-destructive focus:text-destructive"
+          >
+            <SignOut weight="thin" className="mr-3 h-5 w-5" />
+            Sair
+          </DropdownMenuItem>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

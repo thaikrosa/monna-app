@@ -1,8 +1,10 @@
-import { SignOut } from '@phosphor-icons/react';
+import { Link } from 'react-router-dom';
+import { SignOut, User, Gear } from '@phosphor-icons/react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -46,6 +48,19 @@ export function UserMenu() {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40">
+        <DropdownMenuItem asChild className="cursor-pointer">
+          <Link to="/perfil">
+            <User weight="thin" className="mr-2 h-4 w-4" />
+            Meu perfil
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild className="cursor-pointer">
+          <Link to="/configuracoes">
+            <Gear weight="thin" className="mr-2 h-4 w-4" />
+            Configurações
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
           <SignOut weight="thin" className="mr-2 h-4 w-4" />
           Sair

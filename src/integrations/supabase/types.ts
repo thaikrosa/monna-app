@@ -296,15 +296,21 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          checkin_evening_enabled: boolean | null
+          checkin_evening_time: string | null
+          checkin_morning_enabled: boolean | null
+          checkin_morning_time: string | null
           city: string | null
           communication_style: string | null
           created_at: string | null
           first_name: string | null
           id: string
+          inventory_alerts_enabled: boolean | null
           last_name: string | null
           nickname: string | null
           onboarding_completed: boolean | null
           onboarding_completed_at: string | null
+          proactive_suggestions_enabled: boolean | null
           state: string | null
           timezone: string | null
           updated_at: string | null
@@ -312,15 +318,21 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          checkin_evening_enabled?: boolean | null
+          checkin_evening_time?: string | null
+          checkin_morning_enabled?: boolean | null
+          checkin_morning_time?: string | null
           city?: string | null
           communication_style?: string | null
           created_at?: string | null
           first_name?: string | null
           id: string
+          inventory_alerts_enabled?: boolean | null
           last_name?: string | null
           nickname?: string | null
           onboarding_completed?: boolean | null
           onboarding_completed_at?: string | null
+          proactive_suggestions_enabled?: boolean | null
           state?: string | null
           timezone?: string | null
           updated_at?: string | null
@@ -328,15 +340,21 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          checkin_evening_enabled?: boolean | null
+          checkin_evening_time?: string | null
+          checkin_morning_enabled?: boolean | null
+          checkin_morning_time?: string | null
           city?: string | null
           communication_style?: string | null
           created_at?: string | null
           first_name?: string | null
           id?: string
+          inventory_alerts_enabled?: boolean | null
           last_name?: string | null
           nickname?: string | null
           onboarding_completed?: boolean | null
           onboarding_completed_at?: string | null
+          proactive_suggestions_enabled?: boolean | null
           state?: string | null
           timezone?: string | null
           updated_at?: string | null

@@ -7,11 +7,9 @@ import {
   Lightbulb,
   Package,
   Baby,
-  ChatCircle,
   GoogleLogo,
   Check,
   Warning,
-  Clock,
   ShoppingCart,
   Bell
 } from '@phosphor-icons/react';
@@ -50,7 +48,6 @@ export default function Settings() {
     checkin_evening_time: '21:00',
     proactive_suggestions_enabled: false,
     inventory_alerts_enabled: false,
-    communication_style: 'caring',
   });
 
   // Sync with profile data
@@ -63,7 +60,6 @@ export default function Settings() {
         checkin_evening_time: profile.checkin_evening_time ?? '21:00',
         proactive_suggestions_enabled: profile.proactive_suggestions_enabled ?? false,
         inventory_alerts_enabled: profile.inventory_alerts_enabled ?? false,
-        communication_style: profile.communication_style ?? 'caring',
       });
     }
   }, [profile]);
@@ -271,58 +267,6 @@ export default function Settings() {
           )}
         </section>
 
-        {/* Estilo de Comunicação */}
-        <section>
-          <h2 className="text-base font-medium text-foreground mb-1">
-            Como você prefere que eu fale?
-          </h2>
-          <p className="text-sm text-muted-foreground mb-3">
-            Escolha o tom das mensagens da Annia
-          </p>
-
-          <div className="annia-glass p-4 rounded-lg border border-border/30 space-y-3">
-            {[
-              { value: 'caring', label: 'Acolhedor', desc: 'Gentil e empática' },
-              { value: 'direct', label: 'Direto', desc: 'Objetivo e prático' },
-              { value: 'playful', label: 'Leve', desc: 'Descontraída e divertida' },
-            ].map((style) => (
-              <label
-                key={style.value}
-                className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
-                  settings.communication_style === style.value
-                    ? 'bg-primary/10'
-                    : 'hover:bg-muted/50'
-                }`}
-              >
-                <div className={`h-4 w-4 rounded-full border-2 flex items-center justify-center ${
-                  settings.communication_style === style.value
-                    ? 'border-primary'
-                    : 'border-muted-foreground/30'
-                }`}>
-                  {settings.communication_style === style.value && (
-                    <div className="h-2 w-2 rounded-full bg-primary" />
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <ChatCircle weight="thin" className="h-4 w-4 text-primary" />
-                  <div>
-                    <span className="text-foreground text-sm font-medium">{style.label}</span>
-                    <p className="text-xs text-muted-foreground">{style.desc}</p>
-                  </div>
-                </div>
-                <input
-                  type="radio"
-                  name="communication_style"
-                  value={style.value}
-                  checked={settings.communication_style === style.value}
-                  onChange={(e) => setSettings(prev => ({ ...prev, communication_style: e.target.value }))}
-                  className="sr-only"
-                />
-              </label>
-            ))}
-          </div>
-        </section>
-
         {/* Integrações */}
         <section>
           <h2 className="text-base font-medium text-foreground mb-1">
@@ -354,9 +298,12 @@ export default function Settings() {
                   <span className="text-xs">Conectado</span>
                 </div>
               ) : (
-                <Button size="sm" variant="outline">
-                  Conectar
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button size="sm" variant="outline" disabled>
+                    Conectar
+                  </Button>
+                  <span className="text-xs text-muted-foreground">Em breve</span>
+                </div>
               )}
             </div>
             {googleConnection?.last_error && (

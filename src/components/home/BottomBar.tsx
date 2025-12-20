@@ -34,7 +34,7 @@ export function BottomBar() {
               }`}
             >
               <Icon weight="thin" className="w-6 h-6" />
-              {isActive && <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-accent" />}
+              {isActive && <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-primary" />}
             </button>
           );
         })}

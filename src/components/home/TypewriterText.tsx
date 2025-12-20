@@ -6,7 +6,7 @@ interface TypewriterTextProps {
   className?: string;
 }
 
-export function TypewriterText({ text, speed = 55, className = '' }: TypewriterTextProps) {
+export function TypewriterText({ text, speed = 75, className = '' }: TypewriterTextProps) {
   const [displayedText, setDisplayedText] = useState('');
   const [isComplete, setIsComplete] = useState(false);
 

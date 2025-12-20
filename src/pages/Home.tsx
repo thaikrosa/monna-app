@@ -8,7 +8,6 @@ import { useLatestChildInsights } from "@/hooks/useChildrenInsights";
 import { useTodayCalendarEvents } from "@/hooks/useTodayCalendarEvents";
 import { usePendingReminders } from "@/hooks/usePendingReminders";
 
-import { GreetingCard } from "@/components/home/GreetingCard";
 import { VoiceOfAnnia } from "@/components/home/VoiceOfAnnia";
 import { CalendarSection } from "@/components/home/CalendarSection";
 import { RemindersSection } from "@/components/home/RemindersSection";
@@ -18,20 +17,6 @@ import { AnniaMomentSection } from "@/components/home/AnniaMomentSection";
 import { BottomBar } from "@/components/home/BottomBar";
 import { HomeSkeleton } from "@/components/home/HomeSkeleton";
 import { HomeError } from "@/components/home/HomeError";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-
-function getGreetingTitle(): string {
-  const hour = new Date().getHours();
-  
-  if (hour >= 5 && hour < 12) {
-    return 'Bom dia';
-  } else if (hour >= 12 && hour < 18) {
-    return 'Boa tarde';
-  } else {
-    return 'Boa noite';
-  }
-}
 
 export default function Home() {
   // Dados do usuário
@@ -66,62 +51,40 @@ export default function Home() {
     );
   }
 
-  const displayName = profile?.nickname || profile?.first_name || 'você';
-  const greetingTitle = getGreetingTitle();
-  const todayFormatted = format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR });
-
-  // Monta objeto de greeting para GreetingCard
-  const greeting = {
-    title: `${greetingTitle}, ${displayName}.`,
-    insight: dailyInsight?.message || 'Vamos organizar o dia juntas?',
-    microcopy: todayFormatted.charAt(0).toUpperCase() + todayFormatted.slice(1),
-    primaryCta: { label: 'Revisar lembretes', action: 'review_reminders' as const },
-    secondaryCta: undefined,
-  };
-
   return (
     <div className="max-w-2xl mx-auto pb-24 px-4 space-y-5">
-      {/* 1. Saudação */}
+      {/* 1. Voz da Annia (Mensagem do Dia) */}
       <div className="animate-slide-up stagger-1">
-        <GreetingCard
-          greeting={greeting}
-          displayName={displayName}
-          onPrimaryCta={() => {}}
-        />
-      </div>
-
-      {/* 2. Voz da Annia (Mensagem do Dia) */}
-      <div className="animate-slide-up stagger-2">
         <VoiceOfAnnia insight={dailyInsight} />
       </div>
 
-      {/* 3. Agenda do Dia */}
-      <div className="animate-slide-up stagger-3">
+      {/* 2. Agenda do Dia */}
+      <div className="animate-slide-up stagger-2">
         <CalendarSection 
           connection={calendarConnection} 
           events={calendarEvents} 
         />
       </div>
 
-      {/* 4. Lembretes e Urgências */}
-      <div className="animate-slide-up stagger-4">
+      {/* 3. Lembretes e Urgências */}
+      <div className="animate-slide-up stagger-3">
         <RemindersSection reminders={pendingReminders} />
       </div>
 
-      {/* 5. Lista de Compras */}
-      <div className="animate-slide-up stagger-5">
+      {/* 4. Lista de Compras */}
+      <div className="animate-slide-up stagger-4">
         <ShoppingSection items={shoppingItems} />
       </div>
 
-      {/* 6. Dashboard dos Filhos */}
-      <div className="animate-slide-up stagger-6">
+      {/* 5. Dashboard dos Filhos */}
+      <div className="animate-slide-up stagger-5">
         <KidsDashboard 
           children={children} 
           insights={childrenInsights}
         />
       </div>
 
-      {/* 7. Momento Annia (Sugestões) */}
+      {/* 6. Momento Annia (Sugestões) */}
       {suggestions.length > 0 && (
         <div className="animate-slide-up stagger-6">
           <AnniaMomentSection suggestions={suggestions} />

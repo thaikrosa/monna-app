@@ -9,9 +9,11 @@ import {
   Check, 
   Warning,
   ChatCircleDots,
-  CaretRight,
   PencilSimple,
-  X
+  X,
+  IdentificationCard,
+  MapPin,
+  Plus
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,7 +37,7 @@ import {
 } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile, useUpdateProfile, useUploadAvatar } from '@/hooks/useProfile';
-import { useChildren, useUpdateChild } from '@/hooks/useChildren';
+import { useChildren, useUpdateChild, useAddChild } from '@/hooks/useChildren';
 import { useContacts } from '@/hooks/useContacts';
 import { PhoneInput, PhoneErrorMessage } from '@/components/ui/phone-input';
 import { LocationSelect } from '@/components/profile/LocationSelect';
@@ -55,6 +57,7 @@ export default function Profile() {
   const { data: contacts = [], isLoading: contactsLoading } = useContacts();
   const updateProfile = useUpdateProfile();
   const updateChild = useUpdateChild();
+  const addChild = useAddChild();
   const uploadAvatar = useUploadAvatar();
 
   // Form state
@@ -89,6 +92,22 @@ export default function Profile() {
     personality_traits: string;
     soothing_methods: string;
   }>>({});
+
+  // Add child state
+  const [isAddingChild, setIsAddingChild] = useState(false);
+  const [newChildData, setNewChildData] = useState({
+    name: '',
+    nickname: '',
+    birth_date: '',
+    gender: '',
+    is_neurodivergent: false,
+    special_needs_notes: '',
+    allergies: '',
+    blood_type: '',
+    medical_notes: '',
+    personality_traits: '',
+    soothing_methods: '',
+  });
 
   // Initialize form when profile loads
   useEffect(() => {
@@ -192,6 +211,68 @@ export default function Profile() {
     }));
   };
 
+  const updateNewChildField = (field: string, value: unknown) => {
+    setNewChildData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleSaveNewChild = () => {
+    if (!newChildData.name || !newChildData.birth_date) return;
+    
+    addChild.mutate({
+      name: newChildData.name,
+      birth_date: newChildData.birth_date,
+      nickname: newChildData.nickname || null,
+      gender: newChildData.gender || null,
+      is_neurodivergent: newChildData.is_neurodivergent,
+      special_needs_notes: newChildData.special_needs_notes || null,
+      allergies: newChildData.allergies || null,
+      blood_type: newChildData.blood_type || null,
+      medical_notes: newChildData.medical_notes || null,
+      personality_traits: newChildData.personality_traits || null,
+      soothing_methods: newChildData.soothing_methods || null,
+      show_standard_milestones: true,
+      accepted_health_disclaimer: false,
+      vaccination_reminders_enabled: false,
+    }, {
+      onSuccess: () => {
+        setIsAddingChild(false);
+        setNewChildData({
+          name: '',
+          nickname: '',
+          birth_date: '',
+          gender: '',
+          is_neurodivergent: false,
+          special_needs_notes: '',
+          allergies: '',
+          blood_type: '',
+          medical_notes: '',
+          personality_traits: '',
+          soothing_methods: '',
+        });
+      },
+    });
+  };
+
+  const handleCancelNewChild = () => {
+    setIsAddingChild(false);
+    setNewChildData({
+      name: '',
+      nickname: '',
+      birth_date: '',
+      gender: '',
+      is_neurodivergent: false,
+      special_needs_notes: '',
+      allergies: '',
+      blood_type: '',
+      medical_notes: '',
+      personality_traits: '',
+      soothing_methods: '',
+    });
+  };
+
   const calculateAge = (birthDate: string) => {
     const date = parseISO(birthDate);
     const years = differenceInYears(new Date(), date);
@@ -212,9 +293,10 @@ export default function Profile() {
     return 'U';
   };
 
-  // Get high intimacy contacts (4 or 5)
-  const highlightedContacts = contacts
-    .filter(c => c.intimacy_level >= 4)
+  // Get family contacts sorted by intimacy
+  const familyContacts = contacts
+    .filter(c => c.category === 'Família')
+    .sort((a, b) => (b.intimacy_level || 0) - (a.intimacy_level || 0))
     .slice(0, 3);
 
   if (profileLoading) {
@@ -377,24 +459,30 @@ export default function Profile() {
               </div>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-3">
               <p className="text-foreground font-medium">
                 {profile?.first_name || 'Nome'} {profile?.last_name || ''}
               </p>
+              
               {profile?.nickname && (
-                <p className="text-sm text-muted-foreground">
-                  Chamada de: {profile.nickname}
-                </p>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <IdentificationCard weight="thin" className="h-4 w-4 text-primary/70" />
+                  <span>Gosto de ser chamada de: <strong className="text-foreground">{profile.nickname}</strong></span>
+                </div>
               )}
+              
               {profile?.whatsapp && (
-                <p className="text-sm text-muted-foreground">
-                  {profile.whatsapp}
-                </p>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <WhatsappLogo weight="thin" className="h-4 w-4 text-primary/70" />
+                  <span>{profile.whatsapp}</span>
+                </div>
               )}
+              
               {(profile?.city || profile?.state) && (
-                <p className="text-sm text-muted-foreground">
-                  {[profile.city, profile.state].filter(Boolean).join(', ')}
-                </p>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <MapPin weight="thin" className="h-4 w-4 text-primary/70" />
+                  <span>{[profile.city, profile.state].filter(Boolean).join(', ')}</span>
+                </div>
               )}
             </div>
           )}
@@ -410,19 +498,26 @@ export default function Profile() {
             <div className="space-y-3">
               <Skeleton className="h-16 w-full" />
             </div>
-          ) : children.length === 0 ? (
+          ) : children.length === 0 && !isAddingChild ? (
             <div className="annia-glass p-4 rounded-lg border border-border/30 text-center">
               <p className="text-muted-foreground text-sm">
                 Nenhuma criança cadastrada
               </p>
-              <Link to="/filhos">
-                <Button variant="link" className="text-primary mt-1">
-                  Adicionar primeira criança
-                </Button>
-              </Link>
+              <Button
+                variant="link"
+                className="text-primary mt-1"
+                onClick={() => setIsAddingChild(true)}
+              >
+                Adicionar primeira criança
+              </Button>
             </div>
           ) : (
-            <Accordion type="single" collapsible className="space-y-2">
+            <Accordion 
+              type="single" 
+              collapsible 
+              className="space-y-2"
+              defaultValue={isAddingChild ? 'new-child' : undefined}
+            >
               {children.map((child) => {
                 const childData = editingChildren[child.id];
                 
@@ -658,15 +753,216 @@ export default function Profile() {
                   </AccordionItem>
                 );
               })}
+
+              {/* New Child Accordion */}
+              {isAddingChild && (
+                <AccordionItem
+                  value="new-child"
+                  className="annia-glass rounded-lg border border-primary/30 overflow-hidden"
+                >
+                  <AccordionTrigger className="px-3 py-3 hover:no-underline hover:bg-muted/20 [&[data-state=open]]:border-b [&[data-state=open]]:border-border/30">
+                    <div className="flex items-center gap-3 flex-1">
+                      <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <Plus weight="thin" className="h-5 w-5 text-primary" />
+                      </div>
+                      <div className="text-left">
+                        <p className="text-foreground font-medium">
+                          Nova criança
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Preencha os dados
+                        </p>
+                      </div>
+                    </div>
+                  </AccordionTrigger>
+                  
+                  <AccordionContent className="px-3 pb-4 pt-3">
+                    <div className="space-y-4">
+                      {/* Basic Info */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <Label className="text-xs text-muted-foreground">Nome *</Label>
+                          <Input
+                            value={newChildData.name}
+                            onChange={(e) => updateNewChildField('name', e.target.value)}
+                            placeholder="Nome completo"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs text-muted-foreground">Apelido</Label>
+                          <Input
+                            value={newChildData.nickname}
+                            onChange={(e) => updateNewChildField('nickname', e.target.value)}
+                            placeholder="Como chamamos"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <Label className="text-xs text-muted-foreground">Data de Nascimento *</Label>
+                          <Input
+                            type="date"
+                            value={newChildData.birth_date}
+                            onChange={(e) => updateNewChildField('birth_date', e.target.value)}
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs text-muted-foreground">Gênero</Label>
+                          <Select
+                            value={newChildData.gender}
+                            onValueChange={(value) => updateNewChildField('gender', value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="female">Feminino</SelectItem>
+                              <SelectItem value="male">Masculino</SelectItem>
+                              <SelectItem value="other">Outro</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      {/* Neurodivergent */}
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+                        <div>
+                          <Label className="text-sm text-foreground">É neurodivergente?</Label>
+                          <p className="text-xs text-muted-foreground">Adaptamos as sugestões ao ritmo único</p>
+                        </div>
+                        <Switch
+                          checked={newChildData.is_neurodivergent}
+                          onCheckedChange={(value) => updateNewChildField('is_neurodivergent', value)}
+                        />
+                      </div>
+
+                      {newChildData.is_neurodivergent && (
+                        <div>
+                          <Label className="text-xs text-muted-foreground">Notas especiais</Label>
+                          <Textarea
+                            value={newChildData.special_needs_notes}
+                            onChange={(e) => updateNewChildField('special_needs_notes', e.target.value)}
+                            placeholder="Informações sobre necessidades específicas"
+                            rows={2}
+                          />
+                        </div>
+                      )}
+
+                      {/* Health Info */}
+                      <div className="border-t border-border/30 pt-4">
+                        <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+                          Informações de saúde
+                        </h4>
+                        
+                        <div className="space-y-3">
+                          <div>
+                            <Label className="text-xs text-muted-foreground">Alergias</Label>
+                            <Input
+                              value={newChildData.allergies}
+                              onChange={(e) => updateNewChildField('allergies', e.target.value)}
+                              placeholder="Alimentos, medicamentos, etc."
+                            />
+                          </div>
+                          
+                          <div>
+                            <Label className="text-xs text-muted-foreground">Tipo Sanguíneo</Label>
+                            <Select
+                              value={newChildData.blood_type}
+                              onValueChange={(value) => updateNewChildField('blood_type', value)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="A+">A+</SelectItem>
+                                <SelectItem value="A-">A-</SelectItem>
+                                <SelectItem value="B+">B+</SelectItem>
+                                <SelectItem value="B-">B-</SelectItem>
+                                <SelectItem value="AB+">AB+</SelectItem>
+                                <SelectItem value="AB-">AB-</SelectItem>
+                                <SelectItem value="O+">O+</SelectItem>
+                                <SelectItem value="O-">O-</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div>
+                            <Label className="text-xs text-muted-foreground">Notas Médicas</Label>
+                            <Textarea
+                              value={newChildData.medical_notes}
+                              onChange={(e) => updateNewChildField('medical_notes', e.target.value)}
+                              placeholder="Condições, medicamentos, etc."
+                              rows={2}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Personality */}
+                      <div className="border-t border-border/30 pt-4">
+                        <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+                          Personalidade
+                        </h4>
+                        
+                        <div className="space-y-3">
+                          <div>
+                            <Label className="text-xs text-muted-foreground">Traços de Personalidade</Label>
+                            <Textarea
+                              value={newChildData.personality_traits}
+                              onChange={(e) => updateNewChildField('personality_traits', e.target.value)}
+                              placeholder="Como é o temperamento, preferências, etc."
+                              rows={2}
+                            />
+                          </div>
+                          
+                          <div>
+                            <Label className="text-xs text-muted-foreground">O que acalma</Label>
+                            <Textarea
+                              value={newChildData.soothing_methods}
+                              onChange={(e) => updateNewChildField('soothing_methods', e.target.value)}
+                              placeholder="Métodos para acalmar quando está chateado"
+                              rows={2}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex gap-2 pt-2">
+                        <Button
+                          variant="outline"
+                          className="flex-1"
+                          onClick={handleCancelNewChild}
+                        >
+                          <X weight="thin" className="h-4 w-4 mr-2" />
+                          Cancelar
+                        </Button>
+                        <Button
+                          className="flex-1"
+                          onClick={handleSaveNewChild}
+                          disabled={addChild.isPending || !newChildData.name || !newChildData.birth_date}
+                        >
+                          Salvar
+                        </Button>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              )}
             </Accordion>
           )}
           
-          {children.length > 0 && (
-            <Link to="/filhos">
-              <Button variant="ghost" size="sm" className="w-full text-primary mt-3">
-                Adicionar mais filhos
-              </Button>
-            </Link>
+          {(children.length > 0 || isAddingChild) && !isAddingChild && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full text-primary mt-3"
+              onClick={() => setIsAddingChild(true)}
+            >
+              <Plus weight="thin" className="h-4 w-4 mr-2" />
+              Adicionar mais filhos
+            </Button>
           )}
         </section>
 
@@ -691,23 +987,25 @@ export default function Profile() {
             </div>
           ) : (
             <div className="annia-glass p-4 rounded-lg border border-border/30">
-              {highlightedContacts.length > 0 && (
+              {familyContacts.length > 0 ? (
                 <div className="space-y-2 mb-3">
-                  {highlightedContacts.map((contact) => (
+                  {familyContacts.map((contact) => (
                     <div key={contact.id} className="flex items-center gap-2">
                       <Users weight="thin" className="h-4 w-4 text-primary" />
                       <span className="text-foreground text-sm">{contact.alias}</span>
-                      {contact.category && (
-                        <span className="text-xs text-muted-foreground">
-                          ({contact.category})
-                        </span>
-                      )}
+                      <span className="text-xs text-muted-foreground">
+                        (Família)
+                      </span>
                       {contact.can_annia_message && (
                         <WhatsappLogo weight="thin" className="h-4 w-4 text-primary/70 ml-auto" />
                       )}
                     </div>
                   ))}
                 </div>
+              ) : (
+                <p className="text-sm text-muted-foreground mb-3">
+                  Nenhum contato de família cadastrado
+                </p>
               )}
               
               <Link to="/rede-apoio">
@@ -744,7 +1042,7 @@ export default function Profile() {
               asChild
             >
               <a 
-                href="https://wa.me/5511999999999?text=Quero%20atualizar%20minhas%20respostas"
+                href="https://wa.me/5516996036137?text=Quero%20atualizar%20minhas%20respostas"
                 target="_blank"
                 rel="noopener noreferrer"
               >

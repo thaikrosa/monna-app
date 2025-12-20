@@ -1,6 +1,18 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Trash, PencilSimple } from '@phosphor-icons/react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import type { ShoppingItem } from '@/hooks/useShoppingList';
 
 interface ShoppingItemCardProps {
@@ -17,6 +29,8 @@ function formatFrequency(days: number | null) {
 }
 
 export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingItemCardProps) {
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
   return (
     <div
       className={`group flex items-center gap-3 py-3 px-1 border-b border-border/30 last:border-b-0 transition-all duration-150 ${
@@ -69,14 +83,37 @@ export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingI
           <PencilSimple weight="thin" className="h-4 w-4" />
         </Button>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 text-muted-foreground/60 hover:text-foreground active:text-foreground hover:bg-transparent opacity-0 group-hover:opacity-100 transition-all duration-150"
-          onClick={() => onDelete(item.id)}
-        >
-          <Trash weight="thin" className="h-4 w-4" />
-        </Button>
+        <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-muted-foreground/60 hover:text-foreground active:text-foreground hover:bg-transparent opacity-0 group-hover:opacity-100 transition-all duration-150"
+            >
+              <Trash weight="thin" className="h-4 w-4" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Excluir item?</AlertDialogTitle>
+              <AlertDialogDescription>
+                "{item.name}" será removido da lista permanentemente.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={() => {
+                  onDelete(item.id);
+                  setDeleteOpen(false);
+                }}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Excluir
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

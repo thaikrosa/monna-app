@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useAddReminder } from '@/hooks/useReminders';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
+import { format, addDays, differenceInDays } from 'date-fns';
 import { 
   Heart, 
   GraduationCap, 
@@ -51,8 +51,8 @@ const categoryLabels: Record<ReminderCategory, string> = {
   other: 'Outros',
 };
 
+// Removed 'once' option - if not recurring, it's automatically a single reminder
 const recurrenceOptions: { value: RecurrenceType; label: string }[] = [
-  { value: 'once', label: 'Uma vez' },
   { value: 'daily', label: 'Diário' },
   { value: 'weekly', label: 'Semanal' },
   { value: 'monthly', label: 'Mensal' },
@@ -62,19 +62,32 @@ const recurrenceOptions: { value: RecurrenceType; label: string }[] = [
 
 const weekDays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
 
+// Helper to get next full hour
+function getNextFullHour(): string {
+  const now = new Date();
+  const nextHour = new Date(now);
+  nextHour.setHours(now.getHours() + 1, 0, 0, 0);
+  return format(nextHour, 'HH:mm');
+}
+
 export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) {
   // Etapa 1 - Essenciais
   const [title, setTitle] = useState('');
   const [dueDate, setDueDate] = useState(format(new Date(), 'yyyy-MM-dd'));
-  const [dueTime, setDueTime] = useState('09:00');
+  const [dueTime, setDueTime] = useState(getNextFullHour());
 
   // Etapa 2 - Recorrência
   const [showRecurrence, setShowRecurrence] = useState(false);
-  const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>('once');
+  const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>('daily');
   const [daysOfWeek, setDaysOfWeek] = useState<number[]>([]);
-  const [intervalHours, setIntervalHours] = useState<number>(24);
-  const [durationDays, setDurationDays] = useState<number>(7);
+  
+  // Changed to string for better input handling
+  const [intervalHoursStr, setIntervalHoursStr] = useState('24');
+  const [durationDaysStr, setDurationDaysStr] = useState('7');
   const [recurrenceEnd, setRecurrenceEnd] = useState('');
+  
+  // Track which field was last edited for bidirectional sync
+  const [lastEdited, setLastEdited] = useState<'duration' | 'endDate' | null>(null);
 
   // Etapa 3 - Mais opções
   const [showMoreOptions, setShowMoreOptions] = useState(false);
@@ -87,16 +100,38 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
 
   const addReminder = useAddReminder();
 
+  // Bidirectional sync: duration days -> end date
+  useEffect(() => {
+    if (lastEdited === 'duration' && durationDaysStr && dueDate) {
+      const days = parseInt(durationDaysStr);
+      if (!isNaN(days) && days > 0) {
+        const endDate = addDays(new Date(dueDate), days);
+        setRecurrenceEnd(format(endDate, 'yyyy-MM-dd'));
+      }
+    }
+  }, [durationDaysStr, dueDate, lastEdited]);
+
+  // Bidirectional sync: end date -> duration days
+  useEffect(() => {
+    if (lastEdited === 'endDate' && recurrenceEnd && dueDate) {
+      const days = differenceInDays(new Date(recurrenceEnd), new Date(dueDate));
+      if (days > 0) {
+        setDurationDaysStr(String(days));
+      }
+    }
+  }, [recurrenceEnd, dueDate, lastEdited]);
+
   const resetForm = () => {
     setTitle('');
     setDueDate(format(new Date(), 'yyyy-MM-dd'));
-    setDueTime('09:00');
+    setDueTime(getNextFullHour());
     setShowRecurrence(false);
-    setRecurrenceType('once');
+    setRecurrenceType('daily');
     setDaysOfWeek([]);
-    setIntervalHours(24);
-    setDurationDays(7);
+    setIntervalHoursStr('24');
+    setDurationDaysStr('7');
     setRecurrenceEnd('');
+    setLastEdited(null);
     setShowMoreOptions(false);
     setCategory('other');
     setPriority('normal');
@@ -125,12 +160,16 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
       return;
     }
 
+    // Parse interval values
+    const intervalHours = parseInt(intervalHoursStr) || 24;
+    const durationDays = parseInt(durationDaysStr) || 7;
+
     // Montar recurrence_config baseado no tipo
     let recurrence_config: Record<string, unknown> | null = null;
     
-    if (recurrenceType === 'weekly' && daysOfWeek.length > 0) {
+    if (showRecurrence && recurrenceType === 'weekly' && daysOfWeek.length > 0) {
       recurrence_config = { days_of_week: daysOfWeek };
-    } else if (recurrenceType === 'interval') {
+    } else if (showRecurrence && recurrenceType === 'interval') {
       recurrence_config = { 
         interval_hours: intervalHours, 
         duration_days: durationDays 
@@ -215,7 +254,7 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                   type="date"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className={`${inputClass} ${isDateInPast ? 'border-[#C4754B]/50' : ''}`}
+                  className={`${inputClass} ${isDateInPast ? 'border-destructive/50' : ''}`}
                 />
               </div>
               <div className="space-y-3">
@@ -227,7 +266,7 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                   type="time"
                   value={dueTime}
                   onChange={(e) => setDueTime(e.target.value)}
-                  className={`${inputClass} ${isDateInPast ? 'border-[#C4754B]/50' : ''}`}
+                  className={`${inputClass} ${isDateInPast ? 'border-destructive/50' : ''}`}
                 />
               </div>
             </div>
@@ -241,19 +280,19 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
           </div>
 
           {/* ═══════════════════════════════════════════════════════════════
-              ETAPA 2 - REPETIR? (toggle + opções)
+              ETAPA 2 - RECORRENTE? (toggle + opções)
           ═══════════════════════════════════════════════════════════════ */}
           <div className="space-y-4">
             <div className="flex items-center justify-between py-2">
               <Label htmlFor="recurring" className="text-sm text-muted-foreground">
-                Repetir?
+                Recorrente?
               </Label>
               <Switch
                 id="recurring"
                 checked={showRecurrence}
                 onCheckedChange={(checked) => {
                   setShowRecurrence(checked);
-                  if (!checked) setRecurrenceType('once');
+                  if (!checked) setRecurrenceType('daily');
                 }}
               />
             </div>
@@ -306,10 +345,14 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                       <Label className="text-xs text-muted-foreground/70">A cada</Label>
                       <div className="flex items-center gap-2">
                         <Input
-                          type="number"
-                          min={1}
-                          value={intervalHours}
-                          onChange={(e) => setIntervalHours(parseInt(e.target.value) || 1)}
+                          type="text"
+                          inputMode="numeric"
+                          value={intervalHoursStr}
+                          onChange={(e) => setIntervalHoursStr(e.target.value.replace(/\D/g, ''))}
+                          onBlur={() => {
+                            const val = parseInt(intervalHoursStr);
+                            if (isNaN(val) || val < 1) setIntervalHoursStr('1');
+                          }}
                           className={`${inputClass} w-16`}
                         />
                         <span className="text-sm text-muted-foreground">horas</span>
@@ -318,10 +361,17 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                     <div className="space-y-2">
                       <Label className="text-xs text-muted-foreground/70">Por quantos dias</Label>
                       <Input
-                        type="number"
-                        min={1}
-                        value={durationDays}
-                        onChange={(e) => setDurationDays(parseInt(e.target.value) || 1)}
+                        type="text"
+                        inputMode="numeric"
+                        value={durationDaysStr}
+                        onChange={(e) => {
+                          setDurationDaysStr(e.target.value.replace(/\D/g, ''));
+                          setLastEdited('duration');
+                        }}
+                        onBlur={() => {
+                          const val = parseInt(durationDaysStr);
+                          if (isNaN(val) || val < 1) setDurationDaysStr('1');
+                        }}
                         className={inputClass}
                       />
                     </div>
@@ -329,13 +379,16 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                 )}
 
                 {/* Até quando? (para recorrentes) */}
-                {recurrenceType !== 'once' && (
+                {showRecurrence && (
                   <div className="space-y-2">
                     <Label className="text-xs text-muted-foreground/70">Até quando? (opcional)</Label>
                     <Input
                       type="date"
                       value={recurrenceEnd}
-                      onChange={(e) => setRecurrenceEnd(e.target.value)}
+                      onChange={(e) => {
+                        setRecurrenceEnd(e.target.value);
+                        setLastEdited('endDate');
+                      }}
                       className={inputClass}
                     />
                   </div>

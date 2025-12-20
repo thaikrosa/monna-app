@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import { SignOut, UserCircle, Gear, CaretRight } from '@phosphor-icons/react';
+import { Link, useNavigate } from 'react-router-dom';
+import { SignOut, UserCircle, Gear, CaretRight, House } from '@phosphor-icons/react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 
 export function UserMenu() {
   const { user, profile, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const handleSignOut = async () => {
     try {
@@ -51,8 +52,11 @@ export function UserMenu() {
       </DropdownMenuTrigger>
       
       <DropdownMenuContent align="end" className="w-64 annia-glass p-0">
-        {/* Header with large avatar */}
-        <div className="p-4 flex items-center gap-3 border-b border-border">
+        {/* Header with large avatar - clickable to go Home */}
+        <button
+          onClick={() => navigate('/')}
+          className="w-full p-4 flex items-center gap-3 border-b border-border hover:bg-muted/30 transition-colors cursor-pointer text-left"
+        >
           <Avatar className="h-12 w-12 border border-border">
             <AvatarImage src={profile?.avatar_url || undefined} alt="Avatar" />
             <AvatarFallback className="bg-primary/10 text-primary text-base font-semibold">
@@ -67,10 +71,20 @@ export function UserMenu() {
               {user?.email}
             </span>
           </div>
-        </div>
+        </button>
         
         {/* Navigation links */}
         <div className="py-2">
+          <DropdownMenuItem asChild className="cursor-pointer px-4 py-3">
+            <Link to="/" className="flex items-center justify-between w-full">
+              <div className="flex items-center gap-3">
+                <House weight="thin" className="h-5 w-5 text-muted-foreground" />
+                <span>Home</span>
+              </div>
+              <CaretRight weight="thin" className="h-4 w-4 text-muted-foreground" />
+            </Link>
+          </DropdownMenuItem>
+
           <DropdownMenuItem asChild className="cursor-pointer px-4 py-3">
             <Link to="/perfil" className="flex items-center justify-between w-full">
               <div className="flex items-center gap-3">

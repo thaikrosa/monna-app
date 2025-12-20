@@ -14,7 +14,6 @@ import { RemindersSection } from "@/components/home/RemindersSection";
 import { ShoppingSection } from "@/components/home/ShoppingSection";
 import { KidsDashboard } from "@/components/home/KidsDashboard";
 import { AnniaMomentSection } from "@/components/home/AnniaMomentSection";
-import { BottomBar } from "@/components/home/BottomBar";
 import { HomeSkeleton } from "@/components/home/HomeSkeleton";
 import { HomeError } from "@/components/home/HomeError";
 
@@ -46,13 +45,12 @@ export default function Home() {
     return (
       <div className="max-w-2xl mx-auto pb-20 px-4">
         <HomeError onRetry={() => refetchProfile()} />
-        <BottomBar />
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto pb-24 px-4 space-y-5">
+    <div className="max-w-2xl mx-auto pb-4 px-4 space-y-5">
       {/* 1. Voz da Annia (Mensagem do Dia) */}
       <div className="animate-slide-up stagger-1">
         <VoiceOfAnnia insight={dailyInsight} />
@@ -90,9 +88,6 @@ export default function Home() {
           <AnniaMomentSection suggestions={suggestions} />
         </div>
       )}
-
-      {/* Bottom navigation */}
-      <BottomBar />
     </div>
   );
 }

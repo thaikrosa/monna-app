@@ -17,7 +17,7 @@ export function BottomBar() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 backdrop-blur-md bg-background/80 border-t border-border px-4 py-3 z-50">
+    <nav className="fixed bottom-0 left-0 right-0 bg-inverse border-t border-sidebar-border px-4 py-3 z-50">
       <div className="max-w-2xl mx-auto flex items-center justify-around">
         {navItems.map((item, index) => {
           const Icon = item.icon;
@@ -30,7 +30,7 @@ export function BottomBar() {
               className={`relative flex flex-col items-center gap-1 py-2 px-4 rounded-lg transition-all duration-200 ${
                 isActive 
                   ? 'text-primary' 
-                  : 'text-muted-foreground hover:text-foreground'
+                  : 'text-inverse-muted hover:text-inverse-foreground'
               }`}
             >
               <Icon weight="thin" className="w-6 h-6" />

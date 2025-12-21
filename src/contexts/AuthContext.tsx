@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, ReactNode, useCallback } from 'react';
+import { createContext, useEffect, useState, ReactNode, useCallback, useRef } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
@@ -19,8 +19,10 @@ interface AuthContextType {
   session: Session | null;
   profile: Profile | null;
   loading: boolean;
+  profileError: boolean;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
+  forceLogout: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -30,7 +32,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profileError, setProfileError] = useState(false);
   const queryClient = useQueryClient();
+  const loadingFinishedRef = useRef(false);
+
+  // Limpa apenas chaves de auth do Supabase (sb-*)
+  const clearSupabaseStorage = useCallback(() => {
+    const keysToRemove = Object.keys(localStorage).filter(
+      key => key.startsWith('sb-')
+    );
+    keysToRemove.forEach(key => localStorage.removeItem(key));
+    console.log('[AuthContext] Cleared Supabase storage keys:', keysToRemove.length);
+  }, []);
+
+  // Limpa todo o estado de autenticação
+  const clearAllState = useCallback(() => {
+    setUser(null);
+    setSession(null);
+    setProfile(null);
+    setProfileError(false);
+    queryClient.clear();
+    clearSupabaseStorage();
+    console.log('[AuthContext] Cleared all auth state');
+  }, [queryClient, clearSupabaseStorage]);
+
+  // Função de emergência para forçar logout
+  const forceLogout = useCallback(() => {
+    clearAllState();
+    setLoading(false);
+    loadingFinishedRef.current = true;
+  }, [clearAllState]);
 
   const fetchProfile = useCallback(async (userId: string): Promise<Profile | null> => {
     const { data, error } = await supabase
@@ -41,6 +72,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (error) {
       console.error('[AuthContext] Error fetching profile for user:', userId, error);
+      // Se for 401/403, é erro de auth
+      if (error.code === 'PGRST301' || error.message?.includes('401') || error.message?.includes('403')) {
+        throw new Error('AUTH_ERROR');
+      }
       return null;
     }
 
@@ -74,25 +109,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const loadProfile = useCallback(async (authUser: User) => {
-    let profileData = await fetchProfile(authUser.id);
-    
-    if (!profileData) {
-      profileData = await createProfile(authUser);
+    try {
+      setProfileError(false);
+      let profileData = await fetchProfile(authUser.id);
+      
+      if (!profileData) {
+        profileData = await createProfile(authUser);
+      }
+      
+      setProfile(profileData);
+    } catch (error) {
+      console.error('[AuthContext] Failed to load profile:', error);
+      
+      // Se for erro de auth, marcar para mostrar fallback
+      if (error instanceof Error && error.message === 'AUTH_ERROR') {
+        setProfileError(true);
+      } else {
+        // Outros erros: manter user logado sem profile
+        setProfile(null);
+      }
     }
-    
-    setProfile(profileData);
   }, [fetchProfile, createProfile]);
-
-  const clearAllState = useCallback(() => {
-    setUser(null);
-    setSession(null);
-    setProfile(null);
-    // Clear all React Query cache to prevent stale data across users
-    queryClient.clear();
-  }, [queryClient]);
 
   useEffect(() => {
     let isMounted = true;
+    let initTimeoutId: NodeJS.Timeout | null = null;
 
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -101,10 +142,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         console.log('[AuthContext] Auth state change:', event);
 
-        // On sign out or token refresh fail, clear everything
+        // On sign out, clear everything
         if (event === 'SIGNED_OUT') {
           clearAllState();
           setLoading(false);
+          loadingFinishedRef.current = true;
           return;
         }
 
@@ -112,9 +154,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(newSession);
         const newUser = newSession?.user ?? null;
         
-        // If user changed, clear profile first to avoid showing stale data
+        // If user changed, clear profile first
         if (newUser?.id !== user?.id) {
           setProfile(null);
+          setProfileError(false);
+          // Also clear queries for the old user
+          if (user?.id) {
+            queryClient.clear();
+          }
         }
         
         setUser(newUser);
@@ -125,12 +172,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
         
         setLoading(false);
+        loadingFinishedRef.current = true;
       }
     );
 
-    // Check for existing session
+    // Check for existing session with timeout protection
     supabase.auth.getSession().then(async ({ data: { session: existingSession } }) => {
       if (!isMounted) return;
+      
+      // Cancel timeout since we got a response
+      if (initTimeoutId) {
+        clearTimeout(initTimeoutId);
+        initTimeoutId = null;
+      }
       
       setSession(existingSession);
       setUser(existingSession?.user ?? null);
@@ -140,13 +194,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       
       setLoading(false);
+      loadingFinishedRef.current = true;
+    }).catch((error) => {
+      console.error('[AuthContext] Error getting session:', error);
+      if (isMounted) {
+        clearAllState();
+        setLoading(false);
+        loadingFinishedRef.current = true;
+      }
     });
+
+    // Timeout de segurança: se após 10s ainda estiver loading, limpar tudo
+    initTimeoutId = setTimeout(() => {
+      if (isMounted && !loadingFinishedRef.current) {
+        console.warn('[AuthContext] Session check timeout - clearing state');
+        clearAllState();
+        setLoading(false);
+        loadingFinishedRef.current = true;
+      }
+    }, 10000);
 
     return () => {
       isMounted = false;
+      if (initTimeoutId) {
+        clearTimeout(initTimeoutId);
+      }
       subscription.unsubscribe();
     };
-  }, [loadProfile, clearAllState, user?.id]);
+  }, [loadProfile, clearAllState, queryClient]);
 
   const signInWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
@@ -163,18 +238,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    
-    if (error) {
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
       console.error('[AuthContext] Error signing out:', error);
-      throw error;
     }
     
-    // State will be cleared by onAuthStateChange handler
+    // Sempre limpar, mesmo se signOut falhar
+    clearAllState();
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, loading, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      session, 
+      profile, 
+      loading, 
+      profileError,
+      signInWithGoogle, 
+      signOut,
+      forceLogout 
+    }}>
       {children}
     </AuthContext.Provider>
   );

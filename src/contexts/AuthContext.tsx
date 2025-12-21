@@ -134,6 +134,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let isMounted = true;
     let initTimeoutId: NodeJS.Timeout | null = null;
+    let currentUserId: string | null = null;
 
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -144,6 +145,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // On sign out, clear everything
         if (event === 'SIGNED_OUT') {
+          currentUserId = null;
           clearAllState();
           setLoading(false);
           loadingFinishedRef.current = true;
@@ -155,13 +157,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const newUser = newSession?.user ?? null;
         
         // If user changed, clear profile first
-        if (newUser?.id !== user?.id) {
+        if (newUser?.id !== currentUserId) {
           setProfile(null);
           setProfileError(false);
           // Also clear queries for the old user
-          if (user?.id) {
+          if (currentUserId) {
             queryClient.clear();
           }
+          currentUserId = newUser?.id ?? null;
         }
         
         setUser(newUser);
@@ -186,6 +189,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         initTimeoutId = null;
       }
       
+      currentUserId = existingSession?.user?.id ?? null;
       setSession(existingSession);
       setUser(existingSession?.user ?? null);
       
@@ -221,7 +225,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       subscription.unsubscribe();
     };
-  }, [loadProfile, clearAllState, queryClient]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const signInWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({

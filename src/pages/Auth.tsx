@@ -9,6 +9,7 @@ export default function Auth() {
   const { user, loading, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
+  // Redireciona se já estiver logado
   useEffect(() => {
     if (!loading && user) {
       navigate('/', { replace: true });
@@ -23,13 +24,10 @@ export default function Auth() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Carregando...</div>
-      </div>
-    );
-  }
+  // IMPORTANTE: Mostrar UI imediatamente, não bloquear em loading
+  // Se estiver logado, o useEffect acima redireciona
+  // Se loading=true mas user=null, mostrar botão de login mesmo assim
+  // (previne tela presa em loading por muito tempo)
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
@@ -44,16 +42,24 @@ export default function Auth() {
           </p>
         </div>
 
-        {/* Login Button */}
+        {/* Login Button - sempre visível */}
         <Button
           onClick={handleGoogleLogin}
           variant="outline"
           size="lg"
           className="w-full flex items-center justify-center gap-3 h-12 text-base"
+          disabled={loading && user !== null}
         >
           <GoogleLogo weight="regular" className="w-5 h-5" />
           Continuar com Google
         </Button>
+
+        {/* Indicador sutil de loading (não bloqueia interação) */}
+        {loading && (
+          <p className="text-xs text-muted-foreground/60 animate-pulse">
+            Verificando sessão...
+          </p>
+        )}
       </div>
     </div>
   );

@@ -21,12 +21,12 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
       return;
     }
 
-    // Mostrar fallback após 8 segundos de loading
+    // Mostrar fallback após 3 segundos de loading (reduzido pois loading já é mais rápido)
     const timeoutId = setTimeout(() => {
       if (loading) {
         setShowFallback(true);
       }
-    }, 8000);
+    }, 3000);
 
     return () => clearTimeout(timeoutId);
   }, [loading]);

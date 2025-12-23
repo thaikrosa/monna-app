@@ -95,10 +95,10 @@ export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingI
               : 'text-primary hover:text-primary hover:bg-primary/10 active:bg-primary/20'
           }`}
         >
-          {item.is_checked ? (
-            <ArrowCounterClockwise weight="regular" className="h-5 w-5" />
+        {item.is_checked ? (
+            <ArrowCounterClockwise weight="bold" className="h-6 w-6" />
           ) : (
-            <CheckCircle weight="regular" className="h-5 w-5" />
+            <CheckCircle weight="bold" className="h-6 w-6" />
           )}
         </Button>
 

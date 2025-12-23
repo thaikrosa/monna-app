@@ -45,6 +45,13 @@ export default function ShoppingList() {
       .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
   }, [filteredItems]);
 
+  // Obter nome da tag ativa para pré-selecionar no AddItemSheet
+  const activeTagName = useMemo(() => {
+    if (activeTab === 'todos') return undefined;
+    const tag = tags.find(t => t.id === activeTab);
+    return tag?.name;
+  }, [activeTab, tags]);
+
   const totalCount = pendingItems.length + completedItems.length;
 
   return (
@@ -186,7 +193,7 @@ export default function ShoppingList() {
       </button>
 
       {/* Sheet para adicionar item */}
-      <AddItemSheet open={addSheetOpen} onOpenChange={setAddSheetOpen} />
+      <AddItemSheet open={addSheetOpen} onOpenChange={setAddSheetOpen} defaultTagName={activeTagName} />
 
       {/* Sheet de edição */}
       <EditItemSheet

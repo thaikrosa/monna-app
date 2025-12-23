@@ -1,4 +1,3 @@
-import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -6,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { DotsThreeVertical, PencilSimple, Trash } from '@phosphor-icons/react';
+import { DotsThreeVertical, PencilSimple, Trash, CheckCircle, ArrowCounterClockwise } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import type { ShoppingItem } from '@/hooks/useShoppingList';
 
@@ -24,24 +23,6 @@ function formatFrequency(days: number | null) {
 }
 
 export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingItemCardProps) {
-  // Handler para teclado (acessibilidade)
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      onToggle(item.id, !item.is_checked);
-    }
-  };
-
-  // Handler para clique na linha (não propagar do menu)
-  const handleRowClick = (e: React.MouseEvent) => {
-    // Evitar toggle se clicou no menu ou em botões internos
-    const target = e.target as HTMLElement;
-    if (target.closest('[data-menu-trigger]') || target.closest('button')) {
-      return;
-    }
-    onToggle(item.id, !item.is_checked);
-  };
-
   // Excluir com toast de confirmação suave
   const handleDelete = () => {
     toast('Item removido', {
@@ -49,7 +30,6 @@ export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingI
       action: {
         label: 'Desfazer',
         onClick: () => {
-          // Não faz nada - item não foi deletado ainda
           toast.dismiss();
         },
       },
@@ -62,27 +42,12 @@ export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingI
 
   return (
     <div
-      role="button"
-      tabIndex={0}
-      onClick={handleRowClick}
-      onKeyDown={handleKeyDown}
       className={`
         flex items-center gap-3 py-3 px-2 -mx-2 rounded-lg
-        cursor-pointer select-none
         transition-all duration-150
-        hover:bg-muted/30 active:bg-muted/50
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
-        ${item.is_checked ? 'opacity-60' : ''}
+        ${item.is_checked ? 'opacity-50' : ''}
       `}
     >
-      {/* Checkbox visual (click handled by parent) */}
-      <Checkbox
-        checked={item.is_checked}
-        onCheckedChange={() => {}}
-        tabIndex={-1}
-        className="pointer-events-none data-[state=checked]:bg-primary data-[state=checked]:border-primary transition-all duration-150"
-      />
-
       {/* Conteúdo do item */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
@@ -116,33 +81,54 @@ export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingI
         </div>
       </div>
 
-      {/* Menu contextual discreto */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            data-menu-trigger
-            className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 shrink-0"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <DotsThreeVertical weight="bold" className="h-5 w-5" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40">
-          <DropdownMenuItem onClick={() => onEdit(item)} className="gap-2">
-            <PencilSimple weight="duotone" className="h-4 w-4" />
-            Editar
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={handleDelete}
-            className="gap-2 text-destructive focus:text-destructive"
-          >
-            <Trash weight="duotone" className="h-4 w-4" />
-            Excluir
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {/* Bloco de ações à direita: Feito → Menu */}
+      <div className="flex items-center gap-1 shrink-0">
+        {/* Botão Feito/Desfazer */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => onToggle(item.id, !item.is_checked)}
+          aria-label={item.is_checked ? 'Marcar como não feito' : 'Marcar como feito'}
+          className={`h-9 w-9 transition-colors ${
+            item.is_checked 
+              ? 'text-muted-foreground hover:text-foreground hover:bg-muted/50' 
+              : 'text-primary hover:text-primary hover:bg-primary/10'
+          }`}
+        >
+          {item.is_checked ? (
+            <ArrowCounterClockwise weight="regular" className="h-5 w-5" />
+          ) : (
+            <CheckCircle weight="regular" className="h-5 w-5" />
+          )}
+        </Button>
+
+        {/* Menu contextual */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Mais opções"
+              className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+            >
+              <DotsThreeVertical weight="bold" className="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuItem onClick={() => onEdit(item)} className="gap-2">
+              <PencilSimple weight="duotone" className="h-4 w-4" />
+              Editar
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={handleDelete}
+              className="gap-2 text-destructive focus:text-destructive"
+            >
+              <Trash weight="duotone" className="h-4 w-4" />
+              Excluir
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </div>
   );
 }

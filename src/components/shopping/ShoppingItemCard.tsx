@@ -89,16 +89,16 @@ export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingI
           size="icon"
           onClick={() => onToggle(item.id, !item.is_checked)}
           aria-label={item.is_checked ? 'Marcar como não feito' : 'Marcar como feito'}
-          className={`h-9 w-9 transition-colors ${
+          className={`h-11 w-11 transition-colors ${
             item.is_checked 
               ? 'text-muted-foreground hover:text-foreground hover:bg-muted/50' 
               : 'text-primary hover:text-primary hover:bg-primary/10'
           }`}
         >
           {item.is_checked ? (
-            <ArrowCounterClockwise weight="regular" className="h-5 w-5" />
+            <ArrowCounterClockwise weight="regular" className="h-7 w-7" />
           ) : (
-            <CheckCircle weight="regular" className="h-5 w-5" />
+            <CheckCircle weight="regular" className="h-7 w-7" />
           )}
         </Button>
 

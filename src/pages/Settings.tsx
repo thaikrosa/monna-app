@@ -11,7 +11,11 @@ import {
   Check,
   Warning,
   ShoppingCart,
-  Bell
+  Bell,
+  ChatCircle,
+  Heart,
+  Target,
+  Smiley
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -48,6 +52,7 @@ export default function Settings() {
     checkin_evening_time: '21:00',
     proactive_suggestions_enabled: false,
     inventory_alerts_enabled: false,
+    communication_style: 'caring',
   });
 
   // Helper to normalize time format (remove seconds if present)
@@ -71,6 +76,7 @@ export default function Settings() {
         checkin_evening_time: normalizeTime(profile.checkin_evening_time, '21:00'),
         proactive_suggestions_enabled: profile.proactive_suggestions_enabled ?? false,
         inventory_alerts_enabled: profile.inventory_alerts_enabled ?? false,
+        communication_style: profile.communication_style ?? 'caring',
       });
     }
   }, [profile]);
@@ -89,6 +95,7 @@ export default function Settings() {
             ? `${settings.checkin_evening_time}:00` 
             : settings.checkin_evening_time)
         : `${settings.checkin_evening_time}:00`,
+      communication_style: settings.communication_style,
     };
     updateProfile.mutate(dataToSave);
   };
@@ -210,6 +217,60 @@ export default function Settings() {
                   onCheckedChange={(v) => handleToggle('checkin_evening_enabled', v)}
                 />
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Estilo de Comunicação */}
+        <section>
+          <h2 className="text-base font-medium text-foreground mb-1">
+            Como você prefere que eu fale?
+          </h2>
+          <p className="text-sm text-muted-foreground mb-3">
+            Escolha o tom que combina mais com você
+          </p>
+
+          <div className="annia-glass p-4 rounded-lg border border-border/30">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <ChatCircle weight="thin" className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="text-foreground text-sm font-medium">Tom da Annia</p>
+                  <p className="text-xs text-muted-foreground">
+                    {settings.communication_style === 'caring' && 'Próxima e acolhedora'}
+                    {settings.communication_style === 'direct' && 'Objetiva e direta'}
+                    {settings.communication_style === 'playful' && 'Leve e divertida'}
+                  </p>
+                </div>
+              </div>
+              <Select
+                value={settings.communication_style}
+                onValueChange={(v) => setSettings(prev => ({ ...prev, communication_style: v }))}
+              >
+                <SelectTrigger className="w-36 h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="caring">
+                    <span className="flex items-center gap-2">
+                      <Heart weight="bold" className="h-4 w-4" />
+                      Acolhedora
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="direct">
+                    <span className="flex items-center gap-2">
+                      <Target weight="bold" className="h-4 w-4" />
+                      Direta
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="playful">
+                    <span className="flex items-center gap-2">
+                      <Smiley weight="bold" className="h-4 w-4" />
+                      Humorada
+                    </span>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </section>

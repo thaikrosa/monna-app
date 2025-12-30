@@ -289,6 +289,59 @@ export type Database = {
         }
         Relationships: []
       }
+      conversation_logs: {
+        Row: {
+          confidence: number | null
+          content: string
+          created_at: string | null
+          id: string
+          intent: string | null
+          message_type: string | null
+          metadata: Json | null
+          phone: string
+          processing_time_ms: number | null
+          role: string
+          timestamp: string
+          user_id: string | null
+        }
+        Insert: {
+          confidence?: number | null
+          content: string
+          created_at?: string | null
+          id?: string
+          intent?: string | null
+          message_type?: string | null
+          metadata?: Json | null
+          phone: string
+          processing_time_ms?: number | null
+          role: string
+          timestamp: string
+          user_id?: string | null
+        }
+        Update: {
+          confidence?: number | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          intent?: string | null
+          message_type?: string | null
+          metadata?: Json | null
+          phone?: string
+          processing_time_ms?: number | null
+          role?: string
+          timestamp?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       daily_insights: {
         Row: {
           action_label: string | null
@@ -318,6 +371,68 @@ export type Database = {
           mood_type?: string
         }
         Relationships: []
+      }
+      error_logs: {
+        Row: {
+          created_at: string | null
+          error_message: string | null
+          error_stack: string | null
+          error_type: string
+          execution_id: string | null
+          flow_version: string | null
+          id: string
+          metadata: Json | null
+          node_name: string | null
+          phone: string | null
+          resolved_at: string | null
+          retry_count: number | null
+          timestamp: string | null
+          user_id: string | null
+          user_message: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          error_message?: string | null
+          error_stack?: string | null
+          error_type: string
+          execution_id?: string | null
+          flow_version?: string | null
+          id?: string
+          metadata?: Json | null
+          node_name?: string | null
+          phone?: string | null
+          resolved_at?: string | null
+          retry_count?: number | null
+          timestamp?: string | null
+          user_id?: string | null
+          user_message?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string | null
+          error_stack?: string | null
+          error_type?: string
+          execution_id?: string | null
+          flow_version?: string | null
+          id?: string
+          metadata?: Json | null
+          node_name?: string | null
+          phone?: string | null
+          resolved_at?: string | null
+          retry_count?: number | null
+          timestamp?: string | null
+          user_id?: string | null
+          user_message?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "error_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       free_time_slots: {
         Row: {
@@ -968,6 +1083,45 @@ export type Database = {
       }
     }
     Views: {
+      errors_recent: {
+        Row: {
+          affected_users: number | null
+          avg_retry_count: number | null
+          error_count: number | null
+          error_type: string | null
+          first_occurrence: string | null
+          last_occurrence: string | null
+          resolved_count: number | null
+          unresolved_count: number | null
+        }
+        Relationships: []
+      }
+      intent_distribution: {
+        Row: {
+          avg_confidence: number | null
+          count: number | null
+          intent: string | null
+          max_confidence: number | null
+          min_confidence: number | null
+          unique_users: number | null
+        }
+        Relationships: []
+      }
+      metrics_hourly: {
+        Row: {
+          assistant_messages: number | null
+          avg_confidence: number | null
+          avg_processing_time_ms: number | null
+          hour: string | null
+          max_processing_time_ms: number | null
+          total_messages: number | null
+          unique_intents: number | null
+          unique_phones: number | null
+          unique_users: number | null
+          user_messages: number | null
+        }
+        Relationships: []
+      }
       today_reminders: {
         Row: {
           call_guarantee: boolean | null
@@ -1002,6 +1156,28 @@ export type Database = {
         }
         Relationships: []
       }
+      user_activity_summary: {
+        Row: {
+          active_days: number | null
+          avg_processing_time_ms: number | null
+          first_name: string | null
+          last_interaction: string | null
+          nickname: string | null
+          total_interactions: number | null
+          unique_intents_used: number | null
+          user_id: string | null
+          whatsapp: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_shopping_items_with_frequency: {
         Row: {
           avg_days_between: number | null
@@ -1033,6 +1209,13 @@ export type Database = {
       }
     }
     Functions: {
+      cleanup_old_logs: {
+        Args: { days_to_keep?: number }
+        Returns: {
+          conversation_logs_deleted: number
+          error_logs_deleted: number
+        }[]
+      }
       generate_reminder_occurrences: {
         Args: { p_count?: number; p_reminder_id: string }
         Returns: number
@@ -1052,6 +1235,13 @@ export type Database = {
           send_whatsapp: boolean
           title: string
           user_id: string
+        }[]
+      }
+      get_system_stats: {
+        Args: { hours_back?: number }
+        Returns: {
+          metric: string
+          value: number
         }[]
       }
       shopping_add_item: {

@@ -142,10 +142,23 @@ export function useHomeDashboard() {
       }
 
       // 5. Se É assinante → busca dados REAIS em paralelo
-      const [remindersResult, shoppingResult, childrenResult] = await Promise.all([
+      // Início e fim do dia em UTC considerando timezone local
+      const today = new Date();
+      const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
+      const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1).toISOString();
+
+      const [remindersResult, shoppingResult, childrenResult, calendarResult] = await Promise.all([
         supabase.from('today_reminders').select('*').limit(5),
         supabase.from('v_shopping_items_with_frequency').select('*').eq('is_checked', false),
-        supabase.from('children').select('*').limit(2)
+        supabase.from('children').select('*').limit(2),
+        // Buscar eventos de hoje com timezone correto
+        supabase
+          .from('calendar_events')
+          .select('*')
+          .gte('starts_at', startOfDay)
+          .lt('starts_at', endOfDay)
+          .order('starts_at', { ascending: true })
+          .limit(10)
       ]);
 
       // 6. Montar resposta com dados reais
@@ -161,7 +174,16 @@ export function useHomeDashboard() {
           secondaryCta: { label: greetingData.secondaryLabel, action: 'adjust' }
         },
         today: {
-          agenda: [], // TODO: buscar de calendar_events quando existir
+          agenda: (calendarResult.data || []).map(event => ({
+            id: event.id,
+            start_time: event.is_all_day 
+              ? 'Dia todo'
+              : new Date(event.starts_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            end_time: event.is_all_day || !event.ends_at
+              ? undefined
+              : new Date(event.ends_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            title: event.title || 'Evento sem título'
+          })),
           reminders: (remindersResult.data || []).slice(0, 3).map(r => ({
             id: r.id || '',
             title: r.title || '',

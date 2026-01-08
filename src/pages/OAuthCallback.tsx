@@ -21,7 +21,7 @@ export default function OAuthCallback() {
         console.error('OAuth error:', error);
         setStatus('error');
         setErrorMessage('Autorização cancelada ou negada');
-        setTimeout(() => navigate('/settings'), 2000);
+        setTimeout(() => navigate('/configuracoes'), 2000);
         return;
       }
 
@@ -29,7 +29,7 @@ export default function OAuthCallback() {
         console.error('No code in callback');
         setStatus('error');
         setErrorMessage('Código de autorização não encontrado');
-        setTimeout(() => navigate('/settings'), 2000);
+        setTimeout(() => navigate('/configuracoes'), 2000);
         return;
       }
 
@@ -48,7 +48,7 @@ export default function OAuthCallback() {
       }
 
       // Redirect after processing
-      setTimeout(() => navigate('/settings'), 1500);
+      setTimeout(() => navigate('/configuracoes'), 1500);
     };
 
     processCallback();

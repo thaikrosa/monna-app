@@ -1,13 +1,13 @@
-import { House, BellSimple, ShoppingCart } from '@phosphor-icons/react';
+import { House, BellSimple, ShoppingCart, CalendarBlank } from '@phosphor-icons/react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 export function BottomBar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Only items with existing routes
   const navItems = [
     { icon: House, path: '/', label: 'Home' },
+    { icon: CalendarBlank, path: '/agenda', label: 'Agenda' },
     { icon: BellSimple, path: '/lembretes', label: 'Lembretes' },
     { icon: ShoppingCart, path: '/lista', label: 'Compras' },
   ];

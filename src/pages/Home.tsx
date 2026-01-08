@@ -2,13 +2,11 @@ import { useProfile } from "@/hooks/useProfile";
 import { useChildren } from "@/hooks/useChildren";
 import { useShoppingItems } from "@/hooks/useShoppingList";
 import { useGoogleCalendarConnection } from "@/hooks/useCalendarConnections";
-import { useDailyInsight } from "@/hooks/useDailyInsight";
 import { useAiSuggestions } from "@/hooks/useAiSuggestions";
 import { useLatestChildInsights } from "@/hooks/useChildrenInsights";
 import { useTodayCalendarEvents } from "@/hooks/useTodayCalendarEvents";
 import { usePendingReminders } from "@/hooks/usePendingReminders";
 
-import { VoiceOfAnnia } from "@/components/home/VoiceOfAnnia";
 import { CalendarSection } from "@/components/home/CalendarSection";
 import { RemindersSection } from "@/components/home/RemindersSection";
 import { ShoppingSection } from "@/components/home/ShoppingSection";
@@ -22,7 +20,6 @@ export default function Home() {
   const { data: profile, isLoading: profileLoading, isError: profileError, refetch: refetchProfile } = useProfile();
   
   // Dados dinâmicos
-  const { data: dailyInsight } = useDailyInsight();
   const { data: calendarConnection } = useGoogleCalendarConnection();
   const { data: calendarEvents = [] } = useTodayCalendarEvents();
   const { data: pendingReminders = [] } = usePendingReminders();
@@ -51,40 +48,35 @@ export default function Home() {
 
   return (
     <div className="max-w-2xl mx-auto pb-4 px-4 space-y-5">
-      {/* 1. Voz da Annia (Mensagem do Dia) */}
+      {/* 1. Agenda do Dia */}
       <div className="animate-slide-up stagger-1">
-        <VoiceOfAnnia insight={dailyInsight} />
-      </div>
-
-      {/* 2. Agenda do Dia */}
-      <div className="animate-slide-up stagger-2">
         <CalendarSection 
           connection={calendarConnection} 
           events={calendarEvents} 
         />
       </div>
 
-      {/* 3. Lembretes e Urgências */}
-      <div className="animate-slide-up stagger-3">
+      {/* 2. Lembretes e Urgências */}
+      <div className="animate-slide-up stagger-2">
         <RemindersSection reminders={pendingReminders} />
       </div>
 
-      {/* 4. Lista de Compras */}
-      <div className="animate-slide-up stagger-4">
+      {/* 3. Lista de Compras */}
+      <div className="animate-slide-up stagger-3">
         <ShoppingSection items={shoppingItems} />
       </div>
 
-      {/* 5. Dashboard dos Filhos */}
-      <div className="animate-slide-up stagger-5">
+      {/* 4. Dashboard dos Filhos */}
+      <div className="animate-slide-up stagger-4">
         <KidsDashboard 
           children={children} 
           insights={childrenInsights}
         />
       </div>
 
-      {/* 6. Momento Annia (Sugestões) */}
+      {/* 5. Momento Annia (Sugestões) */}
       {suggestions.length > 0 && (
-        <div className="animate-slide-up stagger-6">
+        <div className="animate-slide-up stagger-5">
           <AnniaMomentSection suggestions={suggestions} />
         </div>
       )}

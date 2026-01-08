@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '952322902498-ek27fjl0lp1qjepkjm12i55hhfbtavm7.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const CALENDAR_SCOPES = [
   'https://www.googleapis.com/auth/calendar.events',
   'openid',
@@ -24,6 +24,12 @@ export function useGoogleCalendarOAuth() {
   const initiateCalendarOAuth = useCallback(() => {
     if (!user) {
       toast.error('Você precisa estar logada para conectar o calendário');
+      return;
+    }
+
+    if (!GOOGLE_CLIENT_ID) {
+      toast.error('Google Client ID não configurado');
+      console.error('VITE_GOOGLE_CLIENT_ID is not set');
       return;
     }
 

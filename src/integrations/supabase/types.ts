@@ -52,36 +52,45 @@ export type Database = {
       }
       calendar_connections: {
         Row: {
+          access_token: string | null
+          access_token_expires_at: string | null
           created_at: string
           external_calendar_id: string
           id: string
           last_error: string | null
           last_synced_at: string | null
           provider: string
+          refresh_token: string | null
           scopes: string[]
           status: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          access_token?: string | null
+          access_token_expires_at?: string | null
           created_at?: string
           external_calendar_id?: string
           id?: string
           last_error?: string | null
           last_synced_at?: string | null
           provider?: string
+          refresh_token?: string | null
           scopes?: string[]
           status?: string
           updated_at?: string
           user_id?: string
         }
         Update: {
+          access_token?: string | null
+          access_token_expires_at?: string | null
           created_at?: string
           external_calendar_id?: string
           id?: string
           last_error?: string | null
           last_synced_at?: string | null
           provider?: string
+          refresh_token?: string | null
           scopes?: string[]
           status?: string
           updated_at?: string
@@ -289,6 +298,33 @@ export type Database = {
         }
         Relationships: []
       }
+      conversation_log: {
+        Row: {
+          created_at: string
+          direction: string
+          id: string
+          message: string
+          phone: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          direction: string
+          id?: string
+          message: string
+          phone: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          direction?: string
+          id?: string
+          message?: string
+          phone?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       conversation_logs: {
         Row: {
           confidence: number | null
@@ -341,6 +377,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      conversation_states: {
+        Row: {
+          context: Json | null
+          conversation_key: string
+          expires_at: string
+          id: string
+          origin_workflow: string
+          started_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          context?: Json | null
+          conversation_key: string
+          expires_at?: string
+          id?: string
+          origin_workflow: string
+          started_at?: string
+          status: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          context?: Json | null
+          conversation_key?: string
+          expires_at?: string
+          id?: string
+          origin_workflow?: string
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       daily_insights: {
         Row: {
@@ -463,6 +535,42 @@ export type Database = {
           id?: string
           source?: string
           starts_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      google_oauth_tokens: {
+        Row: {
+          access_token_expires_at: string | null
+          created_at: string
+          email: string
+          google_access_token: string | null
+          google_refresh_token: string
+          google_user_id: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_token_expires_at?: string | null
+          created_at?: string
+          email: string
+          google_access_token?: string | null
+          google_refresh_token: string
+          google_user_id: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_token_expires_at?: string | null
+          created_at?: string
+          email?: string
+          google_access_token?: string | null
+          google_refresh_token?: string
+          google_user_id?: string
+          id?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -826,6 +934,7 @@ export type Database = {
           name: string
           name_norm: string | null
           notes: string | null
+          phone: string | null
           quantity_text: string | null
           tag_id: string | null
           updated_at: string
@@ -840,6 +949,7 @@ export type Database = {
           name: string
           name_norm?: string | null
           notes?: string | null
+          phone?: string | null
           quantity_text?: string | null
           tag_id?: string | null
           updated_at?: string
@@ -854,6 +964,7 @@ export type Database = {
           name?: string
           name_norm?: string | null
           notes?: string | null
+          phone?: string | null
           quantity_text?: string | null
           tag_id?: string | null
           updated_at?: string

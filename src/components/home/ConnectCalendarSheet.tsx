@@ -1,4 +1,4 @@
-import { GoogleLogo, CalendarBlank } from '@phosphor-icons/react';
+import { GoogleLogo, CalendarBlank, Spinner } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -7,6 +7,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { useGoogleCalendarOAuth } from '@/hooks/useGoogleCalendarOAuth';
 
 interface ConnectCalendarSheetProps {
   open: boolean;
@@ -14,9 +15,10 @@ interface ConnectCalendarSheetProps {
 }
 
 export function ConnectCalendarSheet({ open, onOpenChange }: ConnectCalendarSheetProps) {
+  const { initiateCalendarOAuth, isConnecting } = useGoogleCalendarOAuth();
+
   const handleConnect = () => {
-    // Placeholder - OAuth integration will be added later
-    console.log('Google Calendar OAuth flow would start here');
+    initiateCalendarOAuth();
     onOpenChange(false);
   };
 
@@ -44,10 +46,20 @@ export function ConnectCalendarSheet({ open, onOpenChange }: ConnectCalendarShee
           
           <Button 
             onClick={handleConnect}
+            disabled={isConnecting}
             className="w-full bg-annia-olive hover:bg-annia-olive-hover text-primary-foreground transition-colors duration-200"
           >
-            <GoogleLogo weight="regular" className="w-5 h-5 mr-2" />
-            Continuar com Google
+            {isConnecting ? (
+              <>
+                <Spinner className="w-5 h-5 mr-2 animate-spin" />
+                Conectando...
+              </>
+            ) : (
+              <>
+                <GoogleLogo weight="regular" className="w-5 h-5 mr-2" />
+                Continuar com Google
+              </>
+            )}
           </Button>
           
           <Button 

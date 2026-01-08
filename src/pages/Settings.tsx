@@ -15,7 +15,8 @@ import {
   ChatCircle,
   Heart,
   Target,
-  Smiley
+  Smiley,
+  Spinner
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -25,6 +26,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useProfile, useUpdateProfile } from '@/hooks/useProfile';
 import { useChildren, useUpdateChild } from '@/hooks/useChildren';
 import { useGoogleCalendarConnection } from '@/hooks/useCalendarConnections';
+import { useGoogleCalendarOAuth } from '@/hooks/useGoogleCalendarOAuth';
 import { useActivitySummary } from '@/hooks/useActivityHistory';
 import { format, formatDistanceToNow, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -38,6 +40,7 @@ export default function Settings() {
   const { data: profile, isLoading: profileLoading } = useProfile();
   const { data: children = [], isLoading: childrenLoading } = useChildren();
   const { data: googleConnection, isConnected } = useGoogleCalendarConnection();
+  const { initiateCalendarOAuth, isConnecting } = useGoogleCalendarOAuth();
   const updateProfile = useUpdateProfile();
   const updateChild = useUpdateChild();
   
@@ -384,12 +387,21 @@ export default function Settings() {
                   <span className="text-xs">Conectado</span>
                 </div>
               ) : (
-                <div className="flex items-center gap-2">
-                  <Button size="sm" variant="outline" disabled>
-                    Conectar
-                  </Button>
-                  <span className="text-xs text-muted-foreground">Em breve</span>
-                </div>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={initiateCalendarOAuth}
+                  disabled={isConnecting}
+                >
+                  {isConnecting ? (
+                    <>
+                      <Spinner className="h-4 w-4 mr-1 animate-spin" />
+                      Conectando...
+                    </>
+                  ) : (
+                    'Conectar'
+                  )}
+                </Button>
               )}
             </div>
             {googleConnection?.last_error && (

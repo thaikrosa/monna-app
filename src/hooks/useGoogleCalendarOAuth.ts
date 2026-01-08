@@ -111,6 +111,21 @@ export function useGoogleCalendarOAuth() {
 
         toast.success("Agenda conectada com sucesso!");
 
+        // Sync calendar events immediately after connection
+        console.log("Syncing calendar events...");
+        const { error: syncError } = await supabase.functions.invoke('sync-google-calendar', {
+          body: { user_id: userId }
+        });
+
+        if (syncError) {
+          console.error("Error syncing calendar:", syncError);
+        } else {
+          console.log("Calendar events synced successfully!");
+          // Invalidate queries to refresh the home
+          queryClient.invalidateQueries({ queryKey: ["calendar-events"] });
+          queryClient.invalidateQueries({ queryKey: ["home-dashboard"] });
+        }
+
         return { success: true, data };
       } catch (error: any) {
         console.error("OAuth callback error:", error);

@@ -1,70 +1,79 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useGoogleCalendarOAuth } from '@/hooks/useGoogleCalendarOAuth';
-import { Spinner } from '@phosphor-icons/react';
+import { useEffect, useState, useRef } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useGoogleCalendarOAuth } from "@/hooks/useGoogleCalendarOAuth";
+import { Spinner } from "@phosphor-icons/react";
 
 export default function OAuthCallback() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { handleOAuthCallback } = useGoogleCalendarOAuth();
-  const [status, setStatus] = useState<'processing' | 'success' | 'error'>('processing');
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [status, setStatus] = useState<"processing" | "success" | "error">("processing");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  // Flag para garantir execução única
+  const hasProcessed = useRef(false);
 
   useEffect(() => {
     const processCallback = async () => {
-      const code = searchParams.get('code');
-      const state = searchParams.get('state');
-      const error = searchParams.get('error');
+      // Evita duplo processamento
+      if (hasProcessed.current) {
+        return;
+      }
+      hasProcessed.current = true;
+
+      const code = searchParams.get("code");
+      const state = searchParams.get("state");
+      const error = searchParams.get("error");
 
       // Handle OAuth errors
       if (error) {
-        console.error('OAuth error:', error);
-        setStatus('error');
-        setErrorMessage('Autorização cancelada ou negada');
-        setTimeout(() => navigate('/configuracoes'), 2000);
+        console.error("OAuth error:", error);
+        setStatus("error");
+        setErrorMessage("Autorização cancelada ou negada");
+        setTimeout(() => navigate("/configuracoes"), 2000);
         return;
       }
 
       if (!code) {
-        console.error('No code in callback');
-        setStatus('error');
-        setErrorMessage('Código de autorização não encontrado');
-        setTimeout(() => navigate('/configuracoes'), 2000);
+        console.error("No code in callback");
+        setStatus("error");
+        setErrorMessage("Código de autorização não encontrado");
+        setTimeout(() => navigate("/configuracoes"), 2000);
         return;
       }
 
       try {
-        const result = await handleOAuthCallback(code, state || '');
-        
+        const result = await handleOAuthCallback(code, state || "");
+
         if (result?.success) {
-          setStatus('success');
+          setStatus("success");
         } else {
-          setStatus('error');
-          setErrorMessage(result?.error || 'Erro ao conectar calendário');
+          setStatus("error");
+          setErrorMessage(result?.error || "Erro ao conectar calendário");
         }
       } catch (err: any) {
-        setStatus('error');
-        setErrorMessage(err.message || 'Erro inesperado');
+        setStatus("error");
+        setErrorMessage(err.message || "Erro inesperado");
       }
 
       // Redirect after processing
-      setTimeout(() => navigate('/configuracoes'), 1500);
+      setTimeout(() => navigate("/configuracoes"), 1500);
     };
 
     processCallback();
-  }, [searchParams, handleOAuthCallback, navigate]);
+  }, []); // Dependências vazias - executa apenas uma vez no mount
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="text-center space-y-4">
-        {status === 'processing' && (
+        {status === "processing" && (
           <>
             <Spinner className="w-8 h-8 text-primary animate-spin mx-auto" />
             <p className="text-foreground">Conectando sua agenda...</p>
           </>
         )}
-        
-        {status === 'success' && (
+
+        {status === "success" && (
           <>
             <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
               <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -74,8 +83,8 @@ export default function OAuthCallback() {
             <p className="text-foreground">Agenda conectada com sucesso!</p>
           </>
         )}
-        
-        {status === 'error' && (
+
+        {status === "error" && (
           <>
             <div className="w-12 h-12 bg-destructive/10 rounded-full flex items-center justify-center mx-auto">
               <svg className="w-6 h-6 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -85,7 +94,7 @@ export default function OAuthCallback() {
             <p className="text-destructive">{errorMessage}</p>
           </>
         )}
-        
+
         <p className="text-sm text-muted-foreground">Redirecionando...</p>
       </div>
     </div>

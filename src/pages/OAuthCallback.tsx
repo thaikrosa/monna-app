@@ -3,20 +3,37 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGoogleCalendarOAuth } from "@/hooks/useGoogleCalendarOAuth";
 import { Spinner } from "@phosphor-icons/react";
 
+type ProcessingStep = "exchanging" | "saving" | "syncing";
+
 export default function OAuthCallback() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { handleOAuthCallback } = useGoogleCalendarOAuth();
   const [status, setStatus] = useState<"processing" | "success" | "error">("processing");
+  const [processingStep, setProcessingStep] = useState<ProcessingStep>("exchanging");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   // Flag para garantir execução única
   const hasProcessed = useRef(false);
 
+  const getProcessingMessage = () => {
+    switch (processingStep) {
+      case "exchanging":
+        return "Trocando código por tokens...";
+      case "saving":
+        return "Salvando conexão...";
+      case "syncing":
+        return "Sincronizando eventos...";
+      default:
+        return "Conectando sua agenda...";
+    }
+  };
+
   useEffect(() => {
     const processCallback = async () => {
       // Evita duplo processamento
       if (hasProcessed.current) {
+        console.log("[OAuthCallback] Já processado, ignorando...");
         return;
       }
       hasProcessed.current = true;
@@ -24,26 +41,37 @@ export default function OAuthCallback() {
       const code = searchParams.get("code");
       const state = searchParams.get("state");
       const error = searchParams.get("error");
+      const errorDescription = searchParams.get("error_description");
+
+      console.log("[OAuthCallback] Iniciando processamento...");
+      console.log("[OAuthCallback] code:", code ? `${code.substring(0, 20)}...` : "null");
+      console.log("[OAuthCallback] state:", state);
+      console.log("[OAuthCallback] error:", error);
 
       // Handle OAuth errors
       if (error) {
-        console.error("OAuth error:", error);
+        console.error("[OAuthCallback] Erro OAuth:", error, errorDescription);
         setStatus("error");
-        setErrorMessage("Autorização cancelada ou negada");
-        setTimeout(() => navigate("/configuracoes"), 2000);
+        setErrorMessage(errorDescription || "Autorização cancelada ou negada");
+        setTimeout(() => navigate("/configuracoes"), 3000);
         return;
       }
 
       if (!code) {
-        console.error("No code in callback");
+        console.error("[OAuthCallback] Código não encontrado na URL");
         setStatus("error");
         setErrorMessage("Código de autorização não encontrado");
-        setTimeout(() => navigate("/configuracoes"), 2000);
+        setTimeout(() => navigate("/configuracoes"), 3000);
         return;
       }
 
       try {
+        setProcessingStep("exchanging");
+        console.log("[OAuthCallback] Chamando handleOAuthCallback...");
+        
         const result = await handleOAuthCallback(code, state || "");
+
+        console.log("[OAuthCallback] Resultado:", result);
 
         if (result?.success) {
           setStatus("success");
@@ -52,12 +80,13 @@ export default function OAuthCallback() {
           setErrorMessage(result?.error || "Erro ao conectar calendário");
         }
       } catch (err: any) {
+        console.error("[OAuthCallback] Erro inesperado:", err);
         setStatus("error");
         setErrorMessage(err.message || "Erro inesperado");
       }
 
       // Redirect after processing
-      setTimeout(() => navigate("/configuracoes"), 1500);
+      setTimeout(() => navigate("/configuracoes"), 2000);
     };
 
     processCallback();
@@ -65,11 +94,11 @@ export default function OAuthCallback() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="text-center space-y-4">
+      <div className="text-center space-y-4 max-w-sm px-4">
         {status === "processing" && (
           <>
             <Spinner className="w-8 h-8 text-primary animate-spin mx-auto" />
-            <p className="text-foreground">Conectando sua agenda...</p>
+            <p className="text-foreground">{getProcessingMessage()}</p>
           </>
         )}
 
@@ -80,7 +109,10 @@ export default function OAuthCallback() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <p className="text-foreground">Agenda conectada com sucesso!</p>
+            <p className="text-foreground font-medium">Agenda conectada com sucesso!</p>
+            <p className="text-sm text-muted-foreground">
+              Seus eventos serão sincronizados automaticamente.
+            </p>
           </>
         )}
 
@@ -91,7 +123,20 @@ export default function OAuthCallback() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
-            <p className="text-destructive">{errorMessage}</p>
+            <p className="text-destructive font-medium">Erro ao conectar calendário</p>
+            <p className="text-sm text-muted-foreground">{errorMessage}</p>
+            <p className="text-xs text-muted-foreground mt-2">
+              Se o problema persistir, tente revogar o acesso em{" "}
+              <a 
+                href="https://myaccount.google.com/permissions" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="underline hover:text-foreground transition-colors"
+              >
+                myaccount.google.com/permissions
+              </a>{" "}
+              e reconectar.
+            </p>
           </>
         )}
 

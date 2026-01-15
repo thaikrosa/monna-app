@@ -303,6 +303,7 @@ export type Database = {
           created_at: string
           direction: string
           id: string
+          instance: string | null
           message: string
           phone: string
           user_id: string
@@ -311,6 +312,7 @@ export type Database = {
           created_at?: string
           direction: string
           id?: string
+          instance?: string | null
           message: string
           phone: string
           user_id: string
@@ -319,6 +321,7 @@ export type Database = {
           created_at?: string
           direction?: string
           id?: string
+          instance?: string | null
           message?: string
           phone?: string
           user_id?: string
@@ -441,6 +444,36 @@ export type Database = {
           id?: string
           message?: string
           mood_type?: string
+        }
+        Relationships: []
+      }
+      dead_letter_queue: {
+        Row: {
+          created_at: string | null
+          error_message: string | null
+          id: string
+          last_retry_at: string | null
+          payload: Json
+          retry_count: number | null
+          source_workflow: string
+        }
+        Insert: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          last_retry_at?: string | null
+          payload: Json
+          retry_count?: number | null
+          source_workflow: string
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          last_retry_at?: string | null
+          payload?: Json
+          retry_count?: number | null
+          source_workflow?: string
         }
         Relationships: []
       }
@@ -840,6 +873,120 @@ export type Database = {
         }
         Relationships: []
       }
+      scheduled_messages: {
+        Row: {
+          created_at: string | null
+          end_date: string | null
+          formatted_message: string
+          id: string
+          last_error: string | null
+          last_run: string | null
+          max_runs: number | null
+          message_content: string
+          next_run: string
+          recipient_alias: string | null
+          recipient_id: string | null
+          recipient_name: string
+          recipient_phone: string
+          run_count: number | null
+          schedule_config: Json | null
+          schedule_time: string | null
+          schedule_type: string
+          start_date: string
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          end_date?: string | null
+          formatted_message: string
+          id?: string
+          last_error?: string | null
+          last_run?: string | null
+          max_runs?: number | null
+          message_content: string
+          next_run: string
+          recipient_alias?: string | null
+          recipient_id?: string | null
+          recipient_name: string
+          recipient_phone: string
+          run_count?: number | null
+          schedule_config?: Json | null
+          schedule_time?: string | null
+          schedule_type?: string
+          start_date?: string
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          end_date?: string | null
+          formatted_message?: string
+          id?: string
+          last_error?: string | null
+          last_run?: string | null
+          max_runs?: number | null
+          message_content?: string
+          next_run?: string
+          recipient_alias?: string | null
+          recipient_id?: string | null
+          recipient_name?: string
+          recipient_phone?: string
+          run_count?: number | null
+          schedule_config?: Json | null
+          schedule_time?: string | null
+          schedule_type?: string
+          start_date?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduled_messages_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduled_messages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sensitive_patterns: {
+        Row: {
+          created_at: string | null
+          id: number
+          is_active: boolean | null
+          pattern_regex: string
+          pattern_type: string
+          rejection_message: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          is_active?: boolean | null
+          pattern_regex: string
+          pattern_type: string
+          rejection_message: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          is_active?: boolean | null
+          pattern_regex?: string
+          pattern_type?: string
+          rejection_message?: string
+        }
+        Relationships: []
+      }
       shopping_item_events: {
         Row: {
           event_type: string
@@ -1150,6 +1297,77 @@ export type Database = {
         }
         Relationships: []
       }
+      thais_testes_gerais: {
+        Row: {
+          created_at: string
+          id: number
+          texto: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          texto?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          texto?: string | null
+        }
+        Relationships: []
+      }
+      user_memories: {
+        Row: {
+          category: string
+          category_normalized: string
+          content: string
+          content_hash: string
+          created_at: string | null
+          deleted_at: string | null
+          id: string
+          is_active: boolean | null
+          keywords: string[] | null
+          source: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          category: string
+          category_normalized?: string
+          content: string
+          content_hash: string
+          created_at?: string | null
+          deleted_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          keywords?: string[] | null
+          source?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string
+          category_normalized?: string
+          content?: string
+          content_hash?: string
+          created_at?: string | null
+          deleted_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          keywords?: string[] | null
+          source?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_memories_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_routines: {
         Row: {
           color: string | null
@@ -1318,8 +1536,48 @@ export type Database = {
           },
         ]
       }
+      vw_pending_scheduled_messages: {
+        Row: {
+          formatted_message: string | null
+          id: string | null
+          next_run: string | null
+          recipient_alias: string | null
+          recipient_name: string | null
+          recipient_phone: string | null
+          schedule_type: string | null
+          sender_name: string | null
+          sender_phone: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduled_messages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
+      calculate_next_run: {
+        Args: {
+          p_current_run: string
+          p_schedule_config: Json
+          p_schedule_time: string
+          p_schedule_type: string
+          p_timezone?: string
+        }
+        Returns: string
+      }
+      check_sensitive_content: {
+        Args: { p_content: string }
+        Returns: {
+          is_sensitive: boolean
+          rejection_message: string
+        }[]
+      }
       cleanup_old_logs: {
         Args: { days_to_keep?: number }
         Returns: {
@@ -1327,6 +1585,15 @@ export type Database = {
           error_logs_deleted: number
         }[]
       }
+      count_memories_by_category: {
+        Args: { p_user_id: string }
+        Returns: {
+          category_display: string
+          category_normalized: string
+          count: number
+        }[]
+      }
+      generate_content_hash: { Args: { content_text: string }; Returns: string }
       generate_reminder_occurrences: {
         Args: { p_count?: number; p_reminder_id: string }
         Returns: number
@@ -1348,11 +1615,77 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_pending_occurrences: {
+        Args: { p_limit?: number }
+        Returns: {
+          description: string
+          notify_minutes_before: number
+          occurrence_id: string
+          reminder_id: string
+          scheduled_at: string
+          title: string
+          user_id: string
+        }[]
+      }
       get_system_stats: {
         Args: { hours_back?: number }
         Returns: {
           metric: string
           value: number
+        }[]
+      }
+      handle_occurrence_completion: {
+        Args: { p_occurrence_id: string; p_reminder_id: string }
+        Returns: Json
+      }
+      handle_user_action: {
+        Args: {
+          p_action: string
+          p_occurrence_id: string
+          p_snooze_minutes?: number
+        }
+        Returns: Json
+      }
+      insert_memory: {
+        Args: {
+          p_category: string
+          p_category_normalized: string
+          p_content: string
+          p_keywords?: string[]
+          p_user_id: string
+        }
+        Returns: {
+          error_message: string
+          memory_id: string
+          success: boolean
+        }[]
+      }
+      memory_exists: {
+        Args: { p_content: string; p_user_id: string }
+        Returns: boolean
+      }
+      process_scheduled_message: {
+        Args: {
+          p_error_message?: string
+          p_message_id: string
+          p_success?: boolean
+        }
+        Returns: undefined
+      }
+      search_memories: {
+        Args: {
+          p_category_normalized?: string
+          p_limit?: number
+          p_search_term?: string
+          p_user_id: string
+        }
+        Returns: {
+          category: string
+          category_normalized: string
+          content: string
+          created_at: string
+          id: string
+          keywords: string[]
         }[]
       }
       shopping_add_item: {
@@ -1380,6 +1713,10 @@ export type Database = {
       shopping_upsert_tag: {
         Args: { p_name: string; p_sort_order?: number }
         Returns: string
+      }
+      soft_delete_memory: {
+        Args: { memory_id: string; requesting_user_id: string }
+        Returns: boolean
       }
     }
     Enums: {
@@ -1412,6 +1749,7 @@ export type Database = {
         | "whatsapp_text"
         | "webapp"
         | "ai_suggestion"
+        | "whatsapp"
       reminder_status: "active" | "paused" | "completed" | "cancelled"
     }
     CompositeTypes: {
@@ -1572,6 +1910,7 @@ export const Constants = {
         "whatsapp_text",
         "webapp",
         "ai_suggestion",
+        "whatsapp",
       ],
       reminder_status: ["active", "paused", "completed", "cancelled"],
     },

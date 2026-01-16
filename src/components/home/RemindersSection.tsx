@@ -27,7 +27,7 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
           <div className="flex-1">
             <p className="text-sm font-medium text-foreground">Lembretes</p>
             <p className="text-xs text-muted-foreground mt-1">
-              Nenhum lembrete pendente. Que tal criar um?
+              Sua mente está tranquila. Tudo sob controle.
             </p>
             
             <Button
@@ -37,7 +37,7 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
               onClick={() => setIsAddOpen(true)}
             >
               <Plus weight="thin" className="h-4 w-4 mr-1" />
-              Novo lembrete
+              Criar lembrete
             </Button>
           </div>
         </div>

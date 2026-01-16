@@ -68,7 +68,7 @@ export default function ShoppingList() {
           <div>
             <h1 className="text-2xl font-bold text-foreground">Lista de Compras</h1>
             <p className="text-sm text-muted-foreground mt-0.5">
-              Tudo o que você costuma comprar, em um só lugar.
+              Tudo que você precisa, em um só lugar.
             </p>
           </div>
         </div>

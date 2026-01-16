@@ -71,7 +71,7 @@ export function ShoppingSection({ items }: ShoppingSectionProps) {
           <div className="flex items-start gap-2">
             <Sparkle weight="thin" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
             <p className="text-xs text-muted-foreground">
-              Você já tem {totalUnchecked} itens na lista. Que tal agendar uma ida ao mercado?
+              Sua lista tem {totalUnchecked} itens. Posso sugerir um horário para o mercado?
             </p>
           </div>
         </div>

@@ -12,10 +12,10 @@ export function HomeError({ onRetry }: HomeErrorProps) {
         <Warning weight="regular" className="w-8 h-8 text-destructive" />
       </div>
       <h2 className="text-lg font-semibold text-foreground mb-2">
-        Eu tive um problema ao carregar
+        Encontrei uma dificuldade
       </h2>
       <p className="text-sm text-muted-foreground mb-6">
-        Pode ser uma instabilidade temporária. Tente novamente.
+        Isso pode ser temporário. Tente novamente.
       </p>
       <Button 
         onClick={onRetry}

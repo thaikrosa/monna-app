@@ -120,7 +120,7 @@ export default function ShoppingList() {
           <p className="text-muted-foreground mb-1">
             {activeTab === 'todos'
               ? 'Sua lista está vazia'
-              : 'Nenhum item nesta categoria'}
+              : 'Esta categoria está vazia'}
           </p>
           <p className="text-sm text-muted-foreground/70">
             Toque no <span className="text-primary font-medium">+</span> para adicionar itens

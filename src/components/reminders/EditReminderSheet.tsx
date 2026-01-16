@@ -280,7 +280,7 @@ export function EditReminderSheet({ open, onOpenChange, reminder }: EditReminder
                 <Label htmlFor="edit-critical" className="text-sm text-muted-foreground">
                   Lembrete crítico
                 </Label>
-                <p className="text-xs text-muted-foreground/50">A Annia pode me ligar</p>
+                <p className="text-xs text-muted-foreground/50">A Monna pode me ligar</p>
               </div>
               <Switch
                 id="edit-critical"

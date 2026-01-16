@@ -11,7 +11,7 @@ export function PaywallTeaser({ onSubscribe }: PaywallTeaserProps) {
       <Crown weight="regular" className="w-8 h-8 mx-auto mb-3 text-amber-400" />
       <h3 className="font-bold text-lg mb-2">Desbloqueie tudo</h3>
       <p className="text-sm text-primary-foreground/80 mb-4">
-        Acesse agenda completa, lembretes ilimitados e sugestões personalizadas da Annia.
+        Acesse agenda completa, lembretes ilimitados e sugestões personalizadas da Monna.
       </p>
       <Button 
         onClick={onSubscribe}

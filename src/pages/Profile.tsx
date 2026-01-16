@@ -326,7 +326,7 @@ export default function Profile() {
                 <CaretLeft weight="thin" className="h-5 w-5" />
               </Button>
             </Link>
-            <h1 className="text-lg font-semibold text-foreground">Quem sou eu para a Annia</h1>
+            <h1 className="text-lg font-semibold text-foreground">Quem sou eu para a Monna</h1>
           </div>
         </div>
       </div>

@@ -35,10 +35,10 @@ export default function Auth() {
         {/* Logo */}
         <div className="flex flex-col items-center gap-2">
           <h1 className="text-4xl font-bold text-foreground tracking-tight">
-            Annia
+            Monna
           </h1>
           <p className="text-muted-foreground text-sm">
-            Sua Central de Comando
+            Sua parceira no invisível da maternidade
           </p>
         </div>
 

@@ -153,10 +153,10 @@ export default function Settings() {
         {/* Check-ins Diários */}
         <section>
           <h2 className="text-base font-medium text-foreground mb-1">
-            Como vamos organizar nossos momentos?
+            Quando quer se conectar comigo?
           </h2>
           <p className="text-sm text-muted-foreground mb-3">
-            Configure quando você quer receber mensagens da Monna
+            Configure quando receber mensagens da Monna
           </p>
 
           <div className="annia-glass p-4 rounded-lg border border-border/30 space-y-4">
@@ -165,7 +165,7 @@ export default function Settings() {
               <div className="flex items-center gap-3">
                 <Sun weight="thin" className="h-5 w-5 text-primary" />
                 <div>
-                  <p className="text-foreground text-sm font-medium">Check-in de Bom Dia</p>
+                  <p className="text-foreground text-sm font-medium">Mensagem matinal</p>
                   <p className="text-xs text-muted-foreground">Comece o dia organizada</p>
                 </div>
               </div>
@@ -196,7 +196,7 @@ export default function Settings() {
               <div className="flex items-center gap-3">
                 <Moon weight="thin" className="h-5 w-5 text-primary" />
                 <div>
-                  <p className="text-foreground text-sm font-medium">Check-in de Boa Noite</p>
+                  <p className="text-foreground text-sm font-medium">Mensagem noturna</p>
                   <p className="text-xs text-muted-foreground">Revise o dia e planeje o amanhã</p>
                 </div>
               </div>
@@ -227,10 +227,10 @@ export default function Settings() {
         {/* Estilo de Comunicação */}
         <section>
           <h2 className="text-base font-medium text-foreground mb-1">
-            Como você prefere que eu fale?
+            Qual o nosso tom?
           </h2>
           <p className="text-sm text-muted-foreground mb-3">
-            Escolha o tom que combina mais com você
+            Escolha como prefere nossa comunicação
           </p>
 
           <div className="annia-glass p-4 rounded-lg border border-border/30">
@@ -240,9 +240,9 @@ export default function Settings() {
                 <div>
                   <p className="text-foreground text-sm font-medium">Tom da Monna</p>
                   <p className="text-xs text-muted-foreground">
-                    {settings.communication_style === 'caring' && 'Próxima e acolhedora'}
+                    {settings.communication_style === 'caring' && 'Próxima e empática'}
                     {settings.communication_style === 'direct' && 'Objetiva e direta'}
-                    {settings.communication_style === 'playful' && 'Leve e divertida'}
+                    {settings.communication_style === 'playful' && 'Leve e espontânea'}
                   </p>
                 </div>
               </div>
@@ -269,7 +269,7 @@ export default function Settings() {
                   <SelectItem value="playful">
                     <span className="flex items-center gap-2">
                       <Smiley weight="bold" className="h-4 w-4" />
-                      Humorada
+                      Descontraída
                     </span>
                   </SelectItem>
                 </SelectContent>
@@ -293,7 +293,7 @@ export default function Settings() {
                 <Lightbulb weight="thin" className="h-5 w-5 text-primary" />
                 <div>
                   <p className="text-foreground text-sm font-medium">Sugestões antecipadas</p>
-                  <p className="text-xs text-muted-foreground">Pausas, ajustes de agenda</p>
+                  <p className="text-xs text-muted-foreground">Pausas, ajustes de rotina</p>
                 </div>
               </div>
               <Switch
@@ -321,7 +321,7 @@ export default function Settings() {
           {!childrenLoading && children.length > 0 && (
             <div className="mt-3 space-y-2">
               <p className="text-sm text-muted-foreground">
-                Filtro de sensibilidade por filho
+                Personalização por filho
               </p>
               {children.map((child) => (
                 <div
@@ -359,7 +359,7 @@ export default function Settings() {
         {/* Integrações */}
         <section>
           <h2 className="text-base font-medium text-foreground mb-1">
-            Nossas conexões
+            Conexões
           </h2>
           <p className="text-sm text-muted-foreground mb-3">
             Integrações para facilitar sua rotina

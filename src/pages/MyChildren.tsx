@@ -72,14 +72,14 @@ export default function MyChildren() {
         ) : children.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground">
-              Nenhuma criança cadastrada
+              Nenhum filho cadastrado
             </p>
             <Button
               variant="link"
               onClick={() => setAddSheetOpen(true)}
               className="mt-2 text-primary"
             >
-              Adicionar primeira criança
+              Adicionar primeiro filho
             </Button>
           </div>
         ) : (

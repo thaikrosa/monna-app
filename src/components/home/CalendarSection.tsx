@@ -55,7 +55,7 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
           <div className="flex-1">
             <p className="text-sm font-medium text-foreground">Agenda do dia</p>
             <p className="text-xs text-muted-foreground mt-1">
-              Seu dia está livre. Que tal planejar algo especial?
+              Seu dia está livre. Momento perfeito para o que importa.
             </p>
           </div>
         </div>

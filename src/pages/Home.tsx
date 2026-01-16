@@ -11,7 +11,7 @@ import { CalendarSection } from "@/components/home/CalendarSection";
 import { RemindersSection } from "@/components/home/RemindersSection";
 import { ShoppingSection } from "@/components/home/ShoppingSection";
 import { KidsDashboard } from "@/components/home/KidsDashboard";
-import { MonnaMomentSection } from "@/components/home/MonnaMomentSection";
+import { AnniaMomentSection } from "@/components/home/AnniaMomentSection";
 import { HomeSkeleton } from "@/components/home/HomeSkeleton";
 import { HomeError } from "@/components/home/HomeError";
 
@@ -74,10 +74,10 @@ export default function Home() {
         />
       </div>
 
-      {/* 5. Momento Monna (Sugestões) */}
+      {/* 5. Momento Annia (Sugestões) */}
       {suggestions.length > 0 && (
         <div className="animate-slide-up stagger-5">
-          <MonnaMomentSection suggestions={suggestions} />
+          <AnniaMomentSection suggestions={suggestions} />
         </div>
       )}
     </div>

@@ -115,7 +115,7 @@ export function AddChildSheet({ open, onOpenChange }: AddChildSheetProps) {
         <SheetHeader>
           <SheetTitle>Cadastrar Criança</SheetTitle>
           <SheetDescription>
-            Adicione seu filho(a) à Monna
+            Adicione seu filho(a) à Annia
           </SheetDescription>
         </SheetHeader>
 
@@ -126,7 +126,7 @@ export function AddChildSheet({ open, onOpenChange }: AddChildSheetProps) {
               <Warning weight="thin" className="h-5 w-5 text-amber-400 flex-shrink-0 mt-0.5" />
               <div className="space-y-3">
                 <p className="text-sm text-amber-200/90">
-                  A Monna é uma assistente de organização baseada em dados oficiais e não substitui orientações médicas. Consulte sempre seu pediatra.
+                  A Annia é uma assistente de organização baseada em dados oficiais e não substitui orientações médicas. Consulte sempre seu pediatra.
                 </p>
                 <div className="flex items-center gap-2">
                   <Checkbox

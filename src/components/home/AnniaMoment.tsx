@@ -1,15 +1,15 @@
 import { Sparkle, Crown } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MonnaSuggestion } from '@/types/home-dashboard';
+import { AnniaSuggestion } from '@/types/home-dashboard';
 
-interface MonnaMomentProps {
-  suggestions: MonnaSuggestion[];
+interface AnniaMomentProps {
+  suggestions: AnniaSuggestion[];
   isSubscriber: boolean;
   onPaywall: () => void;
 }
 
-export function MonnaMoment({ suggestions, isSubscriber, onPaywall }: MonnaMomentProps) {
+export function AnniaMoment({ suggestions, isSubscriber, onPaywall }: AnniaMomentProps) {
   // Show max 3, or 1 if not subscriber
   const displaySuggestions = isSubscriber ? suggestions.slice(0, 3) : suggestions.slice(0, 1);
 
@@ -19,7 +19,7 @@ export function MonnaMoment({ suggestions, isSubscriber, onPaywall }: MonnaMomen
     <div className="bg-card border border-border/60 rounded-lg p-4">
       <div className="flex items-center gap-2 mb-4">
         <Sparkle weight="regular" className="w-5 h-5 text-primary" />
-        <h3 className="font-semibold text-card-foreground">Momento com a Monna</h3>
+        <h3 className="font-semibold text-card-foreground">Momento com a Annia</h3>
       </div>
       
       <div className="space-y-3">
@@ -44,7 +44,7 @@ export function MonnaMoment({ suggestions, isSubscriber, onPaywall }: MonnaMomen
                 <>
                   <Button 
                     size="sm"
-                    className="bg-monna-olive hover:bg-monna-olive-hover text-primary-foreground transition-colors duration-200"
+                    className="bg-annia-olive hover:bg-annia-olive-hover text-primary-foreground transition-colors duration-200"
                   >
                     Aceitar
                   </Button>
@@ -67,7 +67,7 @@ export function MonnaMoment({ suggestions, isSubscriber, onPaywall }: MonnaMomen
                 <Button 
                   size="sm"
                   onClick={onPaywall}
-                  className="bg-monna-olive hover:bg-monna-olive-hover text-primary-foreground transition-colors duration-200"
+                  className="bg-annia-olive hover:bg-annia-olive-hover text-primary-foreground transition-colors duration-200"
                 >
                   <Crown weight="regular" className="w-3 h-3 mr-1" />
                   Desbloquear

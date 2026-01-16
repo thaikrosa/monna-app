@@ -59,7 +59,7 @@ export interface KidAlert {
   secondaryCta?: Cta;
 }
 
-export interface MonnaSuggestion {
+export interface AnniaSuggestion {
   id: string;
   insight: string;
   actions: {
@@ -81,7 +81,7 @@ export interface HomeDashboard {
     urgent_overdue: UrgentItem[];
     shopping: ShoppingData;
     kids: KidAlert[];
-    monna_moment: MonnaSuggestion[];
+    annia_moment: AnniaSuggestion[];
   };
   paywall: {
     is_subscriber: boolean;

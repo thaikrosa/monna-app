@@ -3,11 +3,11 @@ import { Sparkle, Check, X } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { useUpdateSuggestionStatus, type AiSuggestion } from '@/hooks/useAiSuggestions';
 
-interface MonnaMomentSectionProps {
+interface AnniaMomentSectionProps {
   suggestions: AiSuggestion[];
 }
 
-export function MonnaMomentSection({ suggestions }: MonnaMomentSectionProps) {
+export function AnniaMomentSection({ suggestions }: AnniaMomentSectionProps) {
   const [hiddenIds, setHiddenIds] = useState<Set<string>>(new Set());
   const updateStatus = useUpdateSuggestionStatus();
 
@@ -31,7 +31,7 @@ export function MonnaMomentSection({ suggestions }: MonnaMomentSectionProps) {
     <div className="space-y-3 animate-fade-in">
       <div className="flex items-center gap-2 px-1">
         <Sparkle weight="thin" className="h-4 w-4 text-primary" />
-        <p className="text-sm font-medium text-foreground">Momento Monna</p>
+        <p className="text-sm font-medium text-foreground">Momento Annia</p>
       </div>
 
       <div className="space-y-3">
@@ -39,7 +39,7 @@ export function MonnaMomentSection({ suggestions }: MonnaMomentSectionProps) {
           <div
             key={suggestion.id}
             className={`
-              monna-glass rounded-2xl p-4 transition-all duration-200
+              annia-glass rounded-2xl p-4 transition-all duration-200
               ${hiddenIds.has(suggestion.id) ? 'animate-fade-out' : 'animate-fade-in'}
             `}
           >

@@ -20,7 +20,7 @@ export function HomeEmpty() {
       <div className="space-y-3 w-full max-w-xs">
         <Button 
           onClick={() => navigate('/filhos')}
-          className="w-full bg-monna-olive hover:bg-monna-olive-hover text-primary-foreground transition-colors duration-200"
+          className="w-full bg-annia-olive hover:bg-annia-olive-hover text-primary-foreground transition-colors duration-200"
         >
           <Plus weight="regular" className="w-4 h-4 mr-2" />
           Adicionar filho

@@ -57,7 +57,7 @@ export function useAddContact() {
       toast.success('Contato adicionado');
     },
     onError: (error) => {
-      console.error('[Monna Debug] addContact error:', error);
+      console.error('[Annia Debug] addContact error:', error);
       toast.error('Erro ao adicionar contato');
     },
   });
@@ -83,7 +83,7 @@ export function useUpdateContact() {
       toast.success('Contato atualizado');
     },
     onError: (error) => {
-      console.error('[Monna Debug] updateContact error:', error);
+      console.error('[Annia Debug] updateContact error:', error);
       toast.error('Erro ao atualizar contato');
     },
   });
@@ -107,7 +107,7 @@ export function useDeleteContact() {
       toast.success('Contato removido');
     },
     onError: (error) => {
-      console.error('[Monna Debug] deleteContact error:', error);
+      console.error('[Annia Debug] deleteContact error:', error);
       toast.error('Erro ao remover contato');
     },
   });

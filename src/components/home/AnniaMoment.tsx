@@ -19,7 +19,7 @@ export function AnniaMoment({ suggestions, isSubscriber, onPaywall }: AnniaMomen
     <div className="bg-card border border-border/60 rounded-lg p-4">
       <div className="flex items-center gap-2 mb-4">
         <Sparkle weight="regular" className="w-5 h-5 text-primary" />
-        <h3 className="font-semibold text-card-foreground">Momento com a Annia</h3>
+        <h3 className="font-semibold text-card-foreground">Momento com a Monna</h3>
       </div>
       
       <div className="space-y-3">

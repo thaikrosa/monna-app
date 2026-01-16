@@ -31,7 +31,7 @@ export function AnniaMomentSection({ suggestions }: AnniaMomentSectionProps) {
     <div className="space-y-3 animate-fade-in">
       <div className="flex items-center gap-2 px-1">
         <Sparkle weight="thin" className="h-4 w-4 text-primary" />
-        <p className="text-sm font-medium text-foreground">Momento Annia</p>
+        <p className="text-sm font-medium text-foreground">Momento Monna</p>
       </div>
 
       <div className="space-y-3">

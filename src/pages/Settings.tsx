@@ -142,7 +142,7 @@ export default function Settings() {
                 <CaretLeft weight="thin" className="h-5 w-5" />
               </Button>
             </Link>
-            <h1 className="text-lg font-semibold text-foreground">Como a Annia cuida de você</h1>
+            <h1 className="text-lg font-semibold text-foreground">Como a Monna cuida de você</h1>
           </div>
         </div>
       </div>
@@ -156,7 +156,7 @@ export default function Settings() {
             Como vamos organizar nossos momentos?
           </h2>
           <p className="text-sm text-muted-foreground mb-3">
-            Configure quando você quer receber mensagens da Annia
+            Configure quando você quer receber mensagens da Monna
           </p>
 
           <div className="annia-glass p-4 rounded-lg border border-border/30 space-y-4">
@@ -238,7 +238,7 @@ export default function Settings() {
               <div className="flex items-center gap-3">
                 <ChatCircle weight="thin" className="h-5 w-5 text-primary" />
                 <div>
-                  <p className="text-foreground text-sm font-medium">Tom da Annia</p>
+                  <p className="text-foreground text-sm font-medium">Tom da Monna</p>
                   <p className="text-xs text-muted-foreground">
                     {settings.communication_style === 'caring' && 'Próxima e acolhedora'}
                     {settings.communication_style === 'direct' && 'Objetiva e direta'}
@@ -284,7 +284,7 @@ export default function Settings() {
             O que posso antecipar para você?
           </h2>
           <p className="text-sm text-muted-foreground mb-3">
-            Deixe a Annia te ajudar antes que você precise pedir
+            Deixe a Monna te ajudar antes que você precise pedir
           </p>
 
           <div className="annia-glass p-4 rounded-lg border border-border/30 space-y-4">

@@ -17,14 +17,14 @@ interface ShareListSheetProps {
 export function ShareListSheet({ open, onOpenChange }: ShareListSheetProps) {
   const handleCopyLink = () => {
     // Placeholder - generate shareable link
-    navigator.clipboard.writeText('https://annia.app/lista/compartilhada/abc123');
+    navigator.clipboard.writeText('https://monna.app/lista/compartilhada/abc123');
     toast.success('Link copiado!');
     onOpenChange(false);
   };
 
   const handleWhatsApp = () => {
     // Placeholder - open WhatsApp with list
-    const text = encodeURIComponent('Confira minha lista de compras: https://annia.app/lista/compartilhada/abc123');
+    const text = encodeURIComponent('Confira minha lista de compras: https://monna.app/lista/compartilhada/abc123');
     window.open(`https://wa.me/?text=${text}`, '_blank');
     onOpenChange(false);
   };

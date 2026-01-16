@@ -20,7 +20,7 @@ export function VoiceOfAnnia({ insight }: VoiceOfAnniaProps) {
         </div>
         
         <div className="flex-1 min-w-0">
-          <p className="text-xs text-muted-foreground mb-2">Annia diz</p>
+          <p className="text-xs text-muted-foreground mb-2">Monna diz</p>
           <TypewriterText text={message} />
           
           {insight?.action_label && insight?.action_url && (

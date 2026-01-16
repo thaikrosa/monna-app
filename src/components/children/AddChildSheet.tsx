@@ -207,7 +207,7 @@ export function AddChildSheet({ open, onOpenChange }: AddChildSheetProps) {
           {/* Sensitivity Section */}
           <div className="space-y-4">
             <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Sensibilidade
+              Personalização
             </h4>
 
             <div className="flex items-center justify-between">

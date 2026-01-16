@@ -11,10 +11,10 @@ export function HomeEmpty() {
         <Sparkle weight="regular" className="w-8 h-8 text-primary" />
       </div>
       <h2 className="text-lg font-semibold text-foreground mb-2">
-        Eu estou pronta para ajudar
+        Estou pronta para ajudar
       </h2>
       <p className="text-sm text-muted-foreground mb-6 max-w-xs">
-        Adicione seus filhos, lembretes e compromissos para que eu possa organizar seu dia.
+        Adicione seus filhos, lembretes e compromissos para que eu organize seu dia.
       </p>
       
       <div className="space-y-3 w-full max-w-xs">

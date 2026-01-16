@@ -326,7 +326,7 @@ export default function Profile() {
                 <CaretLeft weight="thin" className="h-5 w-5" />
               </Button>
             </Link>
-            <h1 className="text-lg font-semibold text-foreground">Quem sou eu para a Monna</h1>
+            <h1 className="text-lg font-semibold text-foreground">Como a Monna te conhece</h1>
           </div>
         </div>
       </div>
@@ -491,7 +491,7 @@ export default function Profile() {
         {/* Quem a gente cuida junto */}
         <section>
           <h2 className="text-base font-medium text-foreground mb-3">
-            Quem a gente cuida junto
+            Quem cuidamos juntas
           </h2>
           
           {childrenLoading ? (
@@ -501,14 +501,14 @@ export default function Profile() {
           ) : children.length === 0 && !isAddingChild ? (
             <div className="annia-glass p-4 rounded-lg border border-border/30 text-center">
               <p className="text-muted-foreground text-sm">
-                Nenhuma criança cadastrada
+                Nenhum filho cadastrado
               </p>
               <Button
                 variant="link"
                 className="text-primary mt-1"
                 onClick={() => setIsAddingChild(true)}
               >
-                Adicionar primeira criança
+                Adicionar primeiro filho
               </Button>
             </div>
           ) : (
@@ -597,7 +597,7 @@ export default function Profile() {
                           <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
                             <div>
                               <Label className="text-sm text-foreground">É neurodivergente?</Label>
-                              <p className="text-xs text-muted-foreground">Adaptamos as sugestões ao ritmo único</p>
+                              <p className="text-xs text-muted-foreground">Ajusto as sugestões ao ritmo único</p>
                             </div>
                             <Switch
                               checked={childData.is_neurodivergent}
@@ -689,7 +689,7 @@ export default function Profile() {
                                 <Textarea
                                   value={childData.soothing_methods}
                                   onChange={(e) => updateChildField(child.id, 'soothing_methods', e.target.value)}
-                                  placeholder="Métodos para acalmar quando está chateado"
+                                  placeholder="Métodos para acalmar quando necessário"
                                   rows={2}
                                 />
                               </div>
@@ -767,7 +767,7 @@ export default function Profile() {
                       </div>
                       <div className="text-left">
                         <p className="text-foreground font-medium">
-                          Nova criança
+                          Novo filho
                         </p>
                         <p className="text-xs text-muted-foreground">
                           Preencha os dados
@@ -829,7 +829,7 @@ export default function Profile() {
                       <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
                         <div>
                           <Label className="text-sm text-foreground">É neurodivergente?</Label>
-                          <p className="text-xs text-muted-foreground">Adaptamos as sugestões ao ritmo único</p>
+                          <p className="text-xs text-muted-foreground">Ajusto as sugestões ao ritmo único</p>
                         </div>
                         <Switch
                           checked={newChildData.is_neurodivergent}
@@ -921,7 +921,7 @@ export default function Profile() {
                             <Textarea
                               value={newChildData.soothing_methods}
                               onChange={(e) => updateNewChildField('soothing_methods', e.target.value)}
-                              placeholder="Métodos para acalmar quando está chateado"
+                              placeholder="Métodos para acalmar quando necessário"
                               rows={2}
                             />
                           </div>

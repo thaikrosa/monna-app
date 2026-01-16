@@ -124,7 +124,7 @@ export function EditChildSheet({ open, onOpenChange, child }: EditChildSheetProp
             <div className="flex items-start gap-2">
               <Info weight="thin" className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
               <p className="text-xs text-muted-foreground">
-                Lembre-se: a Annia não substitui orientações médicas.
+                Lembre-se: a Monna não substitui orientações médicas.
               </p>
             </div>
           </div>

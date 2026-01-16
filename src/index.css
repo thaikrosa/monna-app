@@ -2,14 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Annia Design System
+/* Monna Design System
  * Navy + Oliva theme with Inter typography
  * All colors in HSL format
  */
 
 @layer base {
   :root {
-    /* Annia Light Mode - Warm off-white */
+    /* Monna Light Mode - Warm off-white */
     --background: 48 17% 93%; /* #F1F0EC */
     --foreground: 215 51% 11%; /* #0E1A2B */
 
@@ -45,10 +45,10 @@
 
     --radius: 0.75rem;
 
-    /* Annia-specific tokens */
-    --annia-navy: 215 51% 11%; /* #0E1A2B */
-    --annia-olive: 75 36% 36%; /* #6B7C3A */
-    --annia-olive-hover: 75 36% 42%;
+    /* Monna-specific tokens */
+    --monna-navy: 215 51% 11%; /* #0E1A2B */
+    --monna-olive: 75 36% 36%; /* #6B7C3A */
+    --monna-olive-hover: 75 36% 42%;
 
     /* Surface tokens */
     --surface-elevated: 0 0% 100%;
@@ -99,10 +99,10 @@
     --input: 215 40% 22%;
     --ring: 75 36% 42%;
 
-    /* Annia-specific tokens dark */
-    --annia-navy: 215 51% 11%;
-    --annia-olive: 75 36% 42%;
-    --annia-olive-hover: 75 36% 48%;
+    /* Monna-specific tokens dark */
+    --monna-navy: 215 51% 11%;
+    --monna-olive: 75 36% 42%;
+    --monna-olive-hover: 75 36% 48%;
 
     /* Surface tokens dark */
     --surface-elevated: 215 45% 16%;
@@ -160,8 +160,8 @@
 }
 
 @layer utilities {
-  /* Annia Glassmorphism - use sparingly on cards */
-  .annia-glass {
+  /* Monna Glassmorphism - use sparingly on cards */
+  .monna-glass {
     @apply backdrop-blur-md border border-border;
     background: hsl(var(--background) / 0.8);
   }

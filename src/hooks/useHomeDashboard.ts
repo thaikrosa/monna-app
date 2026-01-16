@@ -77,7 +77,7 @@ function createMockDashboard(firstName?: string): HomeDashboard {
           secondaryCta: { label: 'Já fiz', action: 'dismiss' }
         }
       ],
-      annia_moment: [
+      monna_moment: [
         {
           id: '1',
           insight: 'Percebi que você tem 3 compromissos seguidos à tarde. Que tal eu sugerir um intervalo de 15 minutos entre eles?',
@@ -210,7 +210,7 @@ export function useHomeDashboard() {
             primaryCta: { label: 'Ver perfil', action: 'open_child' as const },
             secondaryCta: { label: 'Depois', action: 'dismiss' as const }
           })),
-          annia_moment: []
+          monna_moment: []
         },
         paywall: { is_subscriber: true }
       };

@@ -3,24 +3,24 @@ import { Button } from '@/components/ui/button';
 import { TypewriterText } from './TypewriterText';
 import type { DailyInsight } from '@/hooks/useDailyInsight';
 
-interface VoiceOfAnniaProps {
+interface VoiceOfMonnaProps {
   insight: DailyInsight | null | undefined;
 }
 
 const DEFAULT_MESSAGE = "Estou aqui para te ajudar hoje. O que vamos organizar juntas?";
 
-export function VoiceOfAnnia({ insight }: VoiceOfAnniaProps) {
+export function VoiceOfMonna({ insight }: VoiceOfMonnaProps) {
   const message = insight?.message || DEFAULT_MESSAGE;
   
   return (
-    <div className="annia-glass rounded-2xl p-5 animate-fade-in">
+    <div className="monna-glass rounded-2xl p-5 animate-fade-in">
       <div className="flex items-start gap-3">
         <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
           <ChatCircleDots weight="thin" className="h-4 w-4 text-primary" />
         </div>
         
         <div className="flex-1 min-w-0">
-          <p className="text-xs text-muted-foreground mb-2">Annia diz</p>
+          <p className="text-xs text-muted-foreground mb-2">Monna diz</p>
           <TypewriterText text={message} />
           
           {insight?.action_label && insight?.action_url && (

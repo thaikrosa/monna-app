@@ -125,10 +125,22 @@ export function AddChildSheet({ open, onOpenChange }: AddChildSheetProps) {
             <div className="flex items-start gap-3">
               <Warning weight="thin" className="h-5 w-5 text-amber-400 flex-shrink-0 mt-0.5" />
               <div className="space-y-3">
-                <p className="text-sm text-amber-200/90">
-                  A Monna é uma assistente de organização baseada em dados oficiais e não substitui orientações médicas. Consulte sempre seu pediatra.
+                <p className="text-sm font-medium text-amber-200">
+                  Aviso Importante de Saúde
                 </p>
-                <div className="flex items-center gap-2">
+                <p className="text-sm text-amber-200/90">
+                  A Monna é uma assistente de organização familiar que utiliza informações médicas oficiais e dados científicos atualizados como referência. As sugestões sobre vacinas, marcos de desenvolvimento e acompanhamento médico são baseadas em protocolos estabelecidos por órgãos de saúde reconhecidos.
+                </p>
+                <p className="text-sm text-amber-200/90 font-medium">
+                  A Monna não substitui consultas, diagnósticos ou orientações médicas profissionais.
+                </p>
+                <p className="text-sm text-amber-200/90">
+                  Para qualquer decisão relacionada à saúde do seu filho, consulte sempre o pediatra ou profissional de saúde responsável.
+                </p>
+                <p className="text-sm text-amber-200/90">
+                  Ao aceitar este aviso, você autoriza a Monna a enviar lembretes e sugestões relacionadas à saúde com base em dados públicos e protocolos oficiais de saúde.
+                </p>
+                <div className="flex items-center gap-2 pt-2">
                   <Checkbox
                     id="disclaimer"
                     checked={disclaimerAccepted}

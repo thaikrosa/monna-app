@@ -111,7 +111,7 @@ export function AddItemSheet({ open, onOpenChange, defaultTagName }: AddItemShee
           <form onSubmit={handleSubmit} className="mt-4 space-y-4">
             <Input
               ref={inputRef}
-              placeholder="O que você precisa comprar?"
+              placeholder="Do que você precisa?"
               value={newItem}
               onChange={(e) => setNewItem(e.target.value)}
               onKeyDown={(e) => {

@@ -111,7 +111,7 @@ export function AddContactSheet({ open, onOpenChange }: AddContactSheetProps) {
           {/* Nome para a Annia */}
           <div className="space-y-2">
             <Label htmlFor="formalName" className="text-xs text-muted-foreground">
-              Nome para a Annia
+              Nome para a Monna
             </Label>
             <Input
               id="formalName"
@@ -160,7 +160,7 @@ export function AddContactSheet({ open, onOpenChange }: AddContactSheetProps) {
           {/* Como a Annia deve falar */}
           <div className="space-y-3">
             <Label className="text-xs text-muted-foreground">
-              Como a Annia deve falar com este contato?
+              Como a Monna deve falar com este contato?
             </Label>
             <RadioGroup
               value={intimacyLevel}
@@ -192,10 +192,10 @@ export function AddContactSheet({ open, onOpenChange }: AddContactSheetProps) {
           <div className="flex items-center justify-between py-2">
             <div className="space-y-0.5">
               <Label htmlFor="canAnnia" className="text-sm">
-                Permitir mensagens da Annia
+                Permitir mensagens da Monna
               </Label>
               <p className="text-xs text-muted-foreground">
-                Annia poderá enviar mensagens para este contato
+                Monna poderá enviar mensagens para este contato
               </p>
             </div>
             <Switch

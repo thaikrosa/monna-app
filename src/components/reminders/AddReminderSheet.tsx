@@ -156,7 +156,7 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
 
     // Validar se a data não é no passado
     if (datetime < new Date()) {
-      toast.error('Ops, esse horário já passou. Vamos agendar pra quando?');
+      toast.error('Esse horário já passou. Vamos agendar para quando?');
       return;
     }
 
@@ -426,7 +426,7 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                   </Label>
                 </div>
                 <p className="text-xs text-muted-foreground/50 mt-1 ml-6">
-                  Vou te ligar para garantir que não esqueça
+                  Vou ligar para garantir que não esqueça
                 </p>
               </div>
               <Switch

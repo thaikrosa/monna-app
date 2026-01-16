@@ -112,7 +112,7 @@ export function EditChildSheet({ open, onOpenChange, child }: EditChildSheetProp
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>Editar Criança</SheetTitle>
+          <SheetTitle>Editar Filho</SheetTitle>
           <SheetDescription>
             Atualize os dados de {child?.nickname || child?.name}
           </SheetDescription>
@@ -315,7 +315,7 @@ export function EditChildSheet({ open, onOpenChange, child }: EditChildSheetProp
                 id="edit-soothing"
                 value={soothingMethods}
                 onChange={(e) => setSoothingMethods(e.target.value)}
-                placeholder="Técnicas que funcionam para acalmar"
+                placeholder="Métodos para acalmar quando necessário"
                 className="bg-background/50 min-h-[80px]"
               />
             </div>

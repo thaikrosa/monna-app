@@ -113,7 +113,7 @@ export function AddChildSheet({ open, onOpenChange }: AddChildSheetProps) {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>Cadastrar Criança</SheetTitle>
+          <SheetTitle>Cadastrar Filho</SheetTitle>
           <SheetDescription>
             Adicione seu filho(a) à Monna
           </SheetDescription>
@@ -328,7 +328,7 @@ export function AddChildSheet({ open, onOpenChange }: AddChildSheetProps) {
                 id="soothing"
                 value={soothingMethods}
                 onChange={(e) => setSoothingMethods(e.target.value)}
-                placeholder="Técnicas que funcionam para acalmar"
+                placeholder="Métodos para acalmar quando necessário"
                 className="bg-background/50 min-h-[80px]"
               />
             </div>
@@ -353,7 +353,7 @@ export function AddChildSheet({ open, onOpenChange }: AddChildSheetProps) {
             className="w-full"
             disabled={!canSubmit || addChild.isPending}
           >
-            {addChild.isPending ? 'Salvando...' : 'Salvar criança'}
+            {addChild.isPending ? 'Salvando...' : 'Salvar filho'}
           </Button>
         </form>
       </SheetContent>

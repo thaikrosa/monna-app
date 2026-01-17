@@ -17,7 +17,7 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
   // Estado: Desconectado
   if (!isConnected) {
     return (
-      <div className="bg-secondary/50 rounded-2xl p-5 animate-fade-in border border-border/30">
+      <div className="bg-card rounded-2xl p-5 animate-fade-in border border-border/30">
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center">
             <CalendarBlank weight="thin" className="h-4 w-4 text-accent-foreground/60" />

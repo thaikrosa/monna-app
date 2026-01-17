@@ -22,7 +22,7 @@ export function ShoppingSection({ items }: ShoppingSectionProps) {
   const showSmartTrigger = totalUnchecked > 10;
 
   return (
-    <div className="bg-secondary/40 rounded-2xl p-5 animate-fade-in border border-border/30">
+    <div className="bg-card rounded-2xl p-5 animate-fade-in border border-border/30">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <ShoppingCart weight="thin" className="h-4 w-4 text-accent-foreground" />

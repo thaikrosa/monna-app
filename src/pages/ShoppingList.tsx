@@ -81,7 +81,7 @@ export default function ShoppingList() {
             <TabsList className="w-full h-auto flex-wrap justify-start gap-1 bg-transparent p-0">
               <TabsTrigger
                 value="todos"
-                className="px-3 py-1.5 text-xs rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground bg-secondary/50 text-muted-foreground border-0"
+                className="px-3 py-1.5 text-xs rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground bg-muted/60 text-muted-foreground border-0"
               >
                 Todos
               </TabsTrigger>
@@ -89,7 +89,7 @@ export default function ShoppingList() {
                 <TabsTrigger
                   key={tag.id}
                   value={tag.id}
-                  className="px-3 py-1.5 text-xs rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground bg-secondary/50 text-muted-foreground border-0"
+                  className="px-3 py-1.5 text-xs rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground bg-muted/60 text-muted-foreground border-0"
                 >
                   {tag.name}
                 </TabsTrigger>

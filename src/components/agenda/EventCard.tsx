@@ -9,7 +9,7 @@ interface EventCardProps {
 
 export function EventCard({ startTime, endTime, title, isAllDay }: EventCardProps) {
   return (
-    <Card className={isAllDay ? 'bg-muted/50' : ''}>
+    <Card className={isAllDay ? 'bg-secondary/40 border-border/30' : 'bg-card border-border/30'}>
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0 min-w-[60px]">

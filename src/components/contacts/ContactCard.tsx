@@ -18,7 +18,7 @@ export function ContactCard({ contact, onEdit, onDelete }: ContactCardProps) {
   const whatsappUrl = `https://wa.me/${contact.phone.replace(/\D/g, '')}`;
 
   return (
-    <div className="annia-glass p-4 rounded-lg border border-border/30 group transition-all duration-150 hover:border-border/50">
+    <div className="bg-card p-4 rounded-lg border border-border/30 group transition-all duration-150 hover:border-primary/30">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           {/* Alias + Category Badge + Annia indicator */}
@@ -27,7 +27,7 @@ export function ContactCard({ contact, onEdit, onDelete }: ContactCardProps) {
             
             {/* Category badge */}
             {contact.category && contact.category !== 'Outros' && (
-              <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary/80">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-accent/40 text-accent-foreground">
                 {contact.category}
               </span>
             )}
@@ -35,7 +35,7 @@ export function ContactCard({ contact, onEdit, onDelete }: ContactCardProps) {
             {/* Indicador verde oliva se can_annia_message */}
             {contact.can_annia_message && (
               <div 
-                className="h-2 w-2 rounded-full bg-primary/70 flex-shrink-0" 
+                className="h-2 w-2 rounded-full bg-accent flex-shrink-0" 
                 title="Annia pode enviar mensagens" 
               />
             )}

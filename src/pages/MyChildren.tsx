@@ -62,10 +62,10 @@ export default function MyChildren() {
             {[1, 2].map((i) => (
               <div
                 key={i}
-                className="annia-glass p-4 rounded-lg border border-border/30 animate-pulse"
+                className="bg-card p-4 rounded-lg border border-border/30 animate-pulse"
               >
-                <div className="h-5 w-32 bg-muted/30 rounded mb-2" />
-                <div className="h-4 w-24 bg-muted/30 rounded" />
+                <div className="h-5 w-32 bg-secondary/50 rounded mb-2" />
+                <div className="h-4 w-24 bg-secondary/50 rounded" />
               </div>
             ))}
           </div>

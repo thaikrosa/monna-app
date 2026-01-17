@@ -18,10 +18,10 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
 
   if (reminders.length === 0) {
     return (
-      <div className="annia-glass rounded-2xl p-5 animate-fade-in">
+      <div className="bg-secondary/40 rounded-2xl p-5 animate-fade-in border border-border/30">
         <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-            <Bell weight="thin" className="h-4 w-4 text-primary" />
+          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent/30 flex items-center justify-center">
+            <Bell weight="thin" className="h-4 w-4 text-accent-foreground" />
           </div>
           
           <div className="flex-1">
@@ -48,10 +48,10 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
   }
 
   return (
-    <div className="annia-glass rounded-2xl p-5 animate-fade-in">
+    <div className="bg-card rounded-2xl p-5 animate-fade-in border border-border/30">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Bell weight="thin" className="h-4 w-4 text-primary" />
+          <Bell weight="thin" className="h-4 w-4 text-accent-foreground" />
           <p className="text-sm font-medium text-foreground">Lembretes</p>
         </div>
         
@@ -84,7 +84,7 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
               flex items-center gap-3 py-2 px-3 rounded-lg transition-colors
               ${reminder.isOverdue 
                 ? 'bg-destructive/10 border border-destructive/20' 
-                : 'border border-transparent hover:bg-muted/30'
+                : 'bg-secondary/30 border border-transparent hover:bg-secondary/50'
               }
             `}
           >

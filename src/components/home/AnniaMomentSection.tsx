@@ -30,7 +30,7 @@ export function AnniaMomentSection({ suggestions }: AnniaMomentSectionProps) {
   return (
     <div className="space-y-3 animate-fade-in">
       <div className="flex items-center gap-2 px-1">
-        <Sparkle weight="thin" className="h-4 w-4 text-primary" />
+        <Sparkle weight="thin" className="h-4 w-4 text-accent-foreground" />
         <p className="text-sm font-medium text-foreground">Momento Monna</p>
       </div>
 
@@ -39,7 +39,7 @@ export function AnniaMomentSection({ suggestions }: AnniaMomentSectionProps) {
           <div
             key={suggestion.id}
             className={`
-              annia-glass rounded-2xl p-4 transition-all duration-200
+              bg-secondary/40 rounded-2xl p-4 transition-all duration-200 border border-border/30
               ${hiddenIds.has(suggestion.id) ? 'animate-fade-out' : 'animate-fade-in'}
             `}
           >

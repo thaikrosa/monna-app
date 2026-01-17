@@ -39,7 +39,7 @@ export default function SupportNetwork() {
         <Button 
           onClick={() => setIsAddOpen(true)} 
           variant="outline"
-          className="annia-glass border-border/30 hover:border-primary/30"
+          className="bg-secondary/40 border-border/30 hover:border-primary/30 hover:bg-secondary/60"
         >
           <Plus weight="thin" className="h-4 w-4 mr-2" />
           Adicionar contato

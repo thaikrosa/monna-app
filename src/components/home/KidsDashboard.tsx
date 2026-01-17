@@ -43,7 +43,7 @@ export function KidsDashboard({ children, insights }: KidsDashboardProps) {
   return (
     <div className="space-y-3 animate-fade-in">
       <div className="flex items-center gap-2 px-1">
-        <Baby weight="thin" className="h-4 w-4 text-primary" />
+        <Baby weight="thin" className="h-4 w-4 text-accent-foreground" />
         <p className="text-sm font-medium text-foreground">Meus filhos</p>
       </div>
 
@@ -51,14 +51,14 @@ export function KidsDashboard({ children, insights }: KidsDashboardProps) {
         {children.slice(0, 3).map((child) => {
           const insight = insights[child.id];
           
-          return (
+            return (
             <div
               key={child.id}
-              className="annia-glass rounded-2xl p-4"
+              className="bg-card rounded-2xl p-4 border border-border/30"
             >
               <div className="flex items-start gap-3">
                 <Avatar className="h-10 w-10">
-                  <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
+                  <AvatarFallback className="bg-accent/40 text-accent-foreground text-sm font-medium">
                     {(child.nickname || child.name).charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
@@ -77,14 +77,14 @@ export function KidsDashboard({ children, insights }: KidsDashboardProps) {
                   <div className="flex items-center gap-2 mt-1">
                     {child.vaccination_reminders_enabled && (
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Syringe weight="thin" className="h-3 w-3" />
+                        <Syringe weight="thin" className="h-3 w-3 text-accent-foreground/70" />
                         <span>Vacinas ativas</span>
                       </div>
                     )}
                     
                     {child.show_standard_milestones && (
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Star weight="thin" className="h-3 w-3" />
+                        <Star weight="thin" className="h-3 w-3 text-accent-foreground/70" />
                         <span>Marcos</span>
                       </div>
                     )}

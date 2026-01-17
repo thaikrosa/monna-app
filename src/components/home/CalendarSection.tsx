@@ -17,10 +17,10 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
   // Estado: Desconectado
   if (!isConnected) {
     return (
-      <div className="annia-glass rounded-2xl p-5 animate-fade-in">
+      <div className="bg-secondary/50 rounded-2xl p-5 animate-fade-in border border-border/30">
         <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted/50 flex items-center justify-center">
-            <CalendarBlank weight="thin" className="h-4 w-4 text-muted-foreground" />
+          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+            <CalendarBlank weight="thin" className="h-4 w-4 text-accent-foreground/60" />
           </div>
           
           <div className="flex-1">
@@ -46,10 +46,10 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
   // Estado: Conectado sem eventos
   if (events.length === 0) {
     return (
-      <div className="annia-glass rounded-2xl p-5 animate-fade-in">
+      <div className="bg-card rounded-2xl p-5 animate-fade-in border border-border/30">
         <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-            <CalendarBlank weight="thin" className="h-4 w-4 text-primary" />
+          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent/30 flex items-center justify-center">
+            <CalendarBlank weight="thin" className="h-4 w-4 text-accent-foreground" />
           </div>
           
           <div className="flex-1">
@@ -65,10 +65,10 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
 
   // Estado: Conectado com eventos
   return (
-    <div className="annia-glass rounded-2xl p-5 animate-fade-in">
+    <div className="bg-card rounded-2xl p-5 animate-fade-in border border-border/30">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <CalendarBlank weight="thin" className="h-4 w-4 text-primary" />
+          <CalendarBlank weight="thin" className="h-4 w-4 text-accent-foreground" />
           <p className="text-sm font-medium text-foreground">Agenda do dia</p>
         </div>
         
@@ -94,7 +94,7 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
         {events.slice(0, 4).map((event) => (
           <div 
             key={event.id}
-            className="flex items-center gap-3 py-2 border-b border-border/50 last:border-0"
+            className="flex items-center gap-3 py-2 border-b border-border/30 last:border-0"
           >
             <span className="text-xs font-medium text-primary w-12">
               {format(new Date(event.starts_at), 'HH:mm', { locale: ptBR })}

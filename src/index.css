@@ -9,114 +9,114 @@
 
 @layer base {
   :root {
-    /* Annia Light Mode - Warm off-white */
-    --background: 48 17% 93%; /* #F1F0EC */
-    --foreground: 215 51% 11%; /* #0E1A2B */
+    /* Warm Plum Light Mode - Quiet Luxury */
+    --background: 24 100% 95%;
+    --foreground: 270 40% 15%;
 
-    --card: 0 0% 100%; /* White cards */
-    --card-foreground: 215 51% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 270 40% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 51% 11%;
+    --popover-foreground: 270 40% 15%;
 
-    /* Olive as primary */
-    --primary: 75 36% 36%; /* #6B7C3A */
-    --primary-hover: 75 36% 42%;
+    /* Plum as primary */
+    --primary: 285 37% 30%;
+    --primary-hover: 285 37% 35%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 45 13% 89%; /* #E7E5DF - muted surface */
-    --secondary-foreground: 215 51% 11%;
+    --secondary: 345 35% 80%;
+    --secondary-foreground: 270 40% 20%;
 
-    --muted: 45 13% 89%; /* #E7E5DF */
-    --muted-foreground: 215 8% 47%; /* #6F7782 */
+    --muted: 345 25% 90%;
+    --muted-foreground: 270 20% 40%;
 
-    --accent: 75 36% 40%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 315 30% 70%;
+    --accent-foreground: 270 40% 15%;
 
-    --destructive: 1 48% 42%; /* #9F3A38 */
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --warning: 37 50% 58%; /* #CBA15E */
-    --warning-foreground: 215 51% 11%;
+    --warning: 37 50% 58%;
+    --warning-foreground: 270 40% 15%;
 
-    --border: 50 6% 84%; /* #D8D7D2 */
-    --input: 50 6% 84%;
-    --ring: 75 36% 36%;
+    --border: 345 20% 85%;
+    --input: 345 20% 85%;
+    --ring: 285 37% 30%;
 
     --radius: 0.75rem;
 
-    /* Annia-specific tokens */
-    --annia-navy: 215 51% 11%; /* #0E1A2B */
-    --annia-olive: 75 36% 36%; /* #6B7C3A */
-    --annia-olive-hover: 75 36% 42%;
+    /* Annia-specific tokens - mapped to new palette */
+    --annia-navy: 270 40% 15%;
+    --annia-olive: 285 37% 30%;
+    --annia-olive-hover: 285 37% 35%;
 
     /* Surface tokens */
     --surface-elevated: 0 0% 100%;
-    --shadow-soft: 215 51% 11%;
+    --shadow-soft: 270 40% 15%;
 
     /* Sidebar tokens */
-    --sidebar-background: 215 51% 11%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 75 36% 36%;
+    --sidebar-background: 270 40% 15%;
+    --sidebar-foreground: 24 100% 95%;
+    --sidebar-primary: 285 37% 30%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 40% 18%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 215 40% 20%;
-    --sidebar-ring: 75 36% 36%;
+    --sidebar-accent: 270 30% 20%;
+    --sidebar-accent-foreground: 24 100% 95%;
+    --sidebar-border: 270 30% 20%;
+    --sidebar-ring: 285 37% 30%;
   }
 
   .dark {
-    /* Dark mode - Navy base */
-    --background: 215 51% 11%; /* #0E1A2B */
-    --foreground: 48 17% 93%; /* #F1F0EC */
+    /* Dark mode - Deep Plum base */
+    --background: 270 50% 6%;
+    --foreground: 24 100% 95%;
 
-    --card: 215 45% 14%;
-    --card-foreground: 48 17% 93%;
+    --card: 270 45% 10%;
+    --card-foreground: 24 100% 95%;
 
-    --popover: 215 45% 12%;
-    --popover-foreground: 48 17% 93%;
+    --popover: 270 45% 10%;
+    --popover-foreground: 24 100% 95%;
 
-    --primary: 75 36% 42%;
-    --primary-hover: 75 36% 48%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 345 35% 80%;
+    --primary-hover: 345 35% 85%;
+    --primary-foreground: 270 50% 10%;
 
-    --secondary: 215 40% 18%;
-    --secondary-foreground: 48 17% 93%;
+    --secondary: 270 30% 20%;
+    --secondary-foreground: 24 100% 95%;
 
-    --muted: 215 40% 22%;
-    --muted-foreground: 215 8% 60%;
+    --muted: 270 30% 15%;
+    --muted-foreground: 345 15% 70%;
 
-    --accent: 75 36% 45%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 285 35% 30%;
+    --accent-foreground: 24 100% 95%;
 
-    --destructive: 1 48% 45%;
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
     --warning: 37 50% 55%;
     --warning-foreground: 0 0% 100%;
 
-    --border: 215 40% 22%;
-    --input: 215 40% 22%;
-    --ring: 75 36% 42%;
+    --border: 270 30% 20%;
+    --input: 270 30% 20%;
+    --ring: 345 35% 80%;
 
     /* Annia-specific tokens dark */
-    --annia-navy: 215 51% 11%;
-    --annia-olive: 75 36% 42%;
-    --annia-olive-hover: 75 36% 48%;
+    --annia-navy: 270 50% 6%;
+    --annia-olive: 345 35% 80%;
+    --annia-olive-hover: 345 35% 85%;
 
     /* Surface tokens dark */
-    --surface-elevated: 215 45% 16%;
-    --shadow-soft: 215 51% 5%;
+    --surface-elevated: 270 45% 12%;
+    --shadow-soft: 270 50% 3%;
 
     /* Sidebar tokens dark */
-    --sidebar-background: 215 51% 8%;
-    --sidebar-foreground: 48 17% 93%;
-    --sidebar-primary: 75 36% 42%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 40% 20%;
-    --sidebar-accent-foreground: 48 17% 93%;
-    --sidebar-border: 215 40% 22%;
-    --sidebar-ring: 75 36% 42%;
+    --sidebar-background: 270 50% 4%;
+    --sidebar-foreground: 24 100% 95%;
+    --sidebar-primary: 345 35% 80%;
+    --sidebar-primary-foreground: 270 50% 10%;
+    --sidebar-accent: 270 30% 15%;
+    --sidebar-accent-foreground: 24 100% 95%;
+    --sidebar-border: 270 30% 20%;
+    --sidebar-ring: 345 35% 80%;
   }
 }
 

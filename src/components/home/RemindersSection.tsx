@@ -18,10 +18,10 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
 
   if (reminders.length === 0) {
     return (
-      <div className="bg-card rounded-2xl p-5 animate-fade-in border border-border/30">
+      <div className="bg-secondary rounded-xl p-5 animate-fade-in border border-border">
         <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent/30 flex items-center justify-center">
-            <Bell weight="thin" className="h-4 w-4 text-accent-foreground" />
+          <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-accent/30 flex items-center justify-center">
+            <Bell weight="thin" className="h-4 w-4 text-foreground" />
           </div>
           
           <div className="flex-1">
@@ -48,10 +48,10 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
   }
 
   return (
-    <div className="bg-card rounded-2xl p-5 animate-fade-in border border-border/30">
+    <div className="bg-secondary rounded-xl p-5 animate-fade-in border border-border">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Bell weight="thin" className="h-4 w-4 text-accent-foreground" />
+          <Bell weight="thin" className="h-4 w-4 text-foreground" />
           <p className="text-sm font-medium text-foreground">Lembretes</p>
         </div>
         

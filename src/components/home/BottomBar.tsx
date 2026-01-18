@@ -38,7 +38,7 @@ export function BottomBar() {
                 {item.label}
               </span>
               {isActive && (
-                <span className="absolute top-1.5 right-3 w-1.5 h-1.5 rounded-full bg-primary" />
+                <span className="absolute top-1.5 right-3 w-1.5 h-1.5 rounded-sm bg-primary" />
               )}
             </button>
           );

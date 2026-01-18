@@ -2,121 +2,126 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Annia Design System
- * Navy + Oliva theme with Inter typography
- * All colors in HSL format
+/* Monna Design System
+ * Warm / Burgundy / Quiet Luxury
+ * Palette: #F9F3ED, #E7D8CA, #531C22, #220707
+ * All colors in HSL format - NO pure white
  */
 
 @layer base {
   :root {
-    /* Warm Plum Light Mode - Quiet Luxury */
-    --background: 24 100% 95%;
-    --foreground: 270 40% 15%;
+    /* Monna Light Mode - Warm Luxury */
+    --background: 30 47% 95%;
+    --foreground: 0 69% 8%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 270 40% 15%;
+    /* Cards use secondary warm tone - no pure white */
+    --card: 30 33% 85%;
+    --card-foreground: 0 69% 8%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 270 40% 15%;
+    --popover: 30 33% 85%;
+    --popover-foreground: 0 69% 8%;
 
-    /* Plum as primary */
-    --primary: 285 37% 30%;
-    --primary-hover: 285 37% 35%;
-    --primary-foreground: 0 0% 100%;
+    /* Burgundy as primary */
+    --primary: 353 50% 22%;
+    --primary-hover: 353 50% 28%;
+    --primary-foreground: 30 47% 95%;
 
-    --secondary: 345 35% 80%;
-    --secondary-foreground: 270 40% 20%;
+    /* Warm beige for secondary surfaces */
+    --secondary: 30 33% 85%;
+    --secondary-foreground: 0 69% 8%;
 
-    --muted: 345 25% 90%;
-    --muted-foreground: 270 20% 40%;
+    --muted: 30 25% 90%;
+    --muted-foreground: 0 40% 35%;
 
-    --accent: 315 30% 70%;
-    --accent-foreground: 270 40% 15%;
+    --accent: 30 33% 80%;
+    --accent-foreground: 0 69% 8%;
 
-    --destructive: 0 70% 50%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 30 47% 95%;
 
-    --warning: 37 50% 58%;
-    --warning-foreground: 270 40% 15%;
+    --warning: 37 50% 55%;
+    --warning-foreground: 0 69% 8%;
 
-    --border: 345 20% 85%;
-    --input: 345 20% 85%;
-    --ring: 285 37% 30%;
+    --border: 30 25% 80%;
+    --input: 30 25% 80%;
+    --ring: 353 50% 22%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* Annia-specific tokens - mapped to new palette */
-    --annia-navy: 270 40% 15%;
-    --annia-olive: 285 37% 30%;
-    --annia-olive-hover: 285 37% 35%;
+    /* Monna-specific tokens */
+    --monna-burgundy: 353 50% 22%;
+    --monna-burgundy-hover: 353 50% 28%;
+    --monna-warm: 30 47% 95%;
+    --monna-beige: 30 33% 85%;
 
     /* Surface tokens */
-    --surface-elevated: 0 0% 100%;
-    --shadow-soft: 270 40% 15%;
+    --surface-elevated: 30 33% 85%;
+    --shadow-soft: 0 69% 8%;
 
     /* Sidebar tokens */
-    --sidebar-background: 270 40% 15%;
-    --sidebar-foreground: 24 100% 95%;
-    --sidebar-primary: 285 37% 30%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 270 30% 20%;
-    --sidebar-accent-foreground: 24 100% 95%;
-    --sidebar-border: 270 30% 20%;
-    --sidebar-ring: 285 37% 30%;
+    --sidebar-background: 0 69% 8%;
+    --sidebar-foreground: 30 47% 95%;
+    --sidebar-primary: 353 50% 22%;
+    --sidebar-primary-foreground: 30 47% 95%;
+    --sidebar-accent: 0 50% 12%;
+    --sidebar-accent-foreground: 30 47% 95%;
+    --sidebar-border: 0 40% 15%;
+    --sidebar-ring: 353 50% 22%;
   }
 
   .dark {
-    /* Dark mode - Deep Plum base */
-    --background: 270 50% 6%;
-    --foreground: 24 100% 95%;
+    /* Dark mode - Deep burgundy base */
+    --background: 0 69% 8%;
+    --foreground: 30 47% 95%;
 
-    --card: 270 45% 10%;
-    --card-foreground: 24 100% 95%;
+    --card: 0 50% 12%;
+    --card-foreground: 30 47% 95%;
 
-    --popover: 270 45% 10%;
-    --popover-foreground: 24 100% 95%;
+    --popover: 0 50% 12%;
+    --popover-foreground: 30 47% 95%;
 
-    --primary: 345 35% 80%;
-    --primary-hover: 345 35% 85%;
-    --primary-foreground: 270 50% 10%;
+    --primary: 30 33% 85%;
+    --primary-hover: 30 33% 90%;
+    --primary-foreground: 0 69% 8%;
 
-    --secondary: 270 30% 20%;
-    --secondary-foreground: 24 100% 95%;
+    --secondary: 0 40% 15%;
+    --secondary-foreground: 30 47% 95%;
 
-    --muted: 270 30% 15%;
-    --muted-foreground: 345 15% 70%;
+    --muted: 0 30% 12%;
+    --muted-foreground: 30 20% 65%;
 
-    --accent: 285 35% 30%;
-    --accent-foreground: 24 100% 95%;
+    --accent: 353 40% 25%;
+    --accent-foreground: 30 47% 95%;
 
-    --destructive: 0 70% 50%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 30 47% 95%;
 
-    --warning: 37 50% 55%;
-    --warning-foreground: 0 0% 100%;
+    --warning: 37 50% 50%;
+    --warning-foreground: 30 47% 95%;
 
-    --border: 270 30% 20%;
-    --input: 270 30% 20%;
-    --ring: 345 35% 80%;
+    --border: 0 30% 18%;
+    --input: 0 30% 18%;
+    --ring: 30 33% 85%;
 
-    /* Annia-specific tokens dark */
-    --annia-navy: 270 50% 6%;
-    --annia-olive: 345 35% 80%;
-    --annia-olive-hover: 345 35% 85%;
+    /* Monna-specific tokens dark */
+    --monna-burgundy: 30 33% 85%;
+    --monna-burgundy-hover: 30 33% 90%;
+    --monna-warm: 0 69% 8%;
+    --monna-beige: 0 50% 12%;
 
     /* Surface tokens dark */
-    --surface-elevated: 270 45% 12%;
-    --shadow-soft: 270 50% 3%;
+    --surface-elevated: 0 40% 14%;
+    --shadow-soft: 0 69% 4%;
 
     /* Sidebar tokens dark */
-    --sidebar-background: 270 50% 4%;
-    --sidebar-foreground: 24 100% 95%;
-    --sidebar-primary: 345 35% 80%;
-    --sidebar-primary-foreground: 270 50% 10%;
-    --sidebar-accent: 270 30% 15%;
-    --sidebar-accent-foreground: 24 100% 95%;
-    --sidebar-border: 270 30% 20%;
-    --sidebar-ring: 345 35% 80%;
+    --sidebar-background: 0 69% 6%;
+    --sidebar-foreground: 30 47% 95%;
+    --sidebar-primary: 30 33% 85%;
+    --sidebar-primary-foreground: 0 69% 8%;
+    --sidebar-accent: 0 30% 12%;
+    --sidebar-accent-foreground: 30 47% 95%;
+    --sidebar-border: 0 30% 18%;
+    --sidebar-ring: 30 33% 85%;
   }
 }
 
@@ -177,23 +182,22 @@
     box-shadow: 0 12px 32px -8px hsl(var(--shadow-soft) / 0.5);
   }
 
-  /* Pill navigation */
+  /* Pill navigation - Monna uses rounded-lg, not full */
   .pill-nav {
-    @apply rounded-full border border-border;
+    @apply rounded-lg border border-border;
     background: hsl(var(--surface-elevated) / 0.95);
     backdrop-filter: blur(12px);
   }
 
-  /* Floating button */
+  /* Floating button - Monna uses rounded-lg */
   .floating-button {
-    @apply w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200;
+    @apply w-12 h-12 rounded-lg flex items-center justify-center transition-all duration-200;
     background: hsl(var(--primary));
     color: hsl(var(--primary-foreground));
   }
 
   .floating-button:hover {
-    @apply scale-110;
-    background: hsl(var(--primary) / 0.9);
+    background: hsl(var(--primary-hover));
   }
 
   /* Linear animations - duration-200 only */

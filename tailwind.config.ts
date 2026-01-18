@@ -55,11 +55,12 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Annia-specific colors
-        annia: {
-          navy: "hsl(var(--annia-navy))",
-          olive: "hsl(var(--annia-olive))",
-          "olive-hover": "hsl(var(--annia-olive-hover))",
+        // Monna-specific colors
+        monna: {
+          burgundy: "hsl(var(--monna-burgundy))",
+          "burgundy-hover": "hsl(var(--monna-burgundy-hover))",
+          warm: "hsl(var(--monna-warm))",
+          beige: "hsl(var(--monna-beige))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

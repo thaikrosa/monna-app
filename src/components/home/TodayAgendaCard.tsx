@@ -14,7 +14,7 @@ export function TodayAgendaCard({ events, isTeaser = false }: TodayAgendaCardPro
 
   if (events.length === 0) {
     return (
-      <div className="bg-card border border-border/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300">
+      <div className="bg-secondary border border-border rounded-xl p-5 hover:shadow-sm transition-all duration-300">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <CalendarBlank weight="regular" className="w-5 h-5 text-muted-foreground" />
@@ -26,7 +26,7 @@ export function TodayAgendaCard({ events, isTeaser = false }: TodayAgendaCardPro
           <p className="text-sm text-muted-foreground mt-1">Que tal planejar algo especial?</p>
           <Button 
             onClick={() => navigate('/lembretes')}
-            className="mt-4 bg-primary text-primary-foreground rounded-full px-5"
+            className="mt-4 bg-primary text-primary-foreground rounded-lg px-5"
           >
             <Plus weight="bold" className="w-4 h-4 mr-1" />
             Adicionar evento
@@ -37,7 +37,7 @@ export function TodayAgendaCard({ events, isTeaser = false }: TodayAgendaCardPro
   }
 
   return (
-    <div className="bg-card border border-border/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300">
+    <div className="bg-secondary border border-border rounded-xl p-5 hover:shadow-sm transition-all duration-300">
       <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <CalendarBlank weight="regular" className="w-5 h-5 text-muted-foreground" />

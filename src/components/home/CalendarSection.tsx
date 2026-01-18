@@ -17,10 +17,10 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
   // Estado: Desconectado
   if (!isConnected) {
     return (
-      <div className="bg-card rounded-2xl p-5 animate-fade-in border border-border/30">
+      <div className="bg-secondary rounded-xl p-5 animate-fade-in border border-border">
         <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-            <CalendarBlank weight="thin" className="h-4 w-4 text-accent-foreground/60" />
+          <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+            <CalendarBlank weight="thin" className="h-4 w-4 text-muted-foreground" />
           </div>
           
           <div className="flex-1">
@@ -46,10 +46,10 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
   // Estado: Conectado sem eventos
   if (events.length === 0) {
     return (
-      <div className="bg-card rounded-2xl p-5 animate-fade-in border border-border/30">
+      <div className="bg-secondary rounded-xl p-5 animate-fade-in border border-border">
         <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent/30 flex items-center justify-center">
-            <CalendarBlank weight="thin" className="h-4 w-4 text-accent-foreground" />
+          <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-accent/30 flex items-center justify-center">
+            <CalendarBlank weight="thin" className="h-4 w-4 text-foreground" />
           </div>
           
           <div className="flex-1">
@@ -65,10 +65,10 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
 
   // Estado: Conectado com eventos
   return (
-    <div className="bg-card rounded-2xl p-5 animate-fade-in border border-border/30">
+    <div className="bg-secondary rounded-xl p-5 animate-fade-in border border-border">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <CalendarBlank weight="thin" className="h-4 w-4 text-accent-foreground" />
+          <CalendarBlank weight="thin" className="h-4 w-4 text-foreground" />
           <p className="text-sm font-medium text-foreground">Agenda do dia</p>
         </div>
         

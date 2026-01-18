@@ -54,11 +54,11 @@ export function KidsDashboard({ children, insights }: KidsDashboardProps) {
             return (
             <div
               key={child.id}
-              className="bg-secondary rounded-xl p-4 border border-border shadow-sm"
+              className="bg-card rounded-xl p-4 border border-border shadow-elevated"
             >
               <div className="flex items-start gap-3">
-                <Avatar className="h-10 w-10">
-                  <AvatarFallback className="bg-background text-primary text-sm font-medium">
+                <Avatar className="h-10 w-10 border border-border">
+                  <AvatarFallback className="bg-secondary text-primary text-sm font-medium">
                     {(child.nickname || child.name).charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>

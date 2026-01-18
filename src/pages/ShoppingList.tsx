@@ -115,7 +115,7 @@ export default function ShoppingList() {
         </div>
       ) : totalCount === 0 ? (
         /* Empty state */
-        <div className="py-16 text-center bg-card border border-border shadow-sm rounded-lg">
+        <div className="py-16 text-center bg-card border border-border shadow-elevated rounded-lg">
           <ShoppingCart weight="regular" className="h-12 w-12 mx-auto text-primary mb-4" />
           <p className="text-primary/80 mb-1">
             {activeTab === 'todos'

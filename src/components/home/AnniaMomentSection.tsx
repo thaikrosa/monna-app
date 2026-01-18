@@ -39,7 +39,7 @@ export function AnniaMomentSection({ suggestions }: AnniaMomentSectionProps) {
           <div
             key={suggestion.id}
             className={`
-              bg-secondary rounded-xl p-4 transition-all duration-200 border border-border shadow-sm
+              bg-card rounded-xl p-4 transition-all duration-200 border border-border shadow-elevated
               ${hiddenIds.has(suggestion.id) ? 'animate-fade-out' : 'animate-fade-in'}
             `}
           >

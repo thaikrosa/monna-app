@@ -69,7 +69,7 @@ export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingI
 
         <div className="flex items-center gap-2 mt-0.5">
           {item.tag_name && (
-            <span className="text-xs px-1.5 py-0.5 rounded-md bg-background text-primary/70 border border-border">
+            <span className="text-xs px-1.5 py-0.5 rounded-md bg-secondary text-primary/70 border border-border">
               {item.tag_name}
             </span>
           )}

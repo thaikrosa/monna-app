@@ -4,15 +4,15 @@ export function HomeSkeleton() {
   return (
     <div className="space-y-4 animate-fade-in">
       {/* Greeting skeleton */}
-      <div className="bg-annia-navy rounded-lg p-6">
-        <Skeleton className="h-6 w-40 bg-primary-foreground/20 mb-3" />
-        <Skeleton className="h-4 w-full bg-primary-foreground/10 mb-4" />
-        <Skeleton className="h-10 w-full bg-primary-foreground/10 mb-2" />
-        <Skeleton className="h-8 w-32 bg-primary-foreground/10" />
+      <div className="bg-card rounded-lg p-6 border border-border shadow-elevated">
+        <Skeleton className="h-6 w-40 mb-3" />
+        <Skeleton className="h-4 w-full mb-4" />
+        <Skeleton className="h-10 w-full mb-2" />
+        <Skeleton className="h-8 w-32" />
       </div>
       
       {/* Agenda skeleton */}
-      <div className="bg-card border border-border/60 rounded-lg p-4">
+      <div className="bg-card border border-border rounded-lg p-4 shadow-elevated">
         <div className="flex items-center justify-between mb-3">
           <Skeleton className="h-5 w-32" />
           <Skeleton className="h-4 w-20" />
@@ -25,7 +25,7 @@ export function HomeSkeleton() {
       </div>
       
       {/* Reminders skeleton */}
-      <div className="bg-card border border-border/60 rounded-lg p-4">
+      <div className="bg-card border border-border rounded-lg p-4 shadow-elevated">
         <div className="flex items-center justify-between mb-3">
           <Skeleton className="h-5 w-36" />
           <Skeleton className="h-4 w-16" />

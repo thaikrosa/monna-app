@@ -11,11 +11,12 @@
 @layer base {
   :root {
     /* Monna Light Mode - Warm Luxury */
-    --background: 30 47% 95%;
+    /* Page background - warm beige for depth */
+    --background: 30 33% 85%;
     --foreground: 0 69% 8%;
 
-    /* Cards use secondary warm tone - no pure white */
-    --card: 30 33% 85%;
+    /* Cards use lighter warm tone - elevated surface */
+    --card: 30 47% 95%;
     --card-foreground: 0 69% 8%;
 
     --popover: 30 33% 85%;
@@ -26,8 +27,8 @@
     --primary-hover: 353 50% 28%;
     --primary-foreground: 30 47% 95%;
 
-    /* Warm beige for secondary surfaces */
-    --secondary: 30 33% 85%;
+    /* Secondary surfaces - same as background for subtle elements */
+    --secondary: 30 33% 80%;
     --secondary-foreground: 0 69% 8%;
 
     --muted: 30 25% 90%;
@@ -168,7 +169,13 @@
   /* Annia Glassmorphism - use sparingly on cards */
   .annia-glass {
     @apply backdrop-blur-md border border-border;
-    background: hsl(var(--background) / 0.8);
+    background: hsl(var(--card) / 0.8);
+  }
+
+  /* Elevated card shadow - use for main cards */
+  .shadow-elevated {
+    box-shadow: 0 2px 8px -2px hsl(var(--shadow-soft) / 0.08),
+                0 4px 16px -4px hsl(var(--shadow-soft) / 0.12);
   }
 
   /* Card hover effect */

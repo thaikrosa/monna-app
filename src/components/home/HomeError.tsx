@@ -19,7 +19,7 @@ export function HomeError({ onRetry }: HomeErrorProps) {
       </p>
       <Button 
         onClick={onRetry}
-        className="bg-annia-olive hover:bg-annia-olive-hover text-primary-foreground transition-colors duration-200"
+        className="bg-primary hover:bg-primary/90 text-primary-foreground transition-colors duration-200"
       >
         <ArrowClockwise weight="regular" className="w-4 h-4 mr-2" />
         Tentar novamente

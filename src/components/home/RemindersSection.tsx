@@ -18,9 +18,9 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
 
   if (reminders.length === 0) {
     return (
-      <div className="bg-secondary rounded-xl p-5 animate-fade-in border border-border shadow-sm">
+      <div className="bg-card rounded-xl p-5 animate-fade-in border border-border shadow-elevated">
         <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-background flex items-center justify-center">
+          <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
             <Bell weight="regular" className="h-4 w-4 text-primary" />
           </div>
           
@@ -47,7 +47,7 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
   }
 
   return (
-    <div className="bg-secondary rounded-xl p-5 animate-fade-in border border-border shadow-sm">
+    <div className="bg-card rounded-xl p-5 animate-fade-in border border-border shadow-elevated">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Bell weight="regular" className="h-4 w-4 text-primary" />

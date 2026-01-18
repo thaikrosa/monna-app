@@ -34,7 +34,7 @@ export function ReminderCard({ reminder, onComplete, onSnooze, onEdit, onDelete 
   return (
     <div
       className={`
-        group relative bg-secondary p-4 rounded-lg border border-border shadow-sm
+        group relative bg-card p-4 rounded-lg border border-border shadow-elevated
         transition-all duration-150 hover:border-primary/50 hover:shadow-md
         ${isCompleted ? 'opacity-50' : ''}
       `}

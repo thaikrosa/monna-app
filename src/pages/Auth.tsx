@@ -31,7 +31,7 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
-      <div className="w-full max-w-sm flex flex-col items-center gap-8 animate-fade-in">
+      <div className="w-full max-w-sm flex flex-col items-center gap-8 animate-fade-in bg-card rounded-xl p-8 border border-border shadow-elevated">
         {/* Logo */}
         <div className="flex flex-col items-center gap-2">
           <h1 className="text-4xl font-bold text-foreground tracking-tight">

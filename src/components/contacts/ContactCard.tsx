@@ -18,7 +18,7 @@ export function ContactCard({ contact, onEdit, onDelete }: ContactCardProps) {
   const whatsappUrl = `https://wa.me/${contact.phone.replace(/\D/g, '')}`;
 
   return (
-    <div className="bg-secondary p-4 rounded-lg border border-border shadow-sm group transition-all duration-150 hover:border-primary/50 hover:shadow-md">
+    <div className="bg-card p-4 rounded-lg border border-border shadow-elevated group transition-all duration-150 hover:border-primary/50 hover:shadow-md">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           {/* Alias + Category Badge + Annia indicator */}
@@ -27,7 +27,7 @@ export function ContactCard({ contact, onEdit, onDelete }: ContactCardProps) {
             
             {/* Category badge */}
             {contact.category && contact.category !== 'Outros' && (
-              <span className="text-xs px-2 py-0.5 rounded-md bg-background text-primary/70">
+              <span className="text-xs px-2 py-0.5 rounded-md bg-secondary text-primary/70">
                 {contact.category}
               </span>
             )}

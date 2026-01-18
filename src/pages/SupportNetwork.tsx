@@ -50,7 +50,7 @@ export default function SupportNetwork() {
         {isLoading ? (
           <p className="text-primary/80 text-center py-8">Carregando...</p>
         ) : contacts.length === 0 ? (
-          <div className="text-center py-12 bg-card border border-border shadow-sm rounded-lg">
+          <div className="text-center py-12 bg-card border border-border shadow-elevated rounded-lg">
             <p className="text-primary/80">Nenhum contato cadastrado</p>
             <p className="text-sm text-muted-foreground mt-1">
               Adicione pessoas à sua rede de apoio

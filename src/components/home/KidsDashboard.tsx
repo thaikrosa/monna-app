@@ -43,7 +43,7 @@ export function KidsDashboard({ children, insights }: KidsDashboardProps) {
   return (
     <div className="space-y-3 animate-fade-in">
       <div className="flex items-center gap-2 px-1">
-        <Baby weight="thin" className="h-4 w-4 text-accent-foreground" />
+        <Baby weight="regular" className="h-4 w-4 text-primary" />
         <p className="text-sm font-medium text-foreground">Meus filhos</p>
       </div>
 
@@ -54,11 +54,11 @@ export function KidsDashboard({ children, insights }: KidsDashboardProps) {
             return (
             <div
               key={child.id}
-              className="bg-card rounded-2xl p-4 border border-border/30"
+              className="bg-secondary rounded-xl p-4 border border-border shadow-sm"
             >
               <div className="flex items-start gap-3">
                 <Avatar className="h-10 w-10">
-                  <AvatarFallback className="bg-accent/40 text-accent-foreground text-sm font-medium">
+                  <AvatarFallback className="bg-background text-primary text-sm font-medium">
                     {(child.nickname || child.name).charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
@@ -77,14 +77,14 @@ export function KidsDashboard({ children, insights }: KidsDashboardProps) {
                   <div className="flex items-center gap-2 mt-1">
                     {child.vaccination_reminders_enabled && (
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Syringe weight="thin" className="h-3 w-3 text-accent-foreground/70" />
+                        <Syringe weight="regular" className="h-3 w-3 text-primary/70" />
                         <span>Vacinas ativas</span>
                       </div>
                     )}
                     
                     {child.show_standard_milestones && (
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Star weight="thin" className="h-3 w-3 text-accent-foreground/70" />
+                        <Star weight="regular" className="h-3 w-3 text-primary/70" />
                         <span>Marcos</span>
                       </div>
                     )}
@@ -92,7 +92,7 @@ export function KidsDashboard({ children, insights }: KidsDashboardProps) {
 
                   {/* Insight do filho */}
                   {insight && (
-                    <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
+                    <p className="text-xs text-primary/80 mt-2 line-clamp-2">
                       {insight.title}
                     </p>
                   )}
@@ -101,10 +101,10 @@ export function KidsDashboard({ children, insights }: KidsDashboardProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 flex-shrink-0"
+                  className="h-8 w-8 flex-shrink-0 text-primary hover:text-primary hover:bg-primary/10"
                   onClick={() => navigate(`/filhos`)}
                 >
-                  <ArrowRight weight="thin" className="h-4 w-4" />
+                  <ArrowRight weight="regular" className="h-4 w-4" />
                 </Button>
               </div>
             </div>

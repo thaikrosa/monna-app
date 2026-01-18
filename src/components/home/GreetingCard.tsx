@@ -19,10 +19,10 @@ export function GreetingCard({ greeting, displayName, onPrimaryCta, onSecondaryC
   const title = rawTitle.replace(/,\s*,/g, ',').replace(/\?,\s*/g, '? ');
 
   return (
-    <div className="bg-secondary border border-border rounded-xl p-6">
+    <div className="bg-secondary border border-border rounded-xl p-6 shadow-sm">
       <div className="bg-background rounded-lg p-4 mb-4">
         <h1 className="text-xl font-semibold text-foreground">{title}</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-sm text-primary/80 mt-1">
           {greeting.insight}
         </p>
       </div>
@@ -32,7 +32,7 @@ export function GreetingCard({ greeting, displayName, onPrimaryCta, onSecondaryC
           onClick={onPrimaryCta}
           className="bg-primary text-primary-foreground rounded-lg px-5"
         >
-          <CalendarPlus weight="regular" className="w-4 h-4 mr-2" />
+          <CalendarPlus weight="bold" className="w-4 h-4 mr-2" />
           Revisar lembretes
         </Button>
         
@@ -40,7 +40,7 @@ export function GreetingCard({ greeting, displayName, onPrimaryCta, onSecondaryC
           <Button 
             variant="ghost" 
             onClick={onSecondaryCta}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-primary/70 hover:text-primary hover:bg-primary/10"
           >
             {greeting.secondaryCta.label}
           </Button>

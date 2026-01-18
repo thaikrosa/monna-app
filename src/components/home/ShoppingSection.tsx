@@ -22,18 +22,18 @@ export function ShoppingSection({ items }: ShoppingSectionProps) {
   const showSmartTrigger = totalUnchecked > 10;
 
   return (
-    <div className="bg-secondary rounded-xl p-5 animate-fade-in border border-border">
+    <div className="bg-secondary rounded-xl p-5 animate-fade-in border border-border shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <ShoppingCart weight="thin" className="h-4 w-4 text-foreground" />
+          <ShoppingCart weight="regular" className="h-4 w-4 text-primary" />
           <p className="text-sm font-medium text-foreground">Lista de compras</p>
-          <span className="text-xs text-muted-foreground">({totalUnchecked})</span>
+          <span className="text-xs text-primary/70">({totalUnchecked})</span>
         </div>
         
         <Button
           variant="ghost"
           size="sm"
-          className="text-xs text-muted-foreground hover:text-foreground h-auto py-1"
+          className="text-xs text-primary/70 hover:text-primary hover:bg-primary/10 h-auto py-1 px-2"
           onClick={() => navigate('/lista')}
         >
           Ver lista
@@ -69,8 +69,8 @@ export function ShoppingSection({ items }: ShoppingSectionProps) {
       {showSmartTrigger && (
         <div className="mt-4 pt-4 border-t border-border/50">
           <div className="flex items-start gap-2">
-            <Sparkle weight="thin" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-muted-foreground">
+            <Sparkle weight="regular" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-primary/80">
               Sua lista tem {totalUnchecked} itens. Posso sugerir um horário para o mercado?
             </p>
           </div>

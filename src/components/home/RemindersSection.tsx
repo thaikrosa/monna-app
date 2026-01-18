@@ -18,25 +18,24 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
 
   if (reminders.length === 0) {
     return (
-      <div className="bg-secondary rounded-xl p-5 animate-fade-in border border-border">
+      <div className="bg-secondary rounded-xl p-5 animate-fade-in border border-border shadow-sm">
         <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-accent/30 flex items-center justify-center">
-            <Bell weight="thin" className="h-4 w-4 text-foreground" />
+          <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-background flex items-center justify-center">
+            <Bell weight="regular" className="h-4 w-4 text-primary" />
           </div>
           
           <div className="flex-1">
             <p className="text-sm font-medium text-foreground">Lembretes</p>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-primary/80 mt-1">
               Sua mente está tranquila. Tudo sob controle.
             </p>
             
             <Button
-              variant="outline"
               size="sm"
-              className="mt-3"
+              className="mt-3 bg-primary text-primary-foreground hover:bg-primary/90"
               onClick={() => setIsAddOpen(true)}
             >
-              <Plus weight="thin" className="h-4 w-4 mr-1" />
+              <Plus weight="regular" className="h-4 w-4 mr-1" />
               Criar lembrete
             </Button>
           </div>
@@ -48,10 +47,10 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
   }
 
   return (
-    <div className="bg-secondary rounded-xl p-5 animate-fade-in border border-border">
+    <div className="bg-secondary rounded-xl p-5 animate-fade-in border border-border shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Bell weight="thin" className="h-4 w-4 text-foreground" />
+          <Bell weight="regular" className="h-4 w-4 text-primary" />
           <p className="text-sm font-medium text-foreground">Lembretes</p>
         </div>
         
@@ -59,7 +58,7 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
           <Button
             variant="ghost"
             size="sm"
-            className="text-xs text-muted-foreground hover:text-foreground h-auto py-1"
+            className="text-xs text-primary/70 hover:text-primary hover:bg-primary/10 h-auto py-1 px-2"
             onClick={() => navigate('/lembretes')}
           >
             Ver todos
@@ -68,10 +67,10 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7"
+            className="h-7 w-7 text-primary hover:text-primary hover:bg-primary/10"
             onClick={() => setIsAddOpen(true)}
           >
-            <Plus weight="thin" className="h-4 w-4" />
+            <Plus weight="regular" className="h-4 w-4" />
           </Button>
         </div>
       </div>

@@ -20,19 +20,19 @@ export function ChildCard({ child, onEdit, onDelete }: ChildCardProps) {
   const healthSummary = healthParts.join(' · ');
 
   return (
-    <div className="bg-secondary p-4 rounded-lg border border-border group transition-all duration-150 hover:border-primary/30">
+    <div className="bg-secondary p-4 rounded-lg border border-border shadow-sm group transition-all duration-150 hover:border-primary/50 hover:shadow-md">
       <div className="flex items-start justify-between gap-4">
         {/* Main content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <h3 className="font-medium text-foreground truncate">{displayName}</h3>
             {child.vaccination_reminders_enabled && (
-              <Syringe weight="thin" className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <Syringe weight="regular" className="h-4 w-4 text-primary/70 flex-shrink-0" />
             )}
           </div>
           <p className="text-sm text-muted-foreground mt-0.5">{age}</p>
           {healthSummary && (
-            <p className="text-xs text-muted-foreground/70 mt-1 truncate">{healthSummary}</p>
+            <p className="text-xs text-primary/70 mt-1 truncate">{healthSummary}</p>
           )}
         </div>
 

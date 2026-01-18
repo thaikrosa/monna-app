@@ -30,7 +30,7 @@ export function AnniaMomentSection({ suggestions }: AnniaMomentSectionProps) {
   return (
     <div className="space-y-3 animate-fade-in">
       <div className="flex items-center gap-2 px-1">
-        <Sparkle weight="thin" className="h-4 w-4 text-accent-foreground" />
+        <Sparkle weight="regular" className="h-4 w-4 text-primary" />
         <p className="text-sm font-medium text-foreground">Momento Monna</p>
       </div>
 
@@ -39,7 +39,7 @@ export function AnniaMomentSection({ suggestions }: AnniaMomentSectionProps) {
           <div
             key={suggestion.id}
             className={`
-              bg-secondary/40 rounded-2xl p-4 transition-all duration-200 border border-border/30
+              bg-secondary rounded-xl p-4 transition-all duration-200 border border-border shadow-sm
               ${hiddenIds.has(suggestion.id) ? 'animate-fade-out' : 'animate-fade-in'}
             `}
           >
@@ -48,31 +48,30 @@ export function AnniaMomentSection({ suggestions }: AnniaMomentSectionProps) {
             </h4>
             
             {suggestion.description && (
-              <p className="text-xs text-muted-foreground mb-3">
+              <p className="text-xs text-primary/80 mb-3">
                 {suggestion.description}
               </p>
             )}
 
             <div className="flex items-center gap-2">
               <Button
-                variant="outline"
                 size="sm"
-                className="text-xs h-8"
+                className="text-xs h-8 bg-primary text-primary-foreground hover:bg-primary/90"
                 onClick={() => handleAccept(suggestion.id)}
                 disabled={updateStatus.isPending}
               >
-                <Check weight="thin" className="h-3 w-3 mr-1" />
+                <Check weight="bold" className="h-3 w-3 mr-1" />
                 Aceitar
               </Button>
               
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-xs text-muted-foreground h-8"
+                className="text-xs text-primary/70 hover:text-primary hover:bg-primary/10 h-8"
                 onClick={() => handleDismiss(suggestion.id)}
                 disabled={updateStatus.isPending}
               >
-                <X weight="thin" className="h-3 w-3 mr-1" />
+                <X weight="regular" className="h-3 w-3 mr-1" />
                 Dispensar
               </Button>
             </div>

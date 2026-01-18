@@ -34,8 +34,8 @@ export function ReminderCard({ reminder, onComplete, onSnooze, onEdit, onDelete 
   return (
     <div
       className={`
-        group relative bg-secondary p-4 rounded-lg border border-border
-        transition-all duration-150 hover:border-primary/30
+        group relative bg-secondary p-4 rounded-lg border border-border shadow-sm
+        transition-all duration-150 hover:border-primary/50 hover:shadow-md
         ${isCompleted ? 'opacity-50' : ''}
       `}
     >
@@ -63,7 +63,7 @@ export function ReminderCard({ reminder, onComplete, onSnooze, onEdit, onDelete 
 
         {/* Category icon - discrete */}
         {CategoryIcon && reminder.category !== 'other' && (
-          <CategoryIcon weight="thin" className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+          <CategoryIcon weight="regular" className="h-4 w-4 text-primary/70 flex-shrink-0" />
         )}
 
         {/* Title + Critical indicator */}

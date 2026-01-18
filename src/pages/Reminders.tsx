@@ -92,7 +92,7 @@ export default function Reminders() {
         </div>
 
         {/* Week Selector */}
-        <div className="annia-glass p-3 rounded-lg border border-border/30">
+        <div className="bg-card p-3 rounded-lg border border-border shadow-elevated">
           <WeekSelector
             weekStart={weekStart}
             selectedDate={selectedDate}

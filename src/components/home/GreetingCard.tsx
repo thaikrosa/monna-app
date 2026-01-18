@@ -19,8 +19,8 @@ export function GreetingCard({ greeting, displayName, onPrimaryCta, onSecondaryC
   const title = rawTitle.replace(/,\s*,/g, ',').replace(/\?,\s*/g, '? ');
 
   return (
-    <div className="bg-secondary border border-border rounded-xl p-6 shadow-sm">
-      <div className="bg-background rounded-lg p-4 mb-4">
+    <div className="bg-card border border-border rounded-xl p-6 shadow-elevated">
+      <div className="bg-secondary rounded-lg p-4 mb-4">
         <h1 className="text-xl font-semibold text-foreground">{title}</h1>
         <p className="text-sm text-primary/80 mt-1">
           {greeting.insight}

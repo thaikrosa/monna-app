@@ -10,10 +10,10 @@ interface EventCardProps {
 
 export function EventCard({ startTime, endTime, title, isAllDay }: EventCardProps) {
   return (
-    <Card className={`border border-border shadow-sm ${isAllDay ? 'bg-secondary' : 'bg-card'}`}>
+    <Card className={`border border-border shadow-elevated ${isAllDay ? 'bg-secondary' : 'bg-card'}`}>
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-lg bg-background flex items-center justify-center flex-shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0">
             <CalendarBlank weight="regular" className="w-4 h-4 text-primary" />
           </div>
           <div className="flex-1 min-w-0">

@@ -20,7 +20,7 @@ export function ChildCard({ child, onEdit, onDelete }: ChildCardProps) {
   const healthSummary = healthParts.join(' · ');
 
   return (
-    <div className="bg-secondary p-4 rounded-lg border border-border shadow-sm group transition-all duration-150 hover:border-primary/50 hover:shadow-md">
+    <div className="bg-card p-4 rounded-lg border border-border shadow-elevated group transition-all duration-150 hover:border-primary/50 hover:shadow-md">
       <div className="flex items-start justify-between gap-4">
         {/* Main content */}
         <div className="flex-1 min-w-0">

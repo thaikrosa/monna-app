@@ -62,7 +62,7 @@ export default function MyChildren() {
             {[1, 2].map((i) => (
               <div
                 key={i}
-                className="bg-card p-4 rounded-lg border border-border shadow-sm animate-pulse"
+                className="bg-card p-4 rounded-lg border border-border shadow-elevated animate-pulse"
               >
                 <div className="h-5 w-32 bg-secondary rounded mb-2" />
                 <div className="h-4 w-24 bg-secondary rounded" />
@@ -70,7 +70,7 @@ export default function MyChildren() {
             ))}
           </div>
         ) : children.length === 0 ? (
-          <div className="text-center py-12 bg-card border border-border shadow-sm rounded-lg">
+          <div className="text-center py-12 bg-card border border-border shadow-elevated rounded-lg">
             <p className="text-primary/80">
               Nenhum filho cadastrado
             </p>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,12 @@ interface ProtectedRouteProps {
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { user, loading, profileError, forceLogout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [showFallback, setShowFallback] = useState(false);
+
+  // Detecta se há token OAuth no hash (ainda processando callback)
+  const hasOAuthHash = location.hash.includes('access_token') || 
+                       location.hash.includes('error=');
 
   useEffect(() => {
     // Reset fallback when loading changes
@@ -21,15 +26,18 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
       return;
     }
 
-    // Mostrar fallback após 3 segundos de loading (reduzido pois loading já é mais rápido)
+    // Se há hash OAuth, dar mais tempo para processar (8 segundos)
+    // Caso contrário, 3 segundos
+    const timeout = hasOAuthHash ? 8000 : 3000;
+    
     const timeoutId = setTimeout(() => {
       if (loading) {
         setShowFallback(true);
       }
-    }, 3000);
+    }, timeout);
 
     return () => clearTimeout(timeoutId);
-  }, [loading]);
+  }, [loading, hasOAuthHash]);
 
   // Fallback para erro de profile (401/403)
   if (profileError) {

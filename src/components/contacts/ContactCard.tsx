@@ -18,7 +18,7 @@ export function ContactCard({ contact, onEdit, onDelete }: ContactCardProps) {
   const whatsappUrl = `https://wa.me/${contact.phone.replace(/\D/g, '')}`;
 
   return (
-    <div className="bg-secondary p-4 rounded-lg border border-border group transition-all duration-150 hover:border-primary/30">
+    <div className="bg-secondary p-4 rounded-lg border border-border shadow-sm group transition-all duration-150 hover:border-primary/50 hover:shadow-md">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           {/* Alias + Category Badge + Annia indicator */}
@@ -27,7 +27,7 @@ export function ContactCard({ contact, onEdit, onDelete }: ContactCardProps) {
             
             {/* Category badge */}
             {contact.category && contact.category !== 'Outros' && (
-              <span className="text-xs px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
+              <span className="text-xs px-2 py-0.5 rounded-md bg-background text-primary/70">
                 {contact.category}
               </span>
             )}
@@ -59,11 +59,11 @@ export function ContactCard({ contact, onEdit, onDelete }: ContactCardProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-muted-foreground/60 hover:text-primary active:text-primary hover:bg-transparent transition-all duration-150"
+            className="h-8 w-8 text-primary/70 hover:text-primary hover:bg-primary/10 active:text-primary transition-all duration-150"
             asChild
           >
             <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-              <WhatsappLogo weight="thin" className="h-5 w-5" />
+              <WhatsappLogo weight="regular" className="h-5 w-5" />
             </a>
           </Button>
           

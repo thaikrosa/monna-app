@@ -30,7 +30,7 @@ export default function Agenda() {
   return (
     <div className="max-w-2xl mx-auto pb-4 space-y-6">
       {/* Strip Calendar */}
-      <div className="animate-slide-up stagger-1">
+      <div className="animate-slide-up stagger-1 bg-card border border-border shadow-sm rounded-lg p-4">
         <StripCalendar 
           selectedDate={selectedDate} 
           onDateSelect={setSelectedDate} 
@@ -39,7 +39,7 @@ export default function Agenda() {
 
       {/* Selected date label */}
       <div className="animate-slide-up stagger-2">
-        <p className="text-sm text-muted-foreground capitalize">
+        <p className="text-sm text-primary/80 capitalize">
           {format(selectedDate, "EEEE, d 'de' MMMM", { locale: ptBR })}
         </p>
       </div>

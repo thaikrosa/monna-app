@@ -35,18 +35,18 @@ export function StripCalendar({ selectedDate, onDateSelect }: StripCalendarProps
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8"
+            className="h-8 w-8 text-primary/70 hover:text-primary hover:bg-primary/10"
             onClick={goToPreviousWeek}
           >
-            <CaretLeft weight="thin" className="h-4 w-4" />
+            <CaretLeft weight="regular" className="h-4 w-4" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8"
+            className="h-8 w-8 text-primary/70 hover:text-primary hover:bg-primary/10"
             onClick={goToNextWeek}
           >
-            <CaretRight weight="thin" className="h-4 w-4" />
+            <CaretRight weight="regular" className="h-4 w-4" />
           </Button>
         </div>
       </div>

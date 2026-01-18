@@ -21,13 +21,13 @@ export default function SupportNetwork() {
         <div className="flex items-center gap-3">
           <Link 
             to="/" 
-            className="p-1 text-muted-foreground hover:text-foreground transition-all duration-150"
+            className="p-2 rounded-lg text-primary/70 hover:text-primary hover:bg-primary/10 transition-all duration-150"
           >
-            <CaretLeft weight="thin" className="h-5 w-5" />
+            <CaretLeft weight="regular" className="h-5 w-5" />
           </Link>
           <div>
             <h1 className="text-2xl font-bold text-foreground">Minha Rede de Apoio</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">
+            <p className="text-sm text-primary/80 mt-0.5">
               Pessoas que fazem parte da sua vida
             </p>
           </div>
@@ -38,10 +38,9 @@ export default function SupportNetwork() {
       <div className="mb-6">
         <Button 
           onClick={() => setIsAddOpen(true)} 
-          variant="outline"
-          className="bg-card border-border/30 hover:border-primary/30 hover:bg-muted/50"
+          className="bg-primary text-primary-foreground hover:bg-primary/90"
         >
-          <Plus weight="thin" className="h-4 w-4 mr-2" />
+          <Plus weight="regular" className="h-4 w-4 mr-2" />
           Adicionar contato
         </Button>
       </div>
@@ -49,11 +48,11 @@ export default function SupportNetwork() {
       {/* Lista de contatos */}
       <div className="space-y-3">
         {isLoading ? (
-          <p className="text-muted-foreground text-center py-8">Carregando...</p>
+          <p className="text-primary/80 text-center py-8">Carregando...</p>
         ) : contacts.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Nenhum contato cadastrado</p>
-            <p className="text-sm text-muted-foreground/70 mt-1">
+          <div className="text-center py-12 bg-card border border-border shadow-sm rounded-lg">
+            <p className="text-primary/80">Nenhum contato cadastrado</p>
+            <p className="text-sm text-muted-foreground mt-1">
               Adicione pessoas à sua rede de apoio
             </p>
           </div>

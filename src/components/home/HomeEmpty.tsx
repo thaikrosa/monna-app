@@ -7,7 +7,7 @@ export function HomeEmpty() {
 
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-      <div className="p-4 rounded-full bg-primary/10 mb-4">
+      <div className="p-4 rounded-lg bg-primary/10 mb-4">
         <Sparkle weight="regular" className="w-8 h-8 text-primary" />
       </div>
       <h2 className="text-lg font-semibold text-foreground mb-2">
@@ -20,7 +20,7 @@ export function HomeEmpty() {
       <div className="space-y-3 w-full max-w-xs">
         <Button 
           onClick={() => navigate('/filhos')}
-          className="w-full bg-annia-olive hover:bg-annia-olive-hover text-primary-foreground transition-colors duration-200"
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-colors duration-200"
         >
           <Plus weight="regular" className="w-4 h-4 mr-2" />
           Adicionar filho

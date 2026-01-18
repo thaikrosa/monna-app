@@ -69,7 +69,7 @@ export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingI
 
         <div className="flex items-center gap-2 mt-0.5">
           {item.tag_name && (
-            <span className="text-xs px-1.5 py-0.5 rounded bg-accent/40 text-accent-foreground dark:bg-accent/30 dark:text-accent-foreground">
+            <span className="text-xs px-1.5 py-0.5 rounded-md bg-muted text-muted-foreground dark:bg-muted/30 dark:text-muted-foreground">
               {item.tag_name}
             </span>
           )}
@@ -89,7 +89,7 @@ export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingI
           size="icon"
           onClick={() => onToggle(item.id, !item.is_checked)}
           aria-label={item.is_checked ? 'Marcar como não feito' : 'Marcar como feito'}
-          className={`h-11 w-11 min-w-[44px] min-h-[44px] rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+          className={`h-11 w-11 min-w-[44px] min-h-[44px] rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
             item.is_checked 
               ? 'text-muted-foreground hover:text-foreground hover:bg-muted/40 active:bg-muted/60' 
               : 'text-primary hover:text-primary hover:bg-primary/10 active:bg-primary/20'

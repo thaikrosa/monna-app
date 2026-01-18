@@ -19,8 +19,8 @@ export function GreetingCard({ greeting, displayName, onPrimaryCta, onSecondaryC
   const title = rawTitle.replace(/,\s*,/g, ',').replace(/\?,\s*/g, '? ');
 
   return (
-    <div className="bg-card border border-border rounded-3xl p-6 shadow-sm">
-      <div className="bg-primary/5 rounded-2xl p-4 mb-4">
+    <div className="bg-secondary border border-border rounded-xl p-6">
+      <div className="bg-background rounded-lg p-4 mb-4">
         <h1 className="text-xl font-semibold text-foreground">{title}</h1>
         <p className="text-sm text-muted-foreground mt-1">
           {greeting.insight}
@@ -30,7 +30,7 @@ export function GreetingCard({ greeting, displayName, onPrimaryCta, onSecondaryC
       <div className="flex gap-3">
         <Button 
           onClick={onPrimaryCta}
-          className="bg-primary text-primary-foreground rounded-full px-5"
+          className="bg-primary text-primary-foreground rounded-lg px-5"
         >
           <CalendarPlus weight="regular" className="w-4 h-4 mr-2" />
           Revisar lembretes

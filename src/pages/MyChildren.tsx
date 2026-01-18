@@ -29,16 +29,16 @@ export default function MyChildren() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="sticky top-14 z-40 bg-background/95 backdrop-blur-sm border-b border-border/30">
+      <div className="sticky top-14 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to="/">
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-muted-foreground/60 hover:text-foreground active:text-foreground hover:bg-transparent"
+                className="h-8 w-8 text-primary/70 hover:text-primary hover:bg-primary/10"
               >
-                <CaretLeft weight="thin" className="h-5 w-5" />
+                <CaretLeft weight="regular" className="h-5 w-5" />
               </Button>
             </Link>
             <h1 className="text-lg font-semibold text-foreground">Meus Filhos</h1>
@@ -48,9 +48,9 @@ export default function MyChildren() {
             variant="ghost"
             size="icon"
             onClick={() => setAddSheetOpen(true)}
-            className="h-8 w-8 text-muted-foreground/60 hover:text-foreground active:text-foreground hover:bg-transparent"
+            className="h-8 w-8 text-primary/70 hover:text-primary hover:bg-primary/10"
           >
-            <Plus weight="thin" className="h-5 w-5" />
+            <Plus weight="regular" className="h-5 w-5" />
           </Button>
         </div>
       </div>
@@ -62,22 +62,22 @@ export default function MyChildren() {
             {[1, 2].map((i) => (
               <div
                 key={i}
-                className="bg-card p-4 rounded-lg border border-border/30 animate-pulse"
+                className="bg-card p-4 rounded-lg border border-border shadow-sm animate-pulse"
               >
-                <div className="h-5 w-32 bg-secondary/50 rounded mb-2" />
-                <div className="h-4 w-24 bg-secondary/50 rounded" />
+                <div className="h-5 w-32 bg-secondary rounded mb-2" />
+                <div className="h-4 w-24 bg-secondary rounded" />
               </div>
             ))}
           </div>
         ) : children.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">
+          <div className="text-center py-12 bg-card border border-border shadow-sm rounded-lg">
+            <p className="text-primary/80">
               Nenhum filho cadastrado
             </p>
             <Button
-              variant="link"
+              variant="ghost"
               onClick={() => setAddSheetOpen(true)}
-              className="mt-2 text-primary"
+              className="mt-2 text-primary/70 hover:text-primary hover:bg-primary/10"
             >
               Adicionar primeiro filho
             </Button>

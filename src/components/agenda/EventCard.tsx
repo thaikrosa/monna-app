@@ -1,4 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card';
+import { CalendarBlank } from '@phosphor-icons/react';
 
 interface EventCardProps {
   startTime: string;
@@ -9,21 +10,24 @@ interface EventCardProps {
 
 export function EventCard({ startTime, endTime, title, isAllDay }: EventCardProps) {
   return (
-    <Card className={isAllDay ? 'bg-secondary/40 border-border/30' : 'bg-card border-border/30'}>
+    <Card className={`border border-border shadow-sm ${isAllDay ? 'bg-secondary' : 'bg-card'}`}>
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 min-w-[60px]">
-            <span className="text-sm font-semibold text-primary">
-              {startTime}
-            </span>
-            {endTime && (
-              <span className="text-xs text-muted-foreground block">
-                até {endTime}
-              </span>
-            )}
+          <div className="w-8 h-8 rounded-lg bg-background flex items-center justify-center flex-shrink-0">
+            <CalendarBlank weight="regular" className="w-4 h-4 text-primary" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm text-foreground truncate">{title}</p>
+            <p className="text-sm font-medium text-foreground truncate">{title}</p>
+            <div className="flex items-center gap-1 mt-0.5">
+              <span className="text-xs text-primary/80">
+                {startTime}
+              </span>
+              {endTime && (
+                <span className="text-xs text-muted-foreground">
+                  → {endTime}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </CardContent>

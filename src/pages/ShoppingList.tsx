@@ -61,13 +61,13 @@ export default function ShoppingList() {
         <div className="flex items-center gap-3">
           <Link
             to="/"
-            className="p-1 -ml-1 text-muted-foreground hover:text-foreground transition-all duration-150"
+            className="p-2 rounded-lg text-primary/70 hover:text-primary hover:bg-primary/10 transition-all duration-150"
           >
-            <CaretLeft weight="thin" className="h-5 w-5" />
+            <CaretLeft weight="regular" className="h-5 w-5" />
           </Link>
           <div>
             <h1 className="text-2xl font-bold text-foreground">Lista de Compras</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">
+            <p className="text-sm text-primary/80 mt-0.5">
               Tudo que você precisa, em um só lugar.
             </p>
           </div>
@@ -81,7 +81,7 @@ export default function ShoppingList() {
             <TabsList className="w-full h-auto flex-wrap justify-start gap-1 bg-transparent p-0">
               <TabsTrigger
                 value="todos"
-                className="px-3 py-1.5 text-xs rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground bg-muted/60 text-muted-foreground border-0"
+                className="px-3 py-1.5 text-xs rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground bg-card text-primary/70 border border-border shadow-sm"
               >
                 Todos
               </TabsTrigger>
@@ -89,7 +89,7 @@ export default function ShoppingList() {
                 <TabsTrigger
                   key={tag.id}
                   value={tag.id}
-                  className="px-3 py-1.5 text-xs rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground bg-muted/60 text-muted-foreground border-0"
+                  className="px-3 py-1.5 text-xs rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground bg-card text-primary/70 border border-border shadow-sm"
                 >
                   {tag.name}
                 </TabsTrigger>
@@ -115,14 +115,14 @@ export default function ShoppingList() {
         </div>
       ) : totalCount === 0 ? (
         /* Empty state */
-        <div className="py-16 text-center">
-          <ShoppingCart weight="duotone" className="h-12 w-12 mx-auto text-accent-foreground/40 mb-4" />
-          <p className="text-muted-foreground mb-1">
+        <div className="py-16 text-center bg-card border border-border shadow-sm rounded-lg">
+          <ShoppingCart weight="regular" className="h-12 w-12 mx-auto text-primary mb-4" />
+          <p className="text-primary/80 mb-1">
             {activeTab === 'todos'
               ? 'Sua lista está vazia'
               : 'Esta categoria está vazia'}
           </p>
-          <p className="text-sm text-muted-foreground/70">
+          <p className="text-sm text-muted-foreground">
             Toque no <span className="text-primary font-medium">+</span> para adicionar itens
           </p>
         </div>
@@ -150,15 +150,15 @@ export default function ShoppingList() {
               onOpenChange={setCompletedOpen}
               className="mt-6"
             >
-              <CollapsibleTrigger className="flex items-center gap-2 w-full text-sm text-muted-foreground py-2 hover:text-foreground transition-colors group">
+              <CollapsibleTrigger className="flex items-center gap-2 w-full text-sm text-primary/70 py-2 hover:text-primary transition-colors group">
                 <CaretDown
-                  weight="bold"
+                  weight="regular"
                   className="h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180"
                 />
                 <span>Concluídos ({completedItems.length})</span>
               </CollapsibleTrigger>
               <CollapsibleContent className="animate-slide-down">
-                <div className="space-y-0 mt-2 pt-2 border-t border-border/30">
+                <div className="space-y-0 mt-2 pt-2 border-t border-border">
                   {completedItems.map((item) => (
                     <ShoppingItemCard
                       key={item.id}

@@ -69,7 +69,7 @@ export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingI
 
         <div className="flex items-center gap-2 mt-0.5">
           {item.tag_name && (
-            <span className="text-xs px-1.5 py-0.5 rounded-md bg-muted text-muted-foreground dark:bg-muted/30 dark:text-muted-foreground">
+            <span className="text-xs px-1.5 py-0.5 rounded-md bg-background text-primary/70 border border-border">
               {item.tag_name}
             </span>
           )}
@@ -96,9 +96,9 @@ export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingI
           }`}
         >
         {item.is_checked ? (
-            <ArrowCounterClockwise weight="bold" className="h-6 w-6" />
+            <ArrowCounterClockwise weight="regular" className="h-6 w-6" />
           ) : (
-            <CheckCircle weight="bold" className="h-6 w-6" />
+            <CheckCircle weight="regular" className="h-6 w-6" />
           )}
         </Button>
 
@@ -109,21 +109,21 @@ export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingI
               variant="ghost"
               size="icon"
               aria-label="Mais opções"
-              className="h-8 w-8 text-muted-foreground/70 hover:text-muted-foreground hover:bg-muted/30 active:bg-muted/50 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="h-8 w-8 text-primary/50 hover:text-primary hover:bg-primary/10 active:bg-primary/20 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
-              <DotsThreeVertical weight="bold" className="h-4 w-4" />
+              <DotsThreeVertical weight="regular" className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40">
             <DropdownMenuItem onClick={() => onEdit(item)} className="gap-2">
-              <PencilSimple weight="duotone" className="h-4 w-4" />
+              <PencilSimple weight="regular" className="h-4 w-4 text-primary" />
               Editar
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={handleDelete}
               className="gap-2 text-destructive focus:text-destructive"
             >
-              <Trash weight="duotone" className="h-4 w-4" />
+              <Trash weight="regular" className="h-4 w-4" />
               Excluir
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -4,6 +4,7 @@ import { GoogleLogo } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import logoMonna from '@/assets/logo-monna.png';
 
 export default function Auth() {
   const { user, loading, signInWithGoogle } = useAuth();
@@ -33,10 +34,12 @@ export default function Auth() {
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-sm flex flex-col items-center gap-8 animate-fade-in bg-card rounded-xl p-8 border border-border shadow-elevated">
         {/* Logo */}
-        <div className="flex flex-col items-center gap-2">
-          <h1 className="text-4xl font-bold text-foreground tracking-tight">
-            Monna
-          </h1>
+        <div className="flex flex-col items-center gap-3">
+          <img 
+            src={logoMonna} 
+            alt="Monna" 
+            className="w-32 h-auto"
+          />
           <p className="text-muted-foreground text-sm">
             Sua parceira no invisível da maternidade
           </p>

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { CaretLeft } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
+import logoMonna from '@/assets/logo-monna.png';
 
 const Terms = () => {
   return (
@@ -13,6 +14,11 @@ const Terms = () => {
               <CaretLeft weight="thin" className="h-5 w-5" />
             </Button>
           </Link>
+          <img 
+            src={logoMonna} 
+            alt="Monna" 
+            className="h-6 w-auto"
+          />
           <h1 className="text-lg font-semibold text-foreground">
             Termos de Uso
           </h1>

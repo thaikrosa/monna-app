@@ -168,7 +168,7 @@ const Privacy = () => {
               <h2 className="text-lg font-semibold text-foreground">11. Contato</h2>
               <p>Se você tiver dúvidas sobre esta Política de Privacidade, entre em contato conosco:</p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>E-mail: privacidade@monna.com.br</li>
+                <li>E-mail: contato@monna.ia.br</li>
               </ul>
             </section>
           </div>

@@ -163,7 +163,7 @@ const Terms = () => {
               <h2 className="text-lg font-semibold text-foreground">13. Contato</h2>
               <p>Se você tiver dúvidas sobre estes Termos, entre em contato conosco:</p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>E-mail: contato@monna.com.br</li>
+                <li>E-mail: contato@monna.ia.br</li>
               </ul>
             </section>
           </div>

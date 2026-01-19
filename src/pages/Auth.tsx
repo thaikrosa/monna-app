@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { GoogleLogo } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -53,6 +53,18 @@ export default function Auth() {
           <GoogleLogo weight="regular" className="w-5 h-5" />
           Continuar com Google
         </Button>
+
+        {/* Legal links */}
+        <p className="text-xs text-muted-foreground text-center">
+          Ao continuar, você concorda com nossos{' '}
+          <Link to="/termos" className="underline hover:text-foreground transition-colors duration-150">
+            Termos de Uso
+          </Link>
+          {' '}e{' '}
+          <Link to="/privacidade" className="underline hover:text-foreground transition-colors duration-150">
+            Política de Privacidade
+          </Link>
+        </p>
 
         {/* Indicador sutil de loading (não bloqueia interação) */}
         {loading && (

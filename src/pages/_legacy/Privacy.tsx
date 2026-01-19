@@ -1,137 +1,179 @@
-import Header from "@/components/_legacy/Header";
+import { Link } from 'react-router-dom';
+import { CaretLeft } from '@phosphor-icons/react';
+import { Button } from '@/components/ui/button';
 
 const Privacy = () => {
   return (
-    <div className="min-h-screen bg-background animate-fade-in">
-      <Header />
-      
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Hero Section */}
-        <div className="mb-12 space-y-4">
-          <h1 className="text-4xl md:text-5xl font-bold leading-tight animate-slide-down">
-            Privacy Policy
+    <div className="min-h-screen bg-secondary">
+      {/* Header simples */}
+      <div className="sticky top-0 z-40 bg-secondary border-b border-border/30">
+        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3">
+          <Link to="/auth">
+            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-transparent">
+              <CaretLeft weight="thin" className="h-5 w-5" />
+            </Button>
+          </Link>
+          <h1 className="text-lg font-semibold text-foreground">
+            Política de Privacidade
           </h1>
-          <p className="text-muted-foreground animate-slide-up stagger-1">
-            Last updated: March 20, 2025
-          </p>
         </div>
+      </div>
 
-        <div className="prose prose-lg max-w-none space-y-8">
-          <section>
-            <h2 className="text-2xl font-bold mb-4">Introduction</h2>
-            <p className="text-muted-foreground">
-              At Perspective, we take your privacy seriously. This Privacy Policy explains how we collect, 
-              use, disclose, and safeguard your information when you visit our website and subscribe to our newsletter.
-            </p>
-          </section>
+      {/* Conteúdo */}
+      <div className="max-w-3xl mx-auto px-4 py-6">
+        <div className="bg-background rounded-lg border border-border shadow-elevated p-6">
+          <div className="prose prose-sm max-w-none text-muted-foreground">
+            <p className="text-xs text-muted-foreground mb-6">Última atualização: 19 de janeiro de 2025</p>
+            
+            <section className="space-y-4 mb-8">
+              <h2 className="text-lg font-semibold text-foreground">1. Introdução</h2>
+              <p>
+                A Monna ("nós", "nosso" ou "Monna") opera o aplicativo Monna (o "Serviço"). 
+                Esta página informa sobre nossas políticas relativas à coleta, uso e divulgação 
+                de informações pessoais quando você utiliza nosso Serviço.
+              </p>
+              <p>
+                Ao utilizar o Serviço, você concorda com a coleta e uso de informações de acordo 
+                com esta política. As informações pessoais que coletamos são utilizadas para 
+                fornecer e melhorar o Serviço. Não usaremos ou compartilharemos suas informações 
+                com ninguém, exceto conforme descrito nesta Política de Privacidade.
+              </p>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-bold mb-4">Information We Collect</h2>
-            <h3 className="text-xl font-semibold mb-3 mt-6">Personal Information</h3>
-            <p className="text-muted-foreground mb-4">
-              We may collect personal information that you voluntarily provide to us when you:
-            </p>
-            <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-              <li>Subscribe to our newsletter</li>
-              <li>Contact us through our contact form</li>
-              <li>Comment on our articles</li>
-              <li>Create an account on our website</li>
-            </ul>
-            <p className="text-muted-foreground mt-4">
-              This information may include your name, email address, and any other information you choose to provide.
-            </p>
+            <section className="space-y-4 mb-8">
+              <h2 className="text-lg font-semibold text-foreground">2. Definições</h2>
+              <ul className="list-disc pl-6 space-y-2">
+                <li><strong className="text-foreground">Dados Pessoais:</strong> informações que podem identificá-lo direta ou indiretamente.</li>
+                <li><strong className="text-foreground">Dados de Uso:</strong> informações coletadas automaticamente pela utilização do Serviço.</li>
+                <li><strong className="text-foreground">Cookies:</strong> pequenos arquivos armazenados em seu dispositivo.</li>
+                <li><strong className="text-foreground">Controlador de Dados:</strong> pessoa jurídica que determina as finalidades do tratamento.</li>
+              </ul>
+            </section>
 
-            <h3 className="text-xl font-semibold mb-3 mt-6">Automatically Collected Information</h3>
-            <p className="text-muted-foreground">
-              When you visit our website, we may automatically collect certain information about your device, 
-              including information about your web browser, IP address, time zone, and some of the cookies 
-              installed on your device.
-            </p>
-          </section>
+            <section className="space-y-4 mb-8">
+              <h2 className="text-lg font-semibold text-foreground">3. Coleta e Uso de Informações</h2>
+              <p>Coletamos diferentes tipos de informações para diversos fins, visando fornecer e melhorar nosso Serviço.</p>
+              
+              <h3 className="text-base font-medium text-foreground mt-4">3.1 Dados Pessoais</h3>
+              <p>Durante o uso do nosso Serviço, podemos solicitar certas informações pessoalmente identificáveis:</p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Endereço de e-mail</li>
+                <li>Nome e sobrenome</li>
+                <li>Número de telefone (WhatsApp)</li>
+                <li>Informações sobre seus filhos (nome, data de nascimento, informações de saúde)</li>
+                <li>Contatos da sua rede de apoio</li>
+                <li>Lembretes e compromissos</li>
+                <li>Lista de compras</li>
+              </ul>
 
-          <section>
-            <h2 className="text-2xl font-bold mb-4">How We Use Your Information</h2>
-            <p className="text-muted-foreground mb-4">
-              We use the information we collect to:
-            </p>
-            <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-              <li>Send you our newsletter and marketing communications</li>
-              <li>Respond to your comments and questions</li>
-              <li>Improve our website and content</li>
-              <li>Analyze usage patterns and trends</li>
-              <li>Protect against fraudulent or illegal activity</li>
-            </ul>
-          </section>
+              <h3 className="text-base font-medium text-foreground mt-4">3.2 Dados de Uso</h3>
+              <p>Também coletamos informações sobre como o Serviço é acessado e utilizado:</p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Tipo de dispositivo</li>
+                <li>Identificadores únicos do dispositivo</li>
+                <li>Sistema operacional</li>
+                <li>Horários e datas de acesso</li>
+                <li>Páginas visitadas</li>
+              </ul>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-bold mb-4">Cookies and Tracking Technologies</h2>
-            <p className="text-muted-foreground">
-              We use cookies and similar tracking technologies to track activity on our website and store 
-              certain information. You can instruct your browser to refuse all cookies or to indicate when 
-              a cookie is being sent. However, if you do not accept cookies, you may not be able to use 
-              some portions of our website.
-            </p>
-          </section>
+            <section className="space-y-4 mb-8">
+              <h2 className="text-lg font-semibold text-foreground">4. Uso dos Dados</h2>
+              <p>A Monna utiliza os dados coletados para:</p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Fornecer e manter o Serviço</li>
+                <li>Notificá-lo sobre alterações no Serviço</li>
+                <li>Permitir recursos interativos</li>
+                <li>Fornecer suporte ao cliente</li>
+                <li>Fornecer análises para melhorar o Serviço</li>
+                <li>Monitorar o uso do Serviço</li>
+                <li>Detectar e prevenir problemas técnicos</li>
+                <li>Enviar lembretes e notificações personalizadas</li>
+                <li>Oferecer sugestões proativas baseadas em seu perfil</li>
+              </ul>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-bold mb-4">Data Security</h2>
-            <p className="text-muted-foreground">
-              We implement appropriate technical and organizational security measures to protect your 
-              personal information. However, please note that no method of transmission over the Internet 
-              or method of electronic storage is 100% secure.
-            </p>
-          </section>
+            <section className="space-y-4 mb-8">
+              <h2 className="text-lg font-semibold text-foreground">5. Transferência de Dados</h2>
+              <p>
+                Suas informações podem ser transferidas e mantidas em computadores localizados 
+                fora de sua jurisdição. Se você está localizado fora do Brasil e opta por nos 
+                fornecer informações, observe que transferimos os dados para o Brasil e os 
+                processamos lá.
+              </p>
+              <p>
+                Seu consentimento com esta Política de Privacidade, seguido pelo envio de tais 
+                informações, representa sua concordância com essa transferência.
+              </p>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-bold mb-4">Your Rights</h2>
-            <p className="text-muted-foreground mb-4">
-              Depending on your location, you may have certain rights regarding your personal information, including:
-            </p>
-            <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-              <li>The right to access your personal information</li>
-              <li>The right to rectification of inaccurate information</li>
-              <li>The right to erasure of your personal information</li>
-              <li>The right to withdraw consent</li>
-              <li>The right to data portability</li>
-            </ul>
-          </section>
+            <section className="space-y-4 mb-8">
+              <h2 className="text-lg font-semibold text-foreground">6. Segurança dos Dados</h2>
+              <p>
+                A segurança dos seus dados é importante para nós, mas lembre-se que nenhum 
+                método de transmissão pela Internet ou método de armazenamento eletrônico é 
+                100% seguro. Embora nos esforcemos para usar meios comercialmente aceitáveis 
+                para proteger seus Dados Pessoais, não podemos garantir sua segurança absoluta.
+              </p>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-bold mb-4">Third-Party Services</h2>
-            <p className="text-muted-foreground">
-              Our website may contain links to third-party websites. We are not responsible for the privacy 
-              practices of these third-party sites. We encourage you to read their privacy policies.
-            </p>
-          </section>
+            <section className="space-y-4 mb-8">
+              <h2 className="text-lg font-semibold text-foreground">7. Seus Direitos (LGPD)</h2>
+              <p>De acordo com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018), você tem direito a:</p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Confirmar a existência de tratamento de dados</li>
+                <li>Acessar seus dados</li>
+                <li>Corrigir dados incompletos, inexatos ou desatualizados</li>
+                <li>Anonimizar, bloquear ou eliminar dados desnecessários</li>
+                <li>Portabilidade dos dados</li>
+                <li>Eliminar dados tratados com seu consentimento</li>
+                <li>Informação sobre compartilhamento de dados</li>
+                <li>Revogar o consentimento</li>
+              </ul>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-bold mb-4">Children's Privacy</h2>
-            <p className="text-muted-foreground">
-              Our website is not intended for children under the age of 13. We do not knowingly collect 
-              personal information from children under 13.
-            </p>
-          </section>
+            <section className="space-y-4 mb-8">
+              <h2 className="text-lg font-semibold text-foreground">8. Privacidade de Menores</h2>
+              <p>
+                Nosso Serviço pode coletar informações sobre menores fornecidas pelos pais ou 
+                responsáveis legais. Não coletamos intencionalmente informações de identificação 
+                pessoal diretamente de menores de 18 anos. Se você é pai/mãe ou responsável e 
+                sabe que seu filho nos forneceu Dados Pessoais diretamente, entre em contato conosco.
+              </p>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-bold mb-4">Changes to This Privacy Policy</h2>
-            <p className="text-muted-foreground">
-              We may update our Privacy Policy from time to time. We will notify you of any changes by 
-              posting the new Privacy Policy on this page and updating the "Last updated" date.
-            </p>
-          </section>
+            <section className="space-y-4 mb-8">
+              <h2 className="text-lg font-semibold text-foreground">9. Integrações com Terceiros</h2>
+              <p>Nosso Serviço pode integrar-se com serviços de terceiros, incluindo:</p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li><strong className="text-foreground">Google Calendar:</strong> para sincronizar seus compromissos</li>
+                <li><strong className="text-foreground">WhatsApp:</strong> para enviar notificações e lembretes</li>
+              </ul>
+              <p className="mt-2">
+                Cada serviço de terceiros possui sua própria Política de Privacidade. 
+                Recomendamos que você revise as políticas de privacidade desses serviços.
+              </p>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
-            <p className="text-muted-foreground">
-              If you have any questions about this Privacy Policy, please contact us at:
-            </p>
-            <p className="text-muted-foreground mt-4">
-              Email: privacy@perspective.blog<br />
-              Address: San Francisco, CA
-            </p>
-          </section>
+            <section className="space-y-4 mb-8">
+              <h2 className="text-lg font-semibold text-foreground">10. Alterações nesta Política</h2>
+              <p>
+                Podemos atualizar nossa Política de Privacidade periodicamente. Notificaremos 
+                você sobre quaisquer alterações publicando a nova Política de Privacidade nesta 
+                página e atualizando a data de "última atualização".
+              </p>
+            </section>
+
+            <section className="space-y-4">
+              <h2 className="text-lg font-semibold text-foreground">11. Contato</h2>
+              <p>Se você tiver dúvidas sobre esta Política de Privacidade, entre em contato conosco:</p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>E-mail: privacidade@monna.com.br</li>
+              </ul>
+            </section>
+          </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 };

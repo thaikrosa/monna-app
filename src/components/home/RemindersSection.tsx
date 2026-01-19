@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, Plus, Clock } from '@phosphor-icons/react';
+import { Bell, Circle, CheckCircle, Clock } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { HomeSection } from './HomeSection';
 import { AddReminderSheet } from '@/components/reminders/AddReminderSheet';
+import { useAcknowledgeOccurrence } from '@/hooks/useReminders';
 import type { PendingReminder } from '@/hooks/usePendingReminders';
 
 interface RemindersSectionProps {
@@ -15,115 +17,106 @@ interface RemindersSectionProps {
 export function RemindersSection({ reminders }: RemindersSectionProps) {
   const navigate = useNavigate();
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const acknowledgeOccurrence = useAcknowledgeOccurrence();
+  const [acknowledgedIds, setAcknowledgedIds] = useState<Set<string>>(new Set());
+
+  const handleAcknowledge = (occurrenceId: string) => {
+    setAcknowledgedIds(prev => new Set(prev).add(occurrenceId));
+    acknowledgeOccurrence.mutate(occurrenceId);
+  };
 
   if (reminders.length === 0) {
     return (
-      <div className="bg-card rounded-xl p-5 animate-fade-in border border-border shadow-elevated">
-        <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
-            <Bell weight="regular" className="h-4 w-4 text-primary" />
-          </div>
-          
-          <div className="flex-1">
-            <p className="text-sm font-medium text-foreground">Lembretes</p>
-            <p className="text-xs text-primary/80 mt-1">
+      <>
+        <HomeSection
+          icon={<Bell weight="regular" className="h-4 w-4" />}
+          title="Lembretes"
+          onAdd={() => setIsAddOpen(true)}
+          emptyState={
+            <p className="text-sm text-muted-foreground">
               Sua mente está tranquila. Tudo sob controle.
             </p>
-            
-            <Button
-              size="sm"
-              className="mt-3 bg-primary text-primary-foreground hover:bg-primary/90"
-              onClick={() => setIsAddOpen(true)}
-            >
-              <Plus weight="regular" className="h-4 w-4 mr-1" />
-              Criar lembrete
-            </Button>
-          </div>
-        </div>
-        
+          }
+        >
+          <div />
+        </HomeSection>
         <AddReminderSheet open={isAddOpen} onOpenChange={setIsAddOpen} />
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="bg-card rounded-xl p-5 animate-fade-in border border-border shadow-elevated">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Bell weight="regular" className="h-4 w-4 text-primary" />
-          <p className="text-sm font-medium text-foreground">Lembretes</p>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-xs text-primary/70 hover:text-primary hover:bg-primary/10 h-auto py-1 px-2"
-            onClick={() => navigate('/lembretes')}
-          >
-            Ver todos
-          </Button>
-          
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7 text-primary hover:text-primary hover:bg-primary/10"
-            onClick={() => setIsAddOpen(true)}
-          >
-            <Plus weight="regular" className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        {reminders.map((reminder) => (
-          <div 
-            key={reminder.occurrence_id || reminder.id}
-            className={`
-              flex items-center gap-3 py-2 px-3 rounded-lg transition-colors
-              ${reminder.isOverdue 
-                ? 'bg-destructive/10 border border-destructive/20' 
-                : 'bg-muted/50 border border-transparent hover:bg-muted/70'
-              }
-            `}
-          >
-            <Clock 
-              weight="thin" 
-              className={`h-4 w-4 flex-shrink-0 ${
-                reminder.isOverdue ? 'text-destructive' : 'text-muted-foreground'
-              }`} 
-            />
+    <>
+      <HomeSection
+        icon={<Bell weight="regular" className="h-4 w-4" />}
+        title="Lembretes"
+        count={reminders.length}
+        onAdd={() => setIsAddOpen(true)}
+        onViewAll={() => navigate('/lembretes')}
+        viewAllLabel="Ver todos"
+      >
+        <div className="space-y-2">
+          {reminders.map((reminder) => {
+            const isAcknowledged = acknowledgedIds.has(reminder.occurrence_id || '');
             
-            <div className="flex-1 min-w-0">
-              <p className={`text-sm truncate ${
-                reminder.isOverdue ? 'text-destructive' : 'text-foreground'
-              }`}>
-                {reminder.title}
-              </p>
-              
-              {reminder.scheduled_at && (
-                <p className={`text-xs ${
-                  reminder.isOverdue ? 'text-destructive/70' : 'text-muted-foreground'
-                }`}>
-                  {reminder.isOverdue ? 'Atrasado - ' : ''}
-                  {format(new Date(reminder.scheduled_at), "HH:mm", { locale: ptBR })}
-                </p>
-              )}
-            </div>
-
-            {reminder.priority && reminder.priority !== 'normal' && (
-              <Badge 
-                variant={reminder.priority === 'urgent' ? 'destructive' : 'secondary'}
-                className="text-[10px] px-1.5"
+            return (
+              <div 
+                key={reminder.occurrence_id || reminder.id}
+                className={`
+                  flex items-center gap-3 py-2 px-3 rounded-lg transition-colors duration-200
+                  ${reminder.isOverdue 
+                    ? 'bg-destructive/10 border border-destructive/20' 
+                    : 'bg-secondary border border-transparent'
+                  }
+                  ${isAcknowledged ? 'opacity-50' : ''}
+                `}
               >
-                {reminder.priority === 'urgent' ? 'Urgente' : 'Importante'}
-              </Badge>
-            )}
-          </div>
-        ))}
-      </div>
-      
+                {/* Quick Action Checkbox */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 flex-shrink-0 text-muted-foreground hover:text-primary hover:bg-muted transition-colors duration-200"
+                  onClick={() => reminder.occurrence_id && handleAcknowledge(reminder.occurrence_id)}
+                  disabled={isAcknowledged || !reminder.occurrence_id}
+                >
+                  {isAcknowledged ? (
+                    <CheckCircle weight="regular" className="h-5 w-5 text-primary" />
+                  ) : (
+                    <Circle weight="regular" className="h-5 w-5" />
+                  )}
+                </Button>
+                
+                <div className="flex-1 min-w-0">
+                  <p className={`text-sm truncate ${
+                    reminder.isOverdue ? 'text-destructive' : 'text-foreground'
+                  } ${isAcknowledged ? 'line-through' : ''}`}>
+                    {reminder.title}
+                  </p>
+                  
+                  {reminder.scheduled_at && (
+                    <p className={`text-xs ${
+                      reminder.isOverdue ? 'text-destructive' : 'text-muted-foreground'
+                    }`}>
+                      {reminder.isOverdue ? 'Atrasado - ' : ''}
+                      {format(new Date(reminder.scheduled_at), "HH:mm", { locale: ptBR })}
+                    </p>
+                  )}
+                </div>
+
+                {reminder.priority && reminder.priority !== 'normal' && (
+                  <Badge 
+                    variant={reminder.priority === 'urgent' ? 'destructive' : 'secondary'}
+                    className="text-xs px-1.5"
+                  >
+                    {reminder.priority === 'urgent' ? 'Urgente' : 'Importante'}
+                  </Badge>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </HomeSection>
       <AddReminderSheet open={isAddOpen} onOpenChange={setIsAddOpen} />
-    </div>
+    </>
   );
 }

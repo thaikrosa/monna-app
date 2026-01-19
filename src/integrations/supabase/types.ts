@@ -608,6 +608,33 @@ export type Database = {
         }
         Relationships: []
       }
+      motivational_phrases: {
+        Row: {
+          communication_style: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          phrase: string
+          type: string
+        }
+        Insert: {
+          communication_style: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          phrase: string
+          type: string
+        }
+        Update: {
+          communication_style?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          phrase?: string
+          type?: string
+        }
+        Relationships: []
+      }
       onboarding_progress: {
         Row: {
           created_at: string | null

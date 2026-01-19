@@ -31,10 +31,8 @@ import { useActivitySummary } from '@/hooks/useActivityHistory';
 import { format, formatDistanceToNow, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-const TIME_OPTIONS = [
-  '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00',
-  '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00'
-];
+const MORNING_OPTIONS = ['07:00', '08:00', '09:00'];
+const EVENING_OPTIONS = ['19:00', '20:00', '21:00'];
 
 export default function Settings() {
   const { data: profile, isLoading: profileLoading } = useProfile();
@@ -170,20 +168,20 @@ export default function Settings() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Select
-                  value={settings.checkin_morning_time}
-                  onValueChange={(v) => handleTimeChange('checkin_morning_time', v)}
-                  disabled={!settings.checkin_morning_enabled}
-                >
-                  <SelectTrigger className="w-20 h-8 text-xs">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {TIME_OPTIONS.filter(t => t < '12:00').map((time) => (
-                      <SelectItem key={time} value={time}>{time}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="flex gap-1">
+                  {MORNING_OPTIONS.map((time) => (
+                    <Button
+                      key={time}
+                      size="sm"
+                      variant={settings.checkin_morning_time === time ? 'default' : 'secondary'}
+                      className="text-xs px-2"
+                      onClick={() => handleTimeChange('checkin_morning_time', time)}
+                      disabled={!settings.checkin_morning_enabled}
+                    >
+                      {time}
+                    </Button>
+                  ))}
+                </div>
                 <Switch
                   checked={settings.checkin_morning_enabled}
                   onCheckedChange={(v) => handleToggle('checkin_morning_enabled', v)}
@@ -201,20 +199,20 @@ export default function Settings() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Select
-                  value={settings.checkin_evening_time}
-                  onValueChange={(v) => handleTimeChange('checkin_evening_time', v)}
-                  disabled={!settings.checkin_evening_enabled}
-                >
-                  <SelectTrigger className="w-20 h-8 text-xs">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {TIME_OPTIONS.filter(t => t >= '18:00').map((time) => (
-                      <SelectItem key={time} value={time}>{time}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="flex gap-1">
+                  {EVENING_OPTIONS.map((time) => (
+                    <Button
+                      key={time}
+                      size="sm"
+                      variant={settings.checkin_evening_time === time ? 'default' : 'secondary'}
+                      className="text-xs px-2"
+                      onClick={() => handleTimeChange('checkin_evening_time', time)}
+                      disabled={!settings.checkin_evening_enabled}
+                    >
+                      {time}
+                    </Button>
+                  ))}
+                </div>
                 <Switch
                   checked={settings.checkin_evening_enabled}
                   onCheckedChange={(v) => handleToggle('checkin_evening_enabled', v)}

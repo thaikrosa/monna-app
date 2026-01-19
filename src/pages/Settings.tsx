@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   CaretLeft, 
+  CaretRight,
   Sun, 
   Moon, 
   Lightbulb,
@@ -16,7 +17,9 @@ import {
   Heart,
   Target,
   Smiley,
-  Spinner
+  Spinner,
+  FileText,
+  ShieldCheck
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -452,6 +455,36 @@ export default function Settings() {
                 </span>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Sobre */}
+        <section>
+          <h2 className="text-base font-medium text-foreground mb-1">
+            Sobre a Monna
+          </h2>
+          <p className="text-sm text-muted-foreground mb-3">
+            Informações legais e institucionais
+          </p>
+
+          <div className="annia-glass p-4 rounded-lg border border-border/30 space-y-3">
+            <Link to="/termos" className="flex items-center justify-between group">
+              <div className="flex items-center gap-3">
+                <FileText weight="thin" className="h-5 w-5 text-primary" />
+                <span className="text-foreground text-sm font-medium">Termos de Uso</span>
+              </div>
+              <CaretRight weight="thin" className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors duration-150" />
+            </Link>
+            
+            <div className="border-t border-border/20" />
+            
+            <Link to="/privacidade" className="flex items-center justify-between group">
+              <div className="flex items-center gap-3">
+                <ShieldCheck weight="thin" className="h-5 w-5 text-primary" />
+                <span className="text-foreground text-sm font-medium">Política de Privacidade</span>
+              </div>
+              <CaretRight weight="thin" className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors duration-150" />
+            </Link>
           </div>
         </section>
 

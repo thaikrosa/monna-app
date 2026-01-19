@@ -2,6 +2,7 @@ import { CalendarBlank, ArrowSquareOut } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { HomeSection } from './HomeSection';
 import type { CalendarConnection } from '@/hooks/useCalendarConnections';
 import type { CalendarEvent } from '@/hooks/useTodayCalendarEvents';
 
@@ -17,84 +18,60 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
   // Estado: Desconectado
   if (!isConnected) {
     return (
-      <div className="bg-card rounded-xl p-5 animate-fade-in border border-border shadow-elevated">
-        <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
-            <CalendarBlank weight="regular" className="h-4 w-4 text-primary" />
-          </div>
-          
-          <div className="flex-1">
-            <p className="text-sm font-medium text-foreground">Agenda do dia</p>
-            <p className="text-xs text-primary/80 mt-1">
-              Conecte sua agenda para ver seus compromissos aqui
-            </p>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              className="mt-3 opacity-50 cursor-not-allowed"
-              disabled
-            >
-              Em breve
-            </Button>
-          </div>
-        </div>
-      </div>
+      <HomeSection
+        icon={<CalendarBlank weight="regular" className="h-4 w-4" />}
+        title="Agenda do dia"
+        onAdd={() => {}}
+        addDisabled
+        addDisabledLabel="Em breve"
+        emptyState={
+          <p className="text-sm text-muted-foreground">
+            Conecte sua agenda para ver seus compromissos aqui
+          </p>
+        }
+      >
+        <div />
+      </HomeSection>
     );
   }
 
   // Estado: Conectado sem eventos
   if (events.length === 0) {
     return (
-      <div className="bg-card rounded-xl p-5 animate-fade-in border border-border shadow-elevated">
-        <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
-            <CalendarBlank weight="regular" className="h-4 w-4 text-primary" />
-          </div>
-          
-          <div className="flex-1">
-            <p className="text-sm font-medium text-foreground">Agenda do dia</p>
-            <p className="text-xs text-primary/80 mt-1">
-              Seu dia está livre. Momento perfeito para o que importa.
-            </p>
-          </div>
-        </div>
-      </div>
+      <HomeSection
+        icon={<CalendarBlank weight="regular" className="h-4 w-4" />}
+        title="Agenda do dia"
+        onAdd={() => {}}
+        addDisabled
+        addDisabledLabel="Em breve"
+        emptyState={
+          <p className="text-sm text-muted-foreground">
+            Seu dia está livre. Momento perfeito para o que importa.
+          </p>
+        }
+      >
+        <div />
+      </HomeSection>
     );
   }
 
   // Estado: Conectado com eventos
   return (
-    <div className="bg-card rounded-xl p-5 animate-fade-in border border-border shadow-elevated">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <CalendarBlank weight="regular" className="h-4 w-4 text-primary" />
-          <p className="text-sm font-medium text-foreground">Agenda do dia</p>
-        </div>
-        
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-xs text-primary/70 hover:text-primary hover:bg-primary/10 h-auto py-1 px-2"
-          asChild
-        >
-          <a 
-            href="https://calendar.google.com" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="flex items-center gap-1"
-          >
-            Ver agenda completa
-            <ArrowSquareOut weight="thin" className="h-3 w-3" />
-          </a>
-        </Button>
-      </div>
-
+    <HomeSection
+      icon={<CalendarBlank weight="regular" className="h-4 w-4" />}
+      title="Agenda do dia"
+      count={events.length}
+      onAdd={() => {}}
+      addDisabled
+      addDisabledLabel="Em breve"
+      onViewAll={() => window.open('https://calendar.google.com', '_blank')}
+      viewAllLabel="Ver agenda"
+    >
       <div className="space-y-2">
         {events.slice(0, 4).map((event) => (
           <div 
             key={event.id}
-            className="flex items-center gap-3 py-2 border-b border-border/30 last:border-0"
+            className="flex items-center gap-3 py-2 border-b border-border last:border-0"
           >
             <span className="text-xs font-medium text-primary w-12">
               {format(new Date(event.starts_at), 'HH:mm', { locale: ptBR })}
@@ -105,6 +82,6 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
           </div>
         ))}
       </div>
-    </div>
+    </HomeSection>
   );
 }

@@ -36,7 +36,7 @@ export function HomeSection({
   const hasContent = !emptyState;
 
   return (
-    <div className="bg-background rounded-lg p-5 animate-fade-in border border-border/50 shadow-elevated">
+    <div className="bg-card rounded-xl p-5 animate-fade-in border border-border/50 shadow-elevated">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="flex-shrink-0 h-8 w-8 rounded-lg bg-secondary flex items-center justify-center">

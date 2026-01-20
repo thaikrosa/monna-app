@@ -41,22 +41,23 @@ export function KidsDashboard({ children, insights }: KidsDashboardProps) {
   }
 
   return (
-    <div className="bg-background rounded-lg p-5 animate-fade-in border border-border/50 shadow-elevated">
-      <div className="flex items-center gap-3 mb-4">
+    <div className="bg-card rounded-xl p-6 animate-fade-in border border-border/50 shadow-elevated">
+      <div className="flex items-center gap-3 mb-5">
         <div className="flex-shrink-0 h-8 w-8 rounded-lg bg-secondary flex items-center justify-center">
           <Baby weight="regular" className="h-4 w-4 text-primary" />
         </div>
         <p className="text-sm font-medium text-foreground">Meus filhos</p>
       </div>
 
-      <div className="grid gap-3">
+      <div className="grid gap-4">
         {children.slice(0, 3).map((child) => {
           const insight = insights[child.id];
           
             return (
             <div
               key={child.id}
-              className="bg-muted/50 rounded-lg p-4 border border-border/30"
+              onClick={() => navigate(`/filhos`)}
+              className="bg-muted/50 rounded-lg p-4 border border-border/30 hover:border-border/60 transition-colors duration-150 cursor-pointer"
             >
               <div className="flex items-start gap-3">
                 <Avatar className="h-10 w-10 border border-border">
@@ -100,14 +101,7 @@ export function KidsDashboard({ children, insights }: KidsDashboardProps) {
                   )}
                 </div>
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 flex-shrink-0 text-primary hover:text-primary hover:bg-primary/10"
-                  onClick={() => navigate(`/filhos`)}
-                >
-                  <ArrowRight weight="regular" className="h-4 w-4" />
-                </Button>
+                <ArrowRight weight="regular" className="h-4 w-4 text-muted-foreground" />
               </div>
             </div>
           );

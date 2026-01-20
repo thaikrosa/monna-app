@@ -47,7 +47,7 @@ export default function Home() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto pb-4 px-4 space-y-5">
+    <div className="max-w-2xl mx-auto pb-4 px-4 space-y-6">
       {/* 1. Agenda do Dia */}
       <div className="animate-slide-up stagger-1">
         <CalendarSection 

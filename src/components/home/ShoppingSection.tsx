@@ -47,7 +47,7 @@ export function ShoppingSection({ items }: ShoppingSectionProps) {
           {displayItems.map((item) => (
             <div 
               key={item.id}
-              className="flex items-center gap-3 py-2.5 px-3 rounded-lg bg-muted/50 border border-border/30 transition-colors duration-150"
+              className="flex items-center gap-3 py-2.5 px-3 rounded-md bg-muted/50 border border-border/30 transition-colors duration-150"
             >
               {/* Quick Action Checkbox */}
               <Button

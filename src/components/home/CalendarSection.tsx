@@ -71,7 +71,7 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
         {events.slice(0, 4).map((event) => (
           <div 
             key={event.id}
-            className="flex items-center gap-3 py-2 border-b border-border last:border-0"
+            className="flex items-center gap-3 py-2.5 border-b border-border/30 last:border-0"
           >
             <span className="text-xs font-medium text-primary w-12">
               {format(new Date(event.starts_at), 'HH:mm', { locale: ptBR })}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,12 +19,11 @@ import {
   Bank, 
   DotsThree,
   CaretDown,
-  Phone,
   WhatsappLogo
 } from '@phosphor-icons/react';
 import type { ReminderCategory, ReminderPriority, RecurrenceType } from '@/types/reminders';
 
-interface AddReminderSheetProps {
+interface AddReminderDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -51,7 +50,6 @@ const categoryLabels: Record<ReminderCategory, string> = {
   other: 'Outros',
 };
 
-// Removed 'once' option - if not recurring, it's automatically a single reminder
 const recurrenceOptions: { value: RecurrenceType; label: string }[] = [
   { value: 'daily', label: 'Diário' },
   { value: 'weekly', label: 'Semanal' },
@@ -62,7 +60,6 @@ const recurrenceOptions: { value: RecurrenceType; label: string }[] = [
 
 const weekDays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
 
-// Helper to get next full hour
 function getNextFullHour(): string {
   const now = new Date();
   const nextHour = new Date(now);
@@ -70,7 +67,7 @@ function getNextFullHour(): string {
   return format(nextHour, 'HH:mm');
 }
 
-export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) {
+export function AddReminderDialog({ open, onOpenChange }: AddReminderDialogProps) {
   // Etapa 1 - Essenciais
   const [title, setTitle] = useState('');
   const [dueDate, setDueDate] = useState(format(new Date(), 'yyyy-MM-dd'));
@@ -81,12 +78,10 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
   const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>('daily');
   const [daysOfWeek, setDaysOfWeek] = useState<number[]>([]);
   
-  // Changed to string for better input handling
   const [intervalHoursStr, setIntervalHoursStr] = useState('24');
   const [durationDaysStr, setDurationDaysStr] = useState('7');
   const [recurrenceEnd, setRecurrenceEnd] = useState('');
   
-  // Track which field was last edited for bidirectional sync
   const [lastEdited, setLastEdited] = useState<'duration' | 'endDate' | null>(null);
 
   // Etapa 3 - Mais opções
@@ -96,11 +91,9 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
   const [effortLevel, setEffortLevel] = useState<number>(1);
   const [description, setDescription] = useState('');
   const [sendWhatsapp, setSendWhatsapp] = useState(true);
-  const [callGuarantee, setCallGuarantee] = useState(false);
 
   const addReminder = useAddReminder();
 
-  // Bidirectional sync: duration days -> end date
   useEffect(() => {
     if (lastEdited === 'duration' && durationDaysStr && dueDate) {
       const days = parseInt(durationDaysStr);
@@ -111,7 +104,6 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
     }
   }, [durationDaysStr, dueDate, lastEdited]);
 
-  // Bidirectional sync: end date -> duration days
   useEffect(() => {
     if (lastEdited === 'endDate' && recurrenceEnd && dueDate) {
       const days = differenceInDays(new Date(recurrenceEnd), new Date(dueDate));
@@ -138,7 +130,6 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
     setEffortLevel(1);
     setDescription('');
     setSendWhatsapp(true);
-    setCallGuarantee(false);
   };
 
   const toggleDayOfWeek = (day: number) => {
@@ -154,17 +145,14 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
 
     const datetime = new Date(`${dueDate}T${dueTime}:00`);
 
-    // Validar se a data não é no passado
     if (datetime < new Date()) {
       toast.error('Esse horário já passou. Vamos agendar para quando?');
       return;
     }
 
-    // Parse interval values
     const intervalHours = parseInt(intervalHoursStr) || 24;
     const durationDays = parseInt(durationDaysStr) || 7;
 
-    // Montar recurrence_config baseado no tipo
     let recurrence_config: Record<string, unknown> | null = null;
     
     if (showRecurrence && recurrenceType === 'weekly' && daysOfWeek.length > 0) {
@@ -186,7 +174,7 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
       recurrence_config,
       recurrence_end: recurrenceEnd || null,
       effort_level: effortLevel,
-      call_guarantee: callGuarantee,
+      call_guarantee: false,
       send_whatsapp: sendWhatsapp,
     };
 
@@ -203,33 +191,29 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
     }
   };
 
-  // Verificar se a data/hora selecionada está no passado
   const selectedDateTime = new Date(`${dueDate}T${dueTime}:00`);
   const isDateInPast = selectedDateTime < new Date();
   const isValid = title.trim() && dueDate && !isDateInPast;
 
   const inputClass = "bg-transparent border-0 border-b border-border/30 rounded-none focus:border-primary/50 focus:ring-0 transition-colors duration-150 placeholder:text-muted-foreground/40";
 
-  // Classes de seleção
   const selectedClass = "bg-primary/20 text-primary";
-  const selectedSolidClass = "bg-primary text-primary-foreground"; // Para botões pequenos (pills, dias)
+  const selectedSolidClass = "bg-primary text-primary-foreground";
   const urgentSelectedClass = "bg-destructive/20 text-destructive";
   const unselectedClass = "bg-muted/20 text-muted-foreground hover:bg-muted/40";
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="overflow-y-auto px-5 py-6">
-        <SheetHeader>
-          <SheetTitle className="text-lg font-medium">Novo Lembrete</SheetTitle>
-          <SheetDescription className="text-muted-foreground/70">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-h-[90vh] overflow-y-auto max-w-md px-5 py-6">
+        <DialogHeader>
+          <DialogTitle className="text-lg font-medium">Novo Lembrete</DialogTitle>
+          <DialogDescription className="text-muted-foreground/70">
             Organize sua mente
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
-        <div className="mt-8 space-y-8">
-          {/* ═══════════════════════════════════════════════════════════════
-              ETAPA 1 - ESSENCIAIS (sempre visível)
-          ═══════════════════════════════════════════════════════════════ */}
+        <div className="mt-6 space-y-8">
+          {/* ETAPA 1 - ESSENCIAIS */}
           <div className="space-y-5">
             <div className="space-y-3">
               <Label htmlFor="title" className="text-xs text-muted-foreground/70">
@@ -271,7 +255,6 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
               </div>
             </div>
             
-            {/* Mensagem de erro inline para data passada */}
             {isDateInPast && (
               <p className="text-xs text-destructive/80 mt-2">
                 Essa data já passou. Escolhe um horário a partir de agora?
@@ -279,9 +262,7 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
             )}
           </div>
 
-          {/* ═══════════════════════════════════════════════════════════════
-              ETAPA 2 - RECORRENTE? (toggle + opções)
-          ═══════════════════════════════════════════════════════════════ */}
+          {/* ETAPA 2 - RECORRÊNCIA */}
           <div className="space-y-4">
             <div className="flex items-center justify-between py-2">
               <Label htmlFor="recurring" className="text-sm text-muted-foreground">
@@ -299,7 +280,6 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
 
             <Collapsible open={showRecurrence}>
               <CollapsibleContent className="space-y-5 pt-2">
-                {/* Seletor visual de frequência */}
                 <div className="flex flex-wrap gap-2">
                   {recurrenceOptions.map((opt) => (
                     <button
@@ -316,7 +296,6 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                   ))}
                 </div>
 
-                {/* Seletor de dias da semana (para weekly) */}
                 {recurrenceType === 'weekly' && (
                   <div className="space-y-3">
                     <Label className="text-xs text-muted-foreground/70">Quais dias?</Label>
@@ -338,7 +317,6 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                   </div>
                 )}
 
-                {/* Campos para interval */}
                 {recurrenceType === 'interval' && (
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
@@ -378,7 +356,6 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                   </div>
                 )}
 
-                {/* Até quando? (para recorrentes) */}
                 {showRecurrence && (
                   <div className="space-y-2">
                     <Label className="text-xs text-muted-foreground/70">Até quando? (opcional)</Label>
@@ -397,11 +374,8 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
             </Collapsible>
           </div>
 
-          {/* ═══════════════════════════════════════════════════════════════
-              ETAPA 3 - NOTIFICAÇÕES (sempre visível)
-          ═══════════════════════════════════════════════════════════════ */}
+          {/* ETAPA 3 - NOTIFICAÇÕES */}
           <div className="space-y-3 py-2">
-            {/* WhatsApp toggle */}
             <div className="flex items-center justify-between py-2">
               <div className="flex items-center gap-2">
                 <WhatsappLogo weight="thin" className="h-4 w-4 text-primary/70" />
@@ -415,31 +389,9 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                 onCheckedChange={setSendWhatsapp}
               />
             </div>
-
-            {/* Call Guarantee */}
-            <div className="flex items-center justify-between py-2">
-              <div>
-                <div className="flex items-center gap-2">
-                  <Phone weight="thin" className="h-4 w-4 text-primary/70" />
-                  <Label htmlFor="call" className="text-sm text-muted-foreground">
-                    Garantir com ligação
-                  </Label>
-                </div>
-                <p className="text-xs text-muted-foreground/50 mt-1 ml-6">
-                  Vou ligar para garantir que não esqueça
-                </p>
-              </div>
-              <Switch
-                id="call"
-                checked={callGuarantee}
-                onCheckedChange={setCallGuarantee}
-              />
-            </div>
           </div>
 
-          {/* ═══════════════════════════════════════════════════════════════
-              ETAPA 4 - MAIS OPÇÕES (colapsável)
-          ═══════════════════════════════════════════════════════════════ */}
+          {/* ETAPA 4 - MAIS OPÇÕES */}
           <Collapsible open={showMoreOptions} onOpenChange={setShowMoreOptions}>
             <CollapsibleTrigger asChild>
               <button 
@@ -454,7 +406,6 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
               </button>
             </CollapsibleTrigger>
             <CollapsibleContent className="space-y-6 pt-6">
-              {/* Categoria com ícones */}
               <div className="space-y-3">
                 <Label className="text-xs text-muted-foreground/70">Categoria</Label>
                 <div className="grid grid-cols-4 gap-2">
@@ -479,7 +430,6 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                 </div>
               </div>
 
-              {/* Prioridade */}
               <div className="space-y-3">
                 <Label className="text-xs text-muted-foreground/70">Prioridade</Label>
                 <div className="flex gap-2">
@@ -502,7 +452,6 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                 </div>
               </div>
 
-              {/* Esforço */}
               <div className="space-y-3">
                 <Label className="text-xs text-muted-foreground/70">Nível de esforço</Label>
                 <div className="flex gap-3 justify-center py-2">
@@ -522,7 +471,6 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
                 </div>
               </div>
 
-              {/* Descrição */}
               <div className="space-y-3">
                 <Label htmlFor="description" className="text-xs text-muted-foreground/70">
                   Detalhes (opcional)
@@ -547,7 +495,7 @@ export function AddReminderSheet({ open, onOpenChange }: AddReminderSheetProps) 
             {addReminder.isPending ? 'Salvando...' : 'Salvar'}
           </Button>
         </div>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }

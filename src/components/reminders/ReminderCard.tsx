@@ -1,5 +1,5 @@
 import { 
-  Check, Phone, PencilSimple, TrashSimple, Clock,
+  Check, PencilSimple, TrashSimple, Clock,
   Heart, GraduationCap, House, Briefcase, User, UsersThree, Bank, DotsThree
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
@@ -66,7 +66,7 @@ export function ReminderCard({ reminder, onComplete, onSnooze, onEdit, onDelete 
           <CategoryIcon weight="regular" className="h-4 w-4 text-primary/70 flex-shrink-0" />
         )}
 
-        {/* Title + Critical indicator */}
+        {/* Title + Snoozed indicator */}
         <div className="flex items-center gap-2 flex-1 min-w-0">
           <h3
             className={`
@@ -76,9 +76,6 @@ export function ReminderCard({ reminder, onComplete, onSnooze, onEdit, onDelete 
           >
             {reminder.title}
           </h3>
-          {reminder.call_guarantee && (
-            <Phone weight="thin" className="h-4 w-4 text-primary/70 flex-shrink-0" />
-          )}
           {isSnoozed && (
             <Clock weight="thin" className="h-4 w-4 text-muted-foreground/50 flex-shrink-0" />
           )}

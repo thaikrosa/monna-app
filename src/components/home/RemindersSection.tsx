@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, Circle, CheckCircle, Clock } from '@phosphor-icons/react';
+import { Bell, Circle, CheckCircle } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { HomeSection } from './HomeSection';
-import { AddReminderSheet } from '@/components/reminders/AddReminderSheet';
+import { AddReminderDialog } from '@/components/reminders/AddReminderDialog';
 import { useAcknowledgeOccurrence } from '@/hooks/useReminders';
 import type { PendingReminder } from '@/hooks/usePendingReminders';
 
@@ -40,7 +40,7 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
         >
           <div />
         </HomeSection>
-        <AddReminderSheet open={isAddOpen} onOpenChange={setIsAddOpen} />
+        <AddReminderDialog open={isAddOpen} onOpenChange={setIsAddOpen} />
       </>
     );
   }
@@ -116,7 +116,7 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
           })}
         </div>
       </HomeSection>
-      <AddReminderSheet open={isAddOpen} onOpenChange={setIsAddOpen} />
+      <AddReminderDialog open={isAddOpen} onOpenChange={setIsAddOpen} />
     </>
   );
 }

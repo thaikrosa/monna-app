@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { WeekSelector } from '@/components/reminders/WeekSelector';
 import { ReminderCard } from '@/components/reminders/ReminderCard';
-import { AddReminderSheet } from '@/components/reminders/AddReminderSheet';
+import { AddReminderDialog } from '@/components/reminders/AddReminderDialog';
 import { EditReminderSheet } from '@/components/reminders/EditReminderSheet';
 import {
   useRemindersByDate,
@@ -139,8 +139,8 @@ export default function Reminders() {
         </div>
       </div>
 
-      {/* Sheets */}
-      <AddReminderSheet open={isAddOpen} onOpenChange={setIsAddOpen} />
+      {/* Dialogs/Sheets */}
+      <AddReminderDialog open={isAddOpen} onOpenChange={setIsAddOpen} />
       <EditReminderSheet
         open={isEditOpen}
         onOpenChange={setIsEditOpen}

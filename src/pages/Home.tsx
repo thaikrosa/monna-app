@@ -1,16 +1,13 @@
 import { useProfile } from "@/hooks/useProfile";
-import { useChildren } from "@/hooks/useChildren";
 import { useShoppingItems } from "@/hooks/useShoppingList";
 import { useGoogleCalendarConnection } from "@/hooks/useCalendarConnections";
 import { useAiSuggestions } from "@/hooks/useAiSuggestions";
-import { useLatestChildInsights } from "@/hooks/useChildrenInsights";
 import { useTodayCalendarEvents } from "@/hooks/useTodayCalendarEvents";
 import { usePendingReminders } from "@/hooks/usePendingReminders";
 
 import { CalendarSection } from "@/components/home/CalendarSection";
 import { RemindersSection } from "@/components/home/RemindersSection";
 import { ShoppingSection } from "@/components/home/ShoppingSection";
-import { KidsDashboard } from "@/components/home/KidsDashboard";
 import { AnniaMomentSection } from "@/components/home/AnniaMomentSection";
 import { HomeSkeleton } from "@/components/home/HomeSkeleton";
 import { HomeError } from "@/components/home/HomeError";
@@ -24,8 +21,6 @@ export default function Home() {
   const { data: calendarEvents = [] } = useTodayCalendarEvents();
   const { data: pendingReminders = [] } = usePendingReminders();
   const { data: shoppingItems = [] } = useShoppingItems();
-  const { data: children = [] } = useChildren();
-  const { data: childrenInsights = {} } = useLatestChildInsights();
   const { data: suggestions = [] } = useAiSuggestions();
 
   // Loading state
@@ -66,17 +61,9 @@ export default function Home() {
         <ShoppingSection items={shoppingItems} />
       </div>
 
-      {/* 4. Dashboard dos Filhos */}
-      <div className="animate-slide-up stagger-4">
-        <KidsDashboard 
-          children={children} 
-          insights={childrenInsights}
-        />
-      </div>
-
-      {/* 5. Momento Annia (Sugestões) */}
+      {/* 4. Momento Annia (Sugestões) */}
       {suggestions.length > 0 && (
-        <div className="animate-slide-up stagger-5">
+        <div className="animate-slide-up stagger-4">
           <AnniaMomentSection suggestions={suggestions} />
         </div>
       )}

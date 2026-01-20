@@ -1,12 +1,13 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { CaretLeft, Plus, CaretDown, ShoppingCart } from '@phosphor-icons/react';
+import { CaretLeft, Plus, CaretDown, ShoppingCart, PencilSimple } from '@phosphor-icons/react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ShoppingItemCard } from '@/components/shopping/ShoppingItemCard';
 import { AddItemSheet } from '@/components/shopping/AddItemSheet';
 import { EditItemSheet } from '@/components/shopping/EditItemSheet';
+import { EditTagDialog } from '@/components/shopping/EditTagDialog';
 import {
   useShoppingItems,
   useShoppingTags,
@@ -20,11 +21,38 @@ export default function ShoppingList() {
   const [addSheetOpen, setAddSheetOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('todos');
   const [completedOpen, setCompletedOpen] = useState(false);
+  const [editingTag, setEditingTag] = useState<{ id: string; name: string } | null>(null);
 
   const { data: items = [], isLoading } = useShoppingItems();
   const { data: tags = [] } = useShoppingTags();
   const toggleChecked = useToggleChecked();
   const deleteItem = useDeleteItem();
+
+  // Ordenar tags: Mercado primeiro, depois alfabético, Todos por último
+  const sortedTags = useMemo(() => {
+    return [...tags].sort((a, b) => {
+      const aLower = a.name.toLowerCase().trim();
+      const bLower = b.name.toLowerCase().trim();
+      
+      // Mercado sempre primeiro
+      if (aLower === 'mercado') return -1;
+      if (bLower === 'mercado') return 1;
+      
+      // Demais em ordem alfabética
+      return a.name.localeCompare(b.name, 'pt-BR');
+    });
+  }, [tags]);
+
+  // Contar itens por tag (para verificar se pode excluir)
+  const itemCountByTag = useMemo(() => {
+    const counts: Record<string, number> = {};
+    items.forEach(item => {
+      if (item.tag_id) {
+        counts[item.tag_id] = (counts[item.tag_id] || 0) + 1;
+      }
+    });
+    return counts;
+  }, [items]);
 
   // Filtrar por tag
   const filteredItems = useMemo(() => {
@@ -74,26 +102,40 @@ export default function ShoppingList() {
         </div>
       </header>
 
-      {/* Tabs por tag */}
+      {/* Tabs por tag - Ordenados: Mercado primeiro, depois alfabético, Todos por último */}
       {tags.length > 0 && (
         <div className="mb-6">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="w-full h-auto flex-wrap justify-start gap-1 bg-transparent p-0">
+              {/* Tags ordenadas primeiro */}
+              {sortedTags.map((tag) => (
+                <TabsTrigger
+                  key={tag.id}
+                  value={tag.id}
+                  className="relative px-3 py-1.5 text-xs rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground bg-card text-primary/70 border border-border shadow-sm"
+                >
+                  {tag.name}
+                  {/* Ícone de edição - só aparece quando tab está ativa */}
+                  {activeTab === tag.id && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingTag({ id: tag.id, name: tag.name });
+                      }}
+                      className="ml-1.5 opacity-70 hover:opacity-100 transition-opacity"
+                    >
+                      <PencilSimple weight="thin" className="h-3 w-3" />
+                    </button>
+                  )}
+                </TabsTrigger>
+              ))}
+              {/* "Todos" sempre por último */}
               <TabsTrigger
                 value="todos"
                 className="px-3 py-1.5 text-xs rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground bg-card text-primary/70 border border-border shadow-sm"
               >
                 Todos
               </TabsTrigger>
-              {tags.map((tag) => (
-                <TabsTrigger
-                  key={tag.id}
-                  value={tag.id}
-                  className="px-3 py-1.5 text-xs rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground bg-card text-primary/70 border border-border shadow-sm"
-                >
-                  {tag.name}
-                </TabsTrigger>
-              ))}
             </TabsList>
           </Tabs>
         </div>
@@ -200,6 +242,15 @@ export default function ShoppingList() {
         item={editingItem}
         open={!!editingItem}
         onOpenChange={(open) => !open && setEditingItem(null)}
+      />
+
+      {/* Dialog de edição de tag */}
+      <EditTagDialog
+        open={!!editingTag}
+        onOpenChange={(open) => !open && setEditingTag(null)}
+        tag={editingTag}
+        itemCount={editingTag ? (itemCountByTag[editingTag.id] || 0) : 0}
+        onTagDeleted={() => setActiveTab('todos')}
       />
     </div>
   );

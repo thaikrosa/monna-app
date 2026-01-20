@@ -41,9 +41,11 @@ export function KidsDashboard({ children, insights }: KidsDashboardProps) {
   }
 
   return (
-    <div className="space-y-3 animate-fade-in">
-      <div className="flex items-center gap-2 px-1">
-        <Baby weight="regular" className="h-4 w-4 text-primary" />
+    <div className="bg-background rounded-lg p-5 animate-fade-in border border-border/50 shadow-elevated">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="flex-shrink-0 h-8 w-8 rounded-lg bg-secondary flex items-center justify-center">
+          <Baby weight="regular" className="h-4 w-4 text-primary" />
+        </div>
         <p className="text-sm font-medium text-foreground">Meus filhos</p>
       </div>
 
@@ -54,7 +56,7 @@ export function KidsDashboard({ children, insights }: KidsDashboardProps) {
             return (
             <div
               key={child.id}
-              className="bg-card rounded-xl p-4 border border-border shadow-elevated"
+              className="bg-muted/50 rounded-lg p-4 border border-border/30"
             >
               <div className="flex items-start gap-3">
                 <Avatar className="h-10 w-10 border border-border">

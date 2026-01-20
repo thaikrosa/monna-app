@@ -63,10 +63,10 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
               <div 
                 key={reminder.occurrence_id || reminder.id}
                 className={`
-                  flex items-center gap-3 py-2 px-3 rounded-lg transition-colors duration-200
+                  flex items-center gap-3 py-2.5 px-3 rounded-lg transition-colors duration-150
                   ${reminder.isOverdue 
                     ? 'bg-destructive/10 border border-destructive/20' 
-                    : 'bg-secondary border border-transparent'
+                    : 'bg-muted/50 border border-border/30'
                   }
                   ${isAcknowledged ? 'opacity-50' : ''}
                 `}

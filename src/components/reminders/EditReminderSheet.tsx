@@ -29,7 +29,6 @@ export function EditReminderSheet({ open, onOpenChange, reminder }: EditReminder
   const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>('daily');
   const [intervalValue, setIntervalValue] = useState<number>(1);
   const [effortLevel, setEffortLevel] = useState<number>(1);
-  const [callGuarantee, setCallGuarantee] = useState(false);
 
   // Fetch full reminder details
   const { data: reminderData } = useReminder(reminder?.id);
@@ -44,7 +43,6 @@ export function EditReminderSheet({ open, onOpenChange, reminder }: EditReminder
       setDueTime(format(date, 'HH:mm'));
       setCategory(reminder.category);
       setPriority(reminder.priority);
-      setCallGuarantee(reminder.call_guarantee);
     }
   }, [reminder]);
 
@@ -82,7 +80,7 @@ export function EditReminderSheet({ open, onOpenChange, reminder }: EditReminder
           ? { interval_value: intervalValue } 
           : null,
         effort_level: effortLevel,
-        call_guarantee: callGuarantee,
+        call_guarantee: false,
       });
       toast.success('Lembrete atualizado');
       onOpenChange(false);
@@ -273,20 +271,6 @@ export function EditReminderSheet({ open, onOpenChange, reminder }: EditReminder
                   />
                 ))}
               </div>
-            </div>
-
-            <div className="flex items-center justify-between py-2">
-              <div>
-                <Label htmlFor="edit-critical" className="text-sm text-muted-foreground">
-                  Lembrete crítico
-                </Label>
-                <p className="text-xs text-muted-foreground/50">A Monna pode me ligar</p>
-              </div>
-              <Switch
-                id="edit-critical"
-                checked={callGuarantee}
-                onCheckedChange={setCallGuarantee}
-              />
             </div>
           </div>
 

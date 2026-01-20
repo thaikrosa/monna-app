@@ -210,3 +210,59 @@ export function useUpdateItem() {
     },
   });
 }
+
+export function useUpdateTag() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, name }: { id: string; name: string }) => {
+      const { error } = await supabase
+        .from('shopping_tags')
+        .update({ name: name.trim() })
+        .eq('id', id);
+
+      if (error) {
+        console.log('[Annia Debug] updateTag error:', error.message, error);
+        throw error;
+      }
+      console.log('[Annia Debug] updateTag success:', id, name);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['shopping-tags'] });
+      queryClient.invalidateQueries({ queryKey: ['shopping-items'] });
+      toast.success('Lista renomeada');
+    },
+    onError: (error: Error) => {
+      console.log('[Annia Debug] updateTag onError:', error);
+      toast.error('Erro ao renomear lista');
+    },
+  });
+}
+
+export function useDeleteTag() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('shopping_tags')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.log('[Annia Debug] deleteTag error:', error.message, error);
+        throw error;
+      }
+      console.log('[Annia Debug] deleteTag success:', id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['shopping-tags'] });
+      queryClient.invalidateQueries({ queryKey: ['shopping-items'] });
+      toast.success('Lista excluída');
+    },
+    onError: (error: Error) => {
+      console.log('[Annia Debug] deleteTag onError:', error);
+      toast.error('Erro ao excluir lista');
+    },
+  });
+}

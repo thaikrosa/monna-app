@@ -1,5 +1,5 @@
-import { CalendarBlank, ArrowSquareOut } from '@phosphor-icons/react';
-import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+import { CalendarBlank } from '@phosphor-icons/react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { HomeSection } from './HomeSection';
@@ -13,6 +13,7 @@ interface CalendarSectionProps {
 }
 
 export function CalendarSection({ connection, events, isLoading }: CalendarSectionProps) {
+  const navigate = useNavigate();
   const isConnected = connection?.status === 'connected';
 
   // Estado: Desconectado
@@ -23,7 +24,7 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
         title="Agenda do dia"
         onAdd={() => {}}
         addDisabled
-        addDisabledLabel="Em breve"
+        addDisabledLabel="Adicione eventos pelo Google Calendar"
         emptyState={
           <p className="text-sm text-muted-foreground">
             Conecte sua agenda para ver seus compromissos aqui
@@ -43,7 +44,7 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
         title="Agenda do dia"
         onAdd={() => {}}
         addDisabled
-        addDisabledLabel="Em breve"
+        addDisabledLabel="Adicione eventos pelo Google Calendar"
         emptyState={
           <p className="text-sm text-muted-foreground">
             Seu dia está livre. Momento perfeito para o que importa.
@@ -63,8 +64,8 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
       count={events.length}
       onAdd={() => {}}
       addDisabled
-      addDisabledLabel="Em breve"
-      onViewAll={() => window.open('https://calendar.google.com', '_blank')}
+      addDisabledLabel="Adicione eventos pelo Google Calendar"
+      onViewAll={() => navigate('/agenda')}
       viewAllLabel="Ver agenda"
     >
       <div className="space-y-2">

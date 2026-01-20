@@ -40,7 +40,7 @@ export default function Auth() {
             alt="Monna" 
             className="w-32 h-auto"
           />
-          <p className="text-muted-foreground text-sm">
+          <p className="text-muted-foreground text-sm text-center">
             Sua parceira no invisível da maternidade
           </p>
         </div>

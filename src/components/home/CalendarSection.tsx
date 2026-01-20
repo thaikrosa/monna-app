@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { CalendarBlank } from '@phosphor-icons/react';
+import { CalendarBlank, GoogleLogo, Spinner } from '@phosphor-icons/react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { Button } from '@/components/ui/button';
 import { HomeSection } from './HomeSection';
+import { useGoogleCalendarOAuth } from '@/hooks/useGoogleCalendarOAuth';
 import type { CalendarConnection } from '@/hooks/useCalendarConnections';
 import type { CalendarEvent } from '@/hooks/useTodayCalendarEvents';
 
@@ -14,6 +16,7 @@ interface CalendarSectionProps {
 
 export function CalendarSection({ connection, events, isLoading }: CalendarSectionProps) {
   const navigate = useNavigate();
+  const { initiateCalendarOAuth, isConnecting } = useGoogleCalendarOAuth();
   const isConnected = connection?.status === 'connected';
 
   // Estado: Desconectado
@@ -26,9 +29,29 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
         addDisabled
         addDisabledLabel="Adicione eventos pelo Google Calendar"
         emptyState={
-          <p className="text-sm text-muted-foreground">
-            Conecte sua agenda para ver seus compromissos aqui
-          </p>
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Conecte sua agenda para ver seus compromissos aqui
+            </p>
+            <Button
+              size="sm"
+              onClick={initiateCalendarOAuth}
+              disabled={isConnecting}
+              className="w-full"
+            >
+              {isConnecting ? (
+                <>
+                  <Spinner weight="regular" className="h-4 w-4 animate-spin" />
+                  Conectando...
+                </>
+              ) : (
+                <>
+                  <GoogleLogo weight="regular" className="h-4 w-4" />
+                  Conectar Google Calendar
+                </>
+              )}
+            </Button>
+          </div>
         }
       >
         <div />

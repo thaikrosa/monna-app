@@ -1,4 +1,4 @@
-import { ArrowRight, Check, Heart, SealCheck } from '@phosphor-icons/react';
+import { ArrowRight, Check, SealCheck } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { PhoneMockup } from './PhoneMockup';
 
@@ -46,13 +46,6 @@ export function HeroSection() {
             ))}
           </div>
 
-          {/* Social Proof Badge */}
-          <div className="mt-6 animate-slide-up stagger-4">
-            <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-              <Heart weight="regular" className="h-4 w-4 text-secondary" />
-              Amada por mais de 100 mães
-            </span>
-          </div>
         </div>
 
         {/* Phone Mockup */}

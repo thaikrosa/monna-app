@@ -9,7 +9,7 @@ export function LandingNavbar() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center">
-          <img src={logoMonna} alt="Monna" className="h-10 w-auto" />
+          <img src={logoMonna} alt="Monna" className="h-8 w-auto" />
         </Link>
 
         {/* Actions */}

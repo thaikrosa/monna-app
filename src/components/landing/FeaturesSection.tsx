@@ -1,4 +1,4 @@
-import { Brain, CalendarCheck, ShoppingCart, SunHorizon } from '@phosphor-icons/react';
+import { Brain, CalendarCheck, ShoppingCart, SunHorizon, PaperPlaneTilt, Image } from '@phosphor-icons/react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { cn } from '@/lib/utils';
 
@@ -22,6 +22,16 @@ const features = [
     icon: SunHorizon,
     title: 'Check-in de Cuidado',
     description: 'Bom dia com o resumo do que vem. Lembrete gentil quando percebe que você precisa.',
+  },
+  {
+    icon: PaperPlaneTilt,
+    title: 'Recados pra Família',
+    description: '"Avisa minha mãe do remédio do Lucas" — e ela avisa. Você não precisa ligar, mandar mensagem, nem lembrar de lembrar.',
+  },
+  {
+    icon: Image,
+    title: 'Entende o que Você Manda',
+    description: 'Mandou o convite da festa? A foto da agenda escolar? Ela lê, entende e já cria os lembretes pra você.',
   },
 ];
 
@@ -50,7 +60,7 @@ export function FeaturesSection() {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {features.map((feature, index) => (
             <div
               key={feature.title}

@@ -1,5 +1,6 @@
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { cn } from "@/lib/utils";
+import { Check } from "@phosphor-icons/react";
 
 const steps = [
   {
@@ -54,6 +55,24 @@ export function StepsSection() {
               <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
             </div>
           ))}
+        </div>
+
+        {/* Badges */}
+        <div
+          className={cn(
+            "flex flex-wrap justify-center gap-6 mt-10 transition-all duration-700",
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          )}
+          style={{ transitionDelay: '500ms' }}
+        >
+          <span className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Check className="w-5 h-5 text-primary" />
+            Sem baixar app
+          </span>
+          <span className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Check className="w-5 h-5 text-primary" />
+            Sem cadastro demorado
+          </span>
         </div>
       </div>
     </section>

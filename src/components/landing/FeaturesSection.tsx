@@ -1,5 +1,7 @@
 import { Brain, CalendarCheck, ShoppingCart, SunHorizon, PaperPlaneTilt, Image } from '@phosphor-icons/react';
+import { Link } from 'react-router-dom';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const features = [
@@ -77,6 +79,19 @@ export function FeaturesSection() {
               <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
             </div>
           ))}
+        </div>
+
+        {/* CTA Button */}
+        <div
+          className={cn(
+            "text-center mt-12 transition-all duration-700",
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          )}
+          style={{ transitionDelay: '700ms' }}
+        >
+          <Button asChild size="lg" className="text-base px-8">
+            <Link to="/auth">Começar meu teste grátis</Link>
+          </Button>
         </div>
       </div>
     </section>

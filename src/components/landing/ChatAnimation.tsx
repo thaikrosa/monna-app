@@ -67,7 +67,7 @@ export function ChatAnimation() {
       const timeout = setTimeout(() => {
         setVisibleMessages(0);
         setCurrentConv((prev) => (prev + 1) % conversations.length);
-      }, 5000);
+      }, 4000);
       return () => clearTimeout(timeout);
     }
 
@@ -79,13 +79,13 @@ export function ChatAnimation() {
       const typingTimeout = setTimeout(() => {
         setIsTyping(false);
         setVisibleMessages((prev) => prev + 1);
-      }, 2000);
+      }, 1500);
       return () => clearTimeout(typingTimeout);
     } else {
       // Show user message after delay
       const messageTimeout = setTimeout(() => {
         setVisibleMessages((prev) => prev + 1);
-      }, 1500);
+      }, 1000);
       return () => clearTimeout(messageTimeout);
     }
   }, [currentConv, visibleMessages]);

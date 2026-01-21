@@ -5,12 +5,12 @@ const steps = [
   {
     number: "1",
     title: "Conecte",
-    description: "Adicione a Monna no WhatsApp, se apresente e inicie seu teste grátis",
+    description: "Adicione a Monna no WhatsApp e conte como é sua rotina",
   },
   {
     number: "2",
     title: "Converse",
-    description: "Mande suas listas, compromissos e informações da família",
+    description: "Mande suas listas, compromissos e informações que pretende guardar na memória (dela)",
   },
   {
     number: "3",

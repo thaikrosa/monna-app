@@ -10,7 +10,7 @@ const steps = [
   {
     number: "2",
     title: "Converse",
-    description: "Mande suas listas, compromissos e informações que pretende guardar na memória (dela)",
+    description: "Mande suas listas, compromissos e eventos da agenda",
   },
   {
     number: "3",

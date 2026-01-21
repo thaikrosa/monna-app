@@ -269,8 +269,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signInWithGoogle = async () => {
-    // Usar o domínio atual como redirect (funciona em preview e produção)
-    const redirectUrl = window.location.origin;
+    // Redirecionar para /home após login (funciona em preview e produção)
+    const redirectUrl = `${window.location.origin}/home`;
     console.log('[Auth] Redirect URL:', redirectUrl);
     
     const { error } = await supabase.auth.signInWithOAuth({

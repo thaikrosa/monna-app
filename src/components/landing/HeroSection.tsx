@@ -4,11 +4,9 @@ import { PhoneMockup } from './PhoneMockup';
 
 export function HeroSection() {
   return (
-    <section className="min-h-screen flex items-center pt-24 pb-16 px-4 sm:px-6 bg-secondary relative overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute top-0 right-0 w-3/4 h-full bg-gradient-to-bl from-card/80 to-transparent pointer-events-none" />
+    <section className="min-h-screen flex items-center pt-24 pb-16 px-4 sm:px-6 bg-secondary">
 
-      <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center relative z-10">
+      <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
         {/* Text Content */}
         <div className="max-w-xl">
           {/* Badge */}

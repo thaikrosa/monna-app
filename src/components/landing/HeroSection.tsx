@@ -1,4 +1,4 @@
-import { ArrowRight, Check, SealCheck, WhatsappLogo } from '@phosphor-icons/react';
+import { ArrowRight, Check, SealCheck } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { PhoneMockup } from './PhoneMockup';
 
@@ -30,7 +30,6 @@ export function HeroSection() {
           <div className="mb-8 animate-slide-up stagger-2">
             <Button size="lg" asChild className="gap-3 h-12 px-6 text-base">
               <a href="#cta-final">
-                <WhatsappLogo weight="regular" className="h-5 w-5" />
                 Quero testar grátis
                 <ArrowRight weight="regular" className="h-4 w-4" />
               </a>

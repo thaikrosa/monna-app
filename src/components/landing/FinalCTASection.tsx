@@ -35,7 +35,7 @@ export function FinalCTASection() {
           )}
           style={{ transitionDelay: '100ms' }}
         >
-          7 dias grátis para sentir a diferença.<br />Sem cartão, sem compromisso.
+          7 dias grátis para sentir a diferença. Sem compromisso.
         </p>
 
         {/* CTA Button */}

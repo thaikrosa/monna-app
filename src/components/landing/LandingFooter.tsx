@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MonnaLogo } from './MonnaLogo';
+import logoMonna from '@/assets/logo-monna.png';
 
 const footerLinks = {
   produto: [
@@ -30,9 +30,8 @@ export function LandingFooter() {
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-8 mb-12">
           {/* Brand */}
           <div className="col-span-2 sm:col-span-1 max-w-[200px]">
-            <div className="flex items-center gap-2 mb-4">
-              <MonnaLogo className="h-7 w-auto text-card" />
-              <span className="text-sm font-normal tracking-[0.15em] text-card">MONNA</span>
+            <div className="mb-4">
+              <img src={logoMonna} alt="Monna" className="h-12 w-auto invert" />
             </div>
             <p className="text-sm text-card/60 leading-relaxed">
               A assistente de IA que cuida da logística invisível da maternidade.

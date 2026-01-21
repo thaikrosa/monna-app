@@ -1,17 +1,16 @@
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { cn } from "@/lib/utils";
-import { Check } from "@phosphor-icons/react";
 
 const steps = [
   {
     number: "1",
     title: "Conecte",
-    description: "Adicione a Monna no WhatsApp e conte como é sua rotina",
+    description: "Adicione a Monna no WhatsApp, apresente-se e inicie seu teste grátis",
   },
   {
     number: "2",
     title: "Converse",
-    description: "Mande suas listas, compromissos e eventos da agenda",
+    description: "Mande suas listas, compromissos e informações da família",
   },
   {
     number: "3",
@@ -55,24 +54,6 @@ export function StepsSection() {
               <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
             </div>
           ))}
-        </div>
-
-        {/* Badges */}
-        <div
-          className={cn(
-            "flex flex-wrap justify-center gap-6 mt-10 transition-all duration-700",
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          )}
-          style={{ transitionDelay: '500ms' }}
-        >
-          <span className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Check weight="thin" className="w-5 h-5 text-primary" />
-            Sem baixar app
-          </span>
-          <span className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Check weight="thin" className="w-5 h-5 text-primary" />
-            Sem cadastro demorado
-          </span>
         </div>
       </div>
     </section>

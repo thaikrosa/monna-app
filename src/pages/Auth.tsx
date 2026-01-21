@@ -13,7 +13,7 @@ export default function Auth() {
   // Redireciona se já estiver logado
   useEffect(() => {
     if (!loading && user) {
-      navigate('/', { replace: true });
+      navigate('/home', { replace: true });
     }
   }, [user, loading, navigate]);
 

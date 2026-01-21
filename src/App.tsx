@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AppLayout } from "@/layouts/AppLayout";
+import LandingPage from "./pages/LandingPage";
 import Auth from "./pages/Auth";
 import Home from "./pages/Home";
 import Agenda from "./pages/Agenda";
@@ -39,6 +40,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             {/* Public routes */}
+            <Route path="/" element={<LandingPage />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/oauth/callback" element={<OAuthCallback />} />
             <Route path="/privacidade" element={<Privacy />} />
@@ -46,7 +48,7 @@ const App = () => (
             
             {/* Protected routes */}
             <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
-              <Route path="/" element={<Home />} />
+              <Route path="/home" element={<Home />} />
               <Route path="/agenda" element={<Agenda />} />
               <Route path="/lista" element={<ShoppingList />} />
               <Route path="/rede-apoio" element={<SupportNetwork />} />

@@ -66,11 +66,11 @@ export function StepsSection() {
           style={{ transitionDelay: '500ms' }}
         >
           <span className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Check className="w-5 h-5 text-primary" />
+            <Check weight="thin" className="w-5 h-5 text-primary" />
             Sem baixar app
           </span>
           <span className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Check className="w-5 h-5 text-primary" />
+            <Check weight="thin" className="w-5 h-5 text-primary" />
             Sem cadastro demorado
           </span>
         </div>

@@ -17,8 +17,8 @@ export function HeroSection() {
 
           {/* Title */}
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-foreground leading-tight mb-6 animate-slide-up">
-            Você lembra de tudo.
-            <span className="block text-primary mt-1">A Monna garante que nada seja esquecido.</span>
+            Sua cabeça tá cheia demais.
+            <span className="block text-primary mt-1">Deixa a Monna ajudar.</span>
           </h1>
 
           {/* Subtitle */}

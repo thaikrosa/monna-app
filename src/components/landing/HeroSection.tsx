@@ -39,7 +39,7 @@ export function HeroSection() {
 
           {/* Trust Signals */}
           <div className="flex flex-wrap gap-4 sm:gap-6 animate-slide-up stagger-3">
-            {['7 dias grátis', 'Sem cartão', 'Direto no WhatsApp'].map((text) => (
+            {['7 dias grátis', 'Sem compromisso', 'Direto no WhatsApp'].map((text) => (
               <span key={text} className="flex items-center gap-1.5 text-sm text-muted-foreground">
                 <Check weight="regular" className="h-4 w-4 text-primary" />
                 {text}

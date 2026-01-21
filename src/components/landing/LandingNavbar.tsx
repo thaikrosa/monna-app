@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { User, WhatsappLogo } from '@phosphor-icons/react';
+import { User } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import logoMonna from '@/assets/logo-monna.png';
 
@@ -13,18 +13,12 @@ export function LandingNavbar() {
         </Link>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center">
           <Button variant="ghost" size="sm" asChild className="text-primary gap-1.5">
             <Link to="/auth">
               <User weight="regular" className="h-4 w-4" />
               <span className="hidden sm:inline">Entrar</span>
             </Link>
-          </Button>
-          <Button size="sm" asChild className="gap-1.5">
-            <a href="#cta-final">
-              <WhatsappLogo weight="regular" className="h-4 w-4" />
-              <span className="hidden sm:inline">Testar grátis</span>
-            </a>
           </Button>
         </div>
       </div>

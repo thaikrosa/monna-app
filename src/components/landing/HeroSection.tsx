@@ -46,6 +46,13 @@ export function HeroSection() {
               </span>
             ))}
           </div>
+
+          {/* Social Proof Badge */}
+          <div className="mt-6 animate-slide-up stagger-4">
+            <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+              💜 Amada por mais de 100 mães
+            </span>
+          </div>
         </div>
 
         {/* Phone Mockup */}

@@ -5,20 +5,22 @@ const footerLinks = {
   produto: [
     { label: "Como funciona", href: "#solution" },
     { label: "Funcionalidades", href: "#features" },
-    { label: "FAQ", href: "#faq" },
-  ],
-  conta: [
     { label: "Entrar", href: "/auth", isRoute: true },
-    { label: "Criar conta", href: "#cta-final" },
+  ],
+  empresa: [
+    { label: "Sobre", href: "/sobre", isRoute: true },
+    { label: "FAQ", href: "/faq", isRoute: true },
+    { label: "Contato", href: "/contato", isRoute: true },
   ],
   legal: [
     { label: "Termos de uso", href: "/termos", isRoute: true },
     { label: "Privacidade", href: "/privacidade", isRoute: true },
+    { label: "Cookies", href: "/cookies", isRoute: true },
   ],
   contato: [
+    { label: "contato@monna.ia.br", href: "mailto:contato@monna.ia.br" },
     { label: "Instagram", href: "#" },
     { label: "LinkedIn", href: "#" },
-    { label: "contato@monna.ia.br", href: "mailto:contato@monna.ia.br" },
   ],
 };
 
@@ -41,24 +43,8 @@ export function LandingFooter() {
             <ul className="space-y-2">
               {footerLinks.produto.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="text-sm text-card/50 hover:text-card transition-colors duration-150">
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-xs font-medium text-card mb-4 tracking-wide">Conta</h4>
-            <ul className="space-y-2">
-              {footerLinks.conta.map((link) => (
-                <li key={link.label}>
                   {link.isRoute ? (
-                    <Link
-                      to={link.href}
-                      className="text-sm text-card/50 hover:text-card transition-colors duration-150"
-                    >
+                    <Link to={link.href} className="text-sm text-card/50 hover:text-card transition-colors duration-150">
                       {link.label}
                     </Link>
                   ) : (
@@ -66,6 +52,19 @@ export function LandingFooter() {
                       {link.label}
                     </a>
                   )}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-xs font-medium text-card mb-4 tracking-wide">Empresa</h4>
+            <ul className="space-y-2">
+              {footerLinks.empresa.map((link) => (
+                <li key={link.label}>
+                  <Link to={link.href} className="text-sm text-card/50 hover:text-card transition-colors duration-150">
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>

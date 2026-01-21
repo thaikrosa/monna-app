@@ -21,6 +21,10 @@ import NotFound from "./pages/NotFound";
 import OAuthCallback from "./pages/OAuthCallback";
 import Privacy from "./pages/_legacy/Privacy";
 import Terms from "./pages/_legacy/Terms";
+import FAQ from "./pages/FAQ";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Cookies from "./pages/Cookies";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,6 +49,10 @@ const App = () => (
             <Route path="/oauth/callback" element={<OAuthCallback />} />
             <Route path="/privacidade" element={<Privacy />} />
             <Route path="/termos" element={<Terms />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/sobre" element={<About />} />
+            <Route path="/contato" element={<Contact />} />
+            <Route path="/cookies" element={<Cookies />} />
             
             {/* Protected routes */}
             <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>

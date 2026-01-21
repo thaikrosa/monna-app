@@ -1,5 +1,6 @@
-import { ArrowRight, Check, SealCheck } from '@phosphor-icons/react';
+import { ArrowRight, CheckCircle, ChatCircle, SealCheck } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { PhoneMockup } from './PhoneMockup';
 
 export function HeroSection() {
@@ -27,7 +28,7 @@ export function HeroSection() {
           </p>
 
           {/* CTA */}
-          <div className="mb-8 animate-slide-up stagger-2">
+          <div className="mb-6 animate-slide-up stagger-2">
             <Button size="lg" asChild className="gap-3 h-12 px-6 text-base">
               <a href="#cta-final">
                 Quero testar grátis
@@ -36,16 +37,21 @@ export function HeroSection() {
             </Button>
           </div>
 
-          {/* Trust Signals */}
-          <div className="flex flex-wrap gap-4 sm:gap-6 animate-slide-up stagger-3">
-            {['7 dias grátis', 'Sem compromisso', 'Direto no WhatsApp'].map((text) => (
-              <span key={text} className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                <Check weight="regular" className="h-4 w-4 text-primary" />
-                {text}
-              </span>
-            ))}
+          {/* Trust Badges */}
+          <div className="flex flex-wrap items-center justify-start gap-3 sm:gap-4 py-6 animate-slide-up stagger-3">
+            <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5">
+              <CheckCircle size={20} weight="regular" />
+              <span className="text-sm font-medium">Sem baixar app</span>
+            </Badge>
+            <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5">
+              <CheckCircle size={20} weight="regular" />
+              <span className="text-sm font-medium">Sem cadastros infinitos</span>
+            </Badge>
+            <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5">
+              <ChatCircle size={20} weight="regular" />
+              <span className="text-sm font-medium">Direto no WhatsApp</span>
+            </Badge>
           </div>
-
         </div>
 
         {/* Phone Mockup */}

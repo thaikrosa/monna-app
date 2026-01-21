@@ -1,4 +1,4 @@
-import { Headset, Heart, ShieldCheck, WhatsappLogo, XCircle } from '@phosphor-icons/react';
+import { Headset, Heart, ShieldCheck, XCircle } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { cn } from '@/lib/utils';
@@ -57,7 +57,6 @@ export function FinalCTASection() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <WhatsappLogo weight="regular" className="h-5 w-5" />
               Começar meu teste grátis
             </a>
           </Button>

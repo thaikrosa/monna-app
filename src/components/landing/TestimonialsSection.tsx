@@ -3,19 +3,34 @@ import { cn } from '@/lib/utils';
 
 const testimonials = [
   {
-    quote: 'Finalmente alguém que entende que eu não preciso de mais produtividade. Preciso de alívio.',
-    author: 'Carolina',
-    role: 'mãe de 3',
+    quote: 'Eu me impressionei muito com a Monna. Gosto muito da facilidade do áudio. Isso é vida!',
+    author: 'Viridiane',
+    role: 'engenheira e mãe',
   },
   {
-    quote: 'Testei por 7 dias e não quero mais viver sem. É como ter uma amiga que lembra de tudo.',
-    author: 'Fernanda',
-    role: 'mãe e empreendedora',
+    quote: 'Eu e meu marido usamos vários métodos para lembrarmos dos eventos, mas a Monna converge tudo num grupo só.',
+    author: 'Priscila',
+    role: 'fisioterapeuta e mãe',
   },
   {
-    quote: 'O dia acabou, a casa tá de pé, e eu também. Vitória.',
-    author: 'Beatriz',
-    role: 'mãe de gêmeos',
+    quote: 'Eu estou gostando muito. Achei bem prático e fácil. A gente visualiza muito mais no WhatsApp.',
+    author: 'Gabriela',
+    role: 'mentora de mães e mãe',
+  },
+  {
+    quote: 'Gostei do jeito que ela manda mensagem, do checklist no fim do dia e no início da manhã.',
+    author: 'Giselly',
+    role: 'empresária e mãe',
+  },
+  {
+    quote: 'Achei ela maravilhosa!',
+    author: 'Vanessa',
+    role: 'empresária',
+  },
+  {
+    quote: 'A Monna já é minha best!',
+    author: 'Priscila',
+    role: 'mãe',
   },
 ];
 
@@ -47,7 +62,7 @@ export function TestimonialsSection() {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {testimonials.map((testimonial, index) => (
             <div
               key={testimonial.author}
@@ -66,18 +81,6 @@ export function TestimonialsSection() {
           ))}
         </div>
 
-        {/* Highlight */}
-        <div
-          className={cn(
-            "text-center mt-10 pt-10 border-t border-primary-foreground/10 transition-all duration-700",
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          )}
-          style={{ transitionDelay: '400ms' }}
-        >
-          <p className="text-lg text-primary-foreground/70 italic">
-            <strong className="text-secondary">"A Monna já é minha best."</strong> — Mãe testadora beta
-          </p>
-        </div>
       </div>
     </section>
   );

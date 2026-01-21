@@ -1,24 +1,24 @@
-import { Link } from 'react-router-dom';
-import logoMonna from '@/assets/logo-monna.png';
+import { Link } from "react-router-dom";
+import logoMonna from "@/assets/logo-monna.png";
 
 const footerLinks = {
   produto: [
-    { label: 'Como funciona', href: '#solution' },
-    { label: 'Funcionalidades', href: '#features' },
-    { label: 'FAQ', href: '#faq' },
+    { label: "Como funciona", href: "#solution" },
+    { label: "Funcionalidades", href: "#features" },
+    { label: "FAQ", href: "#faq" },
   ],
   conta: [
-    { label: 'Entrar', href: '/auth', isRoute: true },
-    { label: 'Criar conta', href: '#cta-final' },
+    { label: "Entrar", href: "/auth", isRoute: true },
+    { label: "Criar conta", href: "#cta-final" },
   ],
   legal: [
-    { label: 'Termos de uso', href: '/termos', isRoute: true },
-    { label: 'Privacidade', href: '/privacidade', isRoute: true },
+    { label: "Termos de uso", href: "/termos", isRoute: true },
+    { label: "Privacidade", href: "/privacidade", isRoute: true },
   ],
   contato: [
-    { label: 'Instagram', href: '#' },
-    { label: 'LinkedIn', href: '#' },
-    { label: 'oi@monna.ai', href: 'mailto:oi@monna.ai' },
+    { label: "Instagram", href: "#" },
+    { label: "LinkedIn", href: "#" },
+    { label: "contato@monna.ia.br", href: "mailto:contato@monna.ia.br" },
   ],
 };
 
@@ -55,7 +55,10 @@ export function LandingFooter() {
               {footerLinks.conta.map((link) => (
                 <li key={link.label}>
                   {link.isRoute ? (
-                    <Link to={link.href} className="text-sm text-card/50 hover:text-card transition-colors duration-150">
+                    <Link
+                      to={link.href}
+                      className="text-sm text-card/50 hover:text-card transition-colors duration-150"
+                    >
                       {link.label}
                     </Link>
                   ) : (

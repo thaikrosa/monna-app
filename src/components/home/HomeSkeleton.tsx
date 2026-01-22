@@ -1,8 +1,18 @@
 import { Skeleton } from '@/components/ui/skeleton';
+import logoMonnaDark from '@/assets/logo-monna.png';
 
 export function HomeSkeleton() {
   return (
     <div className="space-y-4 animate-fade-in">
+      {/* Logo Monna como indicador de loading */}
+      <div className="flex justify-center py-6">
+        <img 
+          src={logoMonnaDark} 
+          alt="" 
+          className="h-8 w-auto animate-pulse"
+        />
+      </div>
+      
       {/* Greeting skeleton */}
       <div className="bg-card rounded-lg p-6 border border-border shadow-elevated">
         <Skeleton className="h-6 w-40 mb-3" />

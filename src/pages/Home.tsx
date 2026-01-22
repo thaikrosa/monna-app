@@ -11,6 +11,7 @@ import { ShoppingSection } from "@/components/home/ShoppingSection";
 import { AnniaMomentSection } from "@/components/home/AnniaMomentSection";
 import { HomeSkeleton } from "@/components/home/HomeSkeleton";
 import { HomeError } from "@/components/home/HomeError";
+import { HomeFooter } from "@/components/home/HomeFooter";
 
 export default function Home() {
   // Dados do usuário
@@ -67,6 +68,9 @@ export default function Home() {
           <AnniaMomentSection suggestions={suggestions} />
         </div>
       )}
+
+      {/* Rodapé discreto */}
+      <HomeFooter />
     </div>
   );
 }

@@ -21,7 +21,7 @@ export function AppBar() {
     <header className="sticky top-0 z-50 w-full bg-background border-b border-border/50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Left side - Logo + Greeting */}
-        <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity duration-150">
+        <Link to="/home" className="flex items-center gap-3 hover:opacity-80 transition-opacity duration-150">
           <img 
             src={logoMonnaDark} 
             alt="Monna" 
@@ -38,7 +38,7 @@ export function AppBar() {
         {/* Right side - Home icon + UserMenu */}
         <div className="flex items-center gap-2">
           <Link 
-            to="/" 
+            to="/home" 
             className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-150"
             aria-label="Ir para Home"
           >

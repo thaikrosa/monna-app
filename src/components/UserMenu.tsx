@@ -54,7 +54,7 @@ export function UserMenu() {
       <DropdownMenuContent align="end" className="w-64 annia-glass p-0">
         {/* Header with large avatar - clickable to go Home */}
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/home')}
           className="w-full p-4 flex items-center gap-3 border-b border-border hover:bg-muted/30 transition-colors cursor-pointer text-left"
         >
           <Avatar className="h-12 w-12 border border-border">
@@ -76,7 +76,7 @@ export function UserMenu() {
         {/* Navigation links */}
         <div className="py-2">
           <DropdownMenuItem asChild className="cursor-pointer px-4 py-3">
-            <Link to="/" className="flex items-center justify-between w-full">
+            <Link to="/home" className="flex items-center justify-between w-full">
               <div className="flex items-center gap-3">
                 <House weight="thin" className="h-5 w-5 text-muted-foreground" />
                 <span>Home</span>

@@ -1,14 +1,19 @@
-import { Sparkle, Plus } from '@phosphor-icons/react';
+import { Plus } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import logoMonnaDark from '@/assets/logo-monna.png';
 
 export function HomeEmpty() {
   const navigate = useNavigate();
 
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-      <div className="p-4 rounded-lg bg-primary/10 mb-4">
-        <Sparkle weight="regular" className="w-8 h-8 text-primary" />
+      <div className="p-4 rounded-lg bg-muted mb-4">
+        <img 
+          src={logoMonnaDark} 
+          alt="" 
+          className="h-10 w-auto"
+        />
       </div>
       <h2 className="text-lg font-semibold text-foreground mb-2">
         Estou pronta para ajudar

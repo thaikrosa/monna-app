@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { Sun, Moon, House } from '@phosphor-icons/react';
 import { useAuth } from '@/hooks/useAuth';
 import { UserMenu } from './UserMenu';
-import logoMonna from '@/assets/logo-monna.png';
+import logoMonnaDark from '@/assets/logo-monna.png';
 
 export function AppBar() {
   const { profile } = useAuth();
@@ -23,9 +23,9 @@ export function AppBar() {
         {/* Left side - Logo + Greeting */}
         <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity duration-150">
           <img 
-            src={logoMonna} 
+            src={logoMonnaDark} 
             alt="Monna" 
-            className="h-10 w-auto"
+            className="h-12 w-auto"
           />
           <div className="flex items-center gap-2">
             <GreetingIcon weight="thin" className="h-5 w-5 text-primary" />

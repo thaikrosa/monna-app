@@ -28,7 +28,7 @@ interface EditItemSheetProps {
 }
 
 export function EditItemSheet({ item, open, onOpenChange }: EditItemSheetProps) {
-  const [tagId, setTagId] = useState<string>('__none__');
+  const [tagId, setTagId] = useState<string>('');
   const [quantityText, setQuantityText] = useState('');
   const [notes, setNotes] = useState('');
 
@@ -38,19 +38,25 @@ export function EditItemSheet({ item, open, onOpenChange }: EditItemSheetProps) 
   // Reset form when item changes
   useEffect(() => {
     if (item) {
-      setTagId(item.tag_id || '__none__');
+      // Se item não tem tag, selecionar Mercado ou primeira tag disponível
+      if (item.tag_id) {
+        setTagId(item.tag_id);
+      } else if (tags.length > 0) {
+        const mercadoTag = tags.find(t => t.name.toLowerCase() === 'mercado');
+        setTagId(mercadoTag?.id || tags[0].id);
+      }
       setQuantityText(item.quantity_text || '');
       setNotes(item.notes || '');
     }
-  }, [item]);
+  }, [item, tags]);
 
   const handleSave = () => {
-    if (!item) return;
+    if (!item || !tagId) return;
 
     updateItem.mutate(
       {
         id: item.id,
-        tag_id: tagId === '__none__' ? null : tagId,
+        tag_id: tagId,
         quantity_text: quantityText,
         notes: notes,
       },
@@ -85,7 +91,6 @@ export function EditItemSheet({ item, open, onOpenChange }: EditItemSheetProps) 
                 <SelectValue placeholder="Sem categoria" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="__none__">Sem categoria</SelectItem>
                 {tags.map((tag) => (
                   <SelectItem key={tag.id} value={tag.id}>
                     {tag.name}
@@ -122,7 +127,7 @@ export function EditItemSheet({ item, open, onOpenChange }: EditItemSheetProps) 
         <SheetFooter className="mt-8">
           <Button
             onClick={handleSave}
-            disabled={updateItem.isPending}
+            disabled={!tagId || updateItem.isPending}
             className="w-full transition-all duration-150"
           >
             {updateItem.isPending ? 'Salvando...' : 'Salvar alterações'}

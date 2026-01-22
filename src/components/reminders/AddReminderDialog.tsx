@@ -164,8 +164,12 @@ export function AddReminderDialog({ open, onOpenChange }: AddReminderDialogProps
       };
     }
 
+    // Capitalizar primeira letra do título
+    const trimmedTitle = title.trim();
+    const capitalizedTitle = trimmedTitle.charAt(0).toUpperCase() + trimmedTitle.slice(1);
+
     const payload = {
-      title: title.trim(),
+      title: capitalizedTitle,
       description: description.trim() || null,
       datetime: datetime.toISOString(),
       category,

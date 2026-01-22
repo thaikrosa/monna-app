@@ -34,7 +34,7 @@ export function AddItemSheet({ open, onOpenChange, defaultTagName }: AddItemShee
   const inputRef = useRef<HTMLInputElement>(null);
   const newTagInputRef = useRef<HTMLInputElement>(null);
   const [newItem, setNewItem] = useState('');
-  const [selectedTag, setSelectedTag] = useState<string>('__none__');
+  const [selectedTag, setSelectedTag] = useState<string>('');
   const [createTagDialogOpen, setCreateTagDialogOpen] = useState(false);
   const [newTagName, setNewTagName] = useState('');
 
@@ -44,9 +44,13 @@ export function AddItemSheet({ open, onOpenChange, defaultTagName }: AddItemShee
   // Auto-focus e pré-selecionar categoria quando abrir
   useEffect(() => {
     if (open) {
-      // Pré-selecionar baseado na aba ativa
+      // Pré-selecionar baseado na aba ativa ou primeira tag disponível
       if (defaultTagName) {
         setSelectedTag(defaultTagName);
+      } else if (tags.length > 0 && !selectedTag) {
+        // Pré-selecionar Mercado se existir, ou a primeira tag
+        const mercadoTag = tags.find(t => t.name.toLowerCase() === 'mercado');
+        setSelectedTag(mercadoTag?.name || tags[0].name);
       }
       // Auto-focus com delay para mobile
       const timer = setTimeout(() => {
@@ -54,7 +58,7 @@ export function AddItemSheet({ open, onOpenChange, defaultTagName }: AddItemShee
       }, 150);
       return () => clearTimeout(timer);
     }
-  }, [open, defaultTagName]);
+  }, [open, defaultTagName, tags, selectedTag]);
 
   // Auto-focus no input do dialog de nova categoria
   useEffect(() => {
@@ -68,8 +72,8 @@ export function AddItemSheet({ open, onOpenChange, defaultTagName }: AddItemShee
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newItem.trim()) {
-      const usedTagName = selectedTag !== '__none__' ? selectedTag : undefined;
+    if (newItem.trim() && selectedTag) {
+      const usedTagName = selectedTag;
 
       addItem.mutate(
         { name: newItem, tagName: usedTagName },
@@ -135,7 +139,6 @@ export function AddItemSheet({ open, onOpenChange, defaultTagName }: AddItemShee
                   <SelectValue placeholder="Categoria (opcional)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__none__">Sem categoria</SelectItem>
                   {tags.map((tag) => (
                     <SelectItem key={tag.id} value={tag.name}>
                       {tag.name}
@@ -154,7 +157,7 @@ export function AddItemSheet({ open, onOpenChange, defaultTagName }: AddItemShee
             <Button
               type="submit"
               className="w-full"
-              disabled={!newItem.trim() || addItem.isPending}
+              disabled={!newItem.trim() || !selectedTag || addItem.isPending}
             >
               <Plus weight="bold" className="h-4 w-4 mr-2" />
               Adicionar

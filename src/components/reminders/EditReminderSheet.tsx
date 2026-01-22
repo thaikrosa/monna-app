@@ -67,10 +67,14 @@ export function EditReminderSheet({ open, onOpenChange, reminder }: EditReminder
 
     const datetime = new Date(`${dueDate}T${dueTime}:00`);
 
+    // Capitalizar primeira letra do título
+    const trimmedTitle = title.trim();
+    const capitalizedTitle = trimmedTitle.charAt(0).toUpperCase() + trimmedTitle.slice(1);
+
     try {
       await updateReminder.mutateAsync({
         id: reminder.id,
-        title: title.trim(),
+        title: capitalizedTitle,
         description: description.trim() || null,
         datetime: datetime.toISOString(),
         category,

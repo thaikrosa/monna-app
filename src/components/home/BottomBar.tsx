@@ -6,7 +6,7 @@ export function BottomBar() {
   const location = useLocation();
 
   const navItems = [
-    { icon: House, path: '/', label: 'Home' },
+    { icon: House, path: '/home', label: 'Home' },
     { icon: CalendarBlank, path: '/agenda', label: 'Agenda' },
     { icon: BellSimple, path: '/lembretes', label: 'Lembretes' },
     { icon: ShoppingCart, path: '/lista', label: 'Compras' },

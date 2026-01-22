@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { User, House } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
-import logoMonnaDark from '@/assets/logo-monna.png';
+import logoMonnaLight from '@/assets/monna-logo-horizontal-light.png';
 
 export function LandingNavbar() {
   const { user, loading } = useAuth();
@@ -12,7 +12,7 @@ export function LandingNavbar() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center">
-          <img src={logoMonnaDark} alt="Monna" className="h-14 w-auto brightness-0 invert" />
+          <img src={logoMonnaLight} alt="Monna" className="h-14 w-auto" />
         </Link>
 
         {/* Actions */}

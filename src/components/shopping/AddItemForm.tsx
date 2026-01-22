@@ -13,7 +13,7 @@ import { useAddItem, useShoppingTags } from '@/hooks/useShoppingList';
 
 export function AddItemForm() {
   const [newItem, setNewItem] = useState('');
-  const [selectedTag, setSelectedTag] = useState<string>('__none__');
+  const [selectedTag, setSelectedTag] = useState<string>('');
   const [newTagInput, setNewTagInput] = useState('');
 
   const { data: tags = [] } = useShoppingTags();
@@ -21,11 +21,9 @@ export function AddItemForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newItem.trim()) {
-      // Determina a tag a usar: nova tag > tag selecionada > nenhuma
-      const usedTagName = newTagInput.trim() 
-        ? newTagInput.trim() 
-        : (selectedTag !== '__none__' ? selectedTag : undefined);
+    // Determina a tag a usar: nova tag > tag selecionada
+    const usedTagName = newTagInput.trim() || selectedTag;
+    if (newItem.trim() && usedTagName) {
 
       addItem.mutate(
         { name: newItem, tagName: usedTagName },
@@ -79,7 +77,6 @@ export function AddItemForm() {
               <SelectValue placeholder="Sem categoria" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="__none__">Sem categoria</SelectItem>
               {tags.map((tag) => (
                 <SelectItem key={tag.id} value={tag.name}>
                   {tag.name}

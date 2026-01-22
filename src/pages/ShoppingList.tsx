@@ -95,9 +95,6 @@ export default function ShoppingList() {
           </Link>
           <div>
             <h1 className="text-2xl font-bold text-foreground">Lista de Compras</h1>
-            <p className="text-sm text-primary/80 mt-0.5">
-              Tudo que você precisa, em um só lugar.
-            </p>
           </div>
         </div>
       </header>

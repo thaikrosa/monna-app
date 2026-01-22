@@ -1745,6 +1745,7 @@ export type Database = {
         Args: { memory_id: string; requesting_user_id: string }
         Returns: boolean
       }
+      unaccent: { Args: { "": string }; Returns: string }
     }
     Enums: {
       occurrence_status:
@@ -1754,6 +1755,7 @@ export type Database = {
         | "snoozed"
         | "missed"
         | "skipped"
+        | "sent"
       recurrence_type:
         | "once"
         | "daily"
@@ -1912,6 +1914,7 @@ export const Constants = {
         "snoozed",
         "missed",
         "skipped",
+        "sent",
       ],
       recurrence_type: [
         "once",

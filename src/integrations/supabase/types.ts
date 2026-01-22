@@ -1395,6 +1395,48 @@ export type Database = {
           },
         ]
       }
+      user_memories_audit: {
+        Row: {
+          id: string
+          memory_id: string
+          metadata: Json | null
+          new_category: string | null
+          new_content: string | null
+          old_category: string | null
+          old_content: string | null
+          operation: string
+          performed_at: string | null
+          performed_by: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          memory_id: string
+          metadata?: Json | null
+          new_category?: string | null
+          new_content?: string | null
+          old_category?: string | null
+          old_content?: string | null
+          operation: string
+          performed_at?: string | null
+          performed_by?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          memory_id?: string
+          metadata?: Json | null
+          new_category?: string | null
+          new_content?: string | null
+          old_category?: string | null
+          old_content?: string | null
+          operation?: string
+          performed_at?: string | null
+          performed_by?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_routines: {
         Row: {
           color: string | null
@@ -1534,6 +1576,36 @@ export type Database = {
           },
         ]
       }
+      v_memory_stats: {
+        Row: {
+          active_count: number | null
+          category_count: number | null
+          deleted_count: number | null
+          last_memory_at: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_memories_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_recent_audit: {
+        Row: {
+          id: string | null
+          memory_id: string | null
+          new_content: string | null
+          old_content: string | null
+          operation: string | null
+          performed_at: string | null
+          user_name: string | null
+        }
+        Relationships: []
+      }
       v_shopping_items_with_frequency: {
         Row: {
           avg_days_between: number | null
@@ -1605,6 +1677,7 @@ export type Database = {
           rejection_message: string
         }[]
       }
+      cleanup_old_deleted_memories: { Args: never; Returns: number }
       cleanup_old_logs: {
         Args: { days_to_keep?: number }
         Returns: {
@@ -1687,6 +1760,15 @@ export type Database = {
           success: boolean
         }[]
       }
+      list_deleted_memories: {
+        Args: { p_limit?: number; p_user_id: string }
+        Returns: {
+          category: string
+          content: string
+          deleted_at: string
+          id: string
+        }[]
+      }
       memory_exists: {
         Args: { p_content: string; p_user_id: string }
         Returns: boolean
@@ -1698,6 +1780,14 @@ export type Database = {
           p_success?: boolean
         }
         Returns: undefined
+      }
+      restore_memory: {
+        Args: { p_memory_id: string; p_user_id: string }
+        Returns: {
+          message: string
+          restored_id: string
+          success: boolean
+        }[]
       }
       search_memories: {
         Args: {

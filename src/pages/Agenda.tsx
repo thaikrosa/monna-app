@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Plus } from '@phosphor-icons/react';
-import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { StripCalendar } from '@/components/agenda/StripCalendar';
 import { EventCard } from '@/components/agenda/EventCard';
 import { AgendaEmptyState } from '@/components/agenda/AgendaEmptyState';
@@ -36,33 +34,10 @@ export default function Agenda() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto pb-4 space-y-6">
+    <div className="max-w-2xl mx-auto pb-24 space-y-6">
       {/* Strip Calendar */}
       <div className="animate-slide-up stagger-1 bg-card border border-border shadow-elevated rounded-lg p-4">
-        <div className="flex items-center justify-end mb-4">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => setShowAddDialog(true)}
-                  disabled={!isConnected}
-                >
-                  <Plus weight="regular" className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              {!isConnected && (
-                <TooltipContent>
-                  <p>Conecte seu Google Calendar</p>
-                </TooltipContent>
-              )}
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-        
-        <StripCalendar 
+        <StripCalendar
           selectedDate={selectedDate} 
           onDateSelect={setSelectedDate} 
         />
@@ -98,8 +73,27 @@ export default function Agenda() {
         )}
       </div>
 
+      {/* FAB flutuante */}
+      <button
+        onClick={() => setShowAddDialog(true)}
+        disabled={!isConnected}
+        aria-label="Adicionar evento"
+        className="
+          fixed bottom-20 right-4 z-40
+          floating-button
+          shadow-lg
+          transition-transform duration-200
+          hover:scale-110
+          active:scale-95
+          disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background
+        "
+      >
+        <Plus weight="regular" className="h-6 w-6" />
+      </button>
+
       {/* Add Event Dialog */}
-      <AddEventDialog 
+      <AddEventDialog
         open={showAddDialog} 
         onOpenChange={setShowAddDialog}
         defaultDate={selectedDate}

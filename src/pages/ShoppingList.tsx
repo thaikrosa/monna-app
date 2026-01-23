@@ -228,7 +228,7 @@ export default function ShoppingList() {
           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background
         "
       >
-        <Plus weight="bold" className="h-6 w-6" />
+        <Plus weight="regular" className="h-6 w-6" />
       </button>
 
       {/* Sheet para adicionar item */}

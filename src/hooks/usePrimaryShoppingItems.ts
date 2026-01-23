@@ -14,11 +14,11 @@ export function usePrimaryShoppingItems() {
   return useQuery({
     queryKey: ['shopping-items', 'primary'],
     queryFn: async (): Promise<PrimaryShoppingData> => {
-      // 1. Busca a primeira tag (por sort_order, "Mercado" tem sort_order = 0)
+      // 1. Busca a tag principal (sort_order = 0, que é a "Mercado" original e não pode ser deletada)
       const { data: tags, error: tagsError } = await supabase
         .from('shopping_tags')
         .select('id, name')
-        .order('sort_order', { ascending: true })
+        .eq('sort_order', 0)
         .limit(1);
       
       if (tagsError) throw tagsError;

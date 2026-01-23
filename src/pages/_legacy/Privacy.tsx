@@ -29,7 +29,7 @@ const Privacy = () => {
       <div className="max-w-3xl mx-auto px-4 py-6">
         <div className="bg-background rounded-lg border border-border shadow-elevated p-6">
           <div className="prose prose-sm max-w-none text-muted-foreground">
-            <p className="text-xs text-muted-foreground mb-6">Última atualização: 19 de janeiro de 2025</p>
+            <p className="text-xs text-muted-foreground mb-6">Última atualização: 23 de janeiro de 2026</p>
             
             <section className="space-y-4 mb-8">
               <h2 className="text-lg font-semibold text-foreground">1. Introdução</h2>
@@ -159,6 +159,42 @@ const Privacy = () => {
                 Cada serviço de terceiros possui sua própria Política de Privacidade. 
                 Recomendamos que você revise as políticas de privacidade desses serviços.
               </p>
+
+              <h3 className="text-base font-medium text-foreground mt-4">9.1 Conformidade com a Política de Dados do Usuário do Google</h3>
+              <p>
+                O uso e a transferência de informações recebidas das APIs do Google para qualquer 
+                outro aplicativo aderirão à{' '}
+                <a 
+                  href="https://developers.google.com/terms/api-services-user-data-policy" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary underline hover:text-primary/80"
+                >
+                  Política de Dados do Usuário dos Serviços de API do Google
+                </a>
+                , incluindo os requisitos de Uso Limitado.
+              </p>
+              <p className="mt-2">
+                Especificamente em relação aos dados obtidos através das APIs do Google Workspace 
+                (como o Google Calendar), a Monna afirma que:
+              </p>
+              <ul className="list-disc pl-6 space-y-2 mt-2">
+                <li>
+                  <strong className="text-foreground">Não utilizamos para IA generalizada:</strong> Não 
+                  utilizamos esses dados para treinar, melhorar ou desenvolver modelos de inteligência 
+                  artificial ou aprendizado de máquina generalizados.
+                </li>
+                <li>
+                  <strong className="text-foreground">Uso estrito para funcionalidades:</strong> Os dados 
+                  são utilizados estritamente para fornecer as funcionalidades do aplicativo (criar e 
+                  gerenciar eventos) solicitadas pelo usuário.
+                </li>
+                <li>
+                  <strong className="text-foreground">Não compartilhamos com terceiros:</strong> Não 
+                  compartilhamos seus dados do Google com terceiros, exceto conforme necessário para 
+                  fornecer o serviço (como provedores de nuvem ou IA) ou para cumprir a lei.
+                </li>
+              </ul>
             </section>
 
             <section className="space-y-4 mb-8">

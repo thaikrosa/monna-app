@@ -14,34 +14,32 @@ export function usePrimaryShoppingItems() {
   return useQuery({
     queryKey: ['shopping-items', 'primary'],
     queryFn: async (): Promise<PrimaryShoppingData> => {
-      // 1. Busca a tag principal (sort_order = 0, que é a "Mercado" original e não pode ser deletada)
-      const { data: tags, error: tagsError } = await supabase
+      // 1. Busca a tag "Mercado" pelo name_norm (sempre lowercase)
+      const { data: tag, error: tagsError } = await supabase
         .from('shopping_tags')
         .select('id, name')
-        .eq('sort_order', 0)
-        .limit(1);
+        .eq('name_norm', 'mercado')
+        .maybeSingle();
       
       if (tagsError) throw tagsError;
       
-      const primaryTag = tags?.[0] as ShoppingTag | undefined;
-      
-      if (!primaryTag) {
+      if (!tag) {
         return { items: [], tagName: null };
       }
       
-      // 2. Busca itens dessa tag específica
+      // 2. Busca itens pendentes dessa tag pelo UUID
       const { data: items, error: itemsError } = await supabase
         .from('v_shopping_items_with_frequency')
         .select('*')
-        .eq('tag_id', primaryTag.id)
-        .order('is_checked', { ascending: true })
+        .eq('tag_id', tag.id)
+        .eq('is_checked', false)
         .order('created_at', { ascending: false });
       
       if (itemsError) throw itemsError;
       
       return {
         items: (items || []) as ShoppingItem[],
-        tagName: primaryTag.name,
+        tagName: tag.name,
       };
     },
     enabled: !!user,

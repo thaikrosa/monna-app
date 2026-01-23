@@ -49,9 +49,10 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     return () => clearTimeout(timeoutId);
   }, [loading, hasOAuthHash]);
 
-  // Se há hash OAuth sendo processado, mostrar loading (não redirecionar para /auth)
+  // Se há hash OAuth sendo processado E ainda não temos usuário, mostrar loading
   // O Supabase client precisa de tempo para processar o token do hash
-  if (hasOAuthHash) {
+  // Mas se já temos usuário, seguir normalmente (o useEffect vai limpar o hash)
+  if (hasOAuthHash && !user && loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">

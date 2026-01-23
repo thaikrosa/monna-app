@@ -13,5 +13,7 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     storage: localStorage,
     persistSession: true,
     autoRefreshToken: true,
+    detectSessionInUrl: true, // Processa tokens do hash OAuth automaticamente
+    flowType: 'implicit', // Usa implicit flow (tokens no hash da URL)
   }
 });

@@ -81,7 +81,7 @@ export default function Reminders() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-3xl mx-auto px-5 py-6 space-y-6">
+      <div className="max-w-3xl mx-auto px-5 py-6 space-y-6 pb-24">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -92,14 +92,6 @@ export default function Reminders() {
               {format(selectedDate, "EEEE, d 'de' MMMM", { locale: ptBR })}
             </p>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsAddOpen(true)}
-            className="h-10 w-10 text-muted-foreground hover:text-foreground hover:bg-transparent"
-          >
-            <Plus weight="thin" className="h-6 w-6" />
-          </Button>
         </div>
 
         {/* Week Selector */}
@@ -155,6 +147,23 @@ export default function Reminders() {
           onDelete={handleDelete}
         />
       </div>
+
+      {/* FAB flutuante */}
+      <button
+        onClick={() => setIsAddOpen(true)}
+        aria-label="Adicionar lembrete"
+        className="
+          fixed bottom-20 right-4 z-40
+          floating-button
+          shadow-lg
+          transition-transform duration-200
+          hover:scale-110
+          active:scale-95
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background
+        "
+      >
+        <Plus weight="regular" className="h-6 w-6" />
+      </button>
 
       {/* Dialogs/Sheets */}
       <AddReminderDialog open={isAddOpen} onOpenChange={setIsAddOpen} />

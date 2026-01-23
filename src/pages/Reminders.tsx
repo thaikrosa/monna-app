@@ -6,6 +6,7 @@ import { WeekSelector } from '@/components/reminders/WeekSelector';
 import { ReminderCard } from '@/components/reminders/ReminderCard';
 import { AddReminderDialog } from '@/components/reminders/AddReminderDialog';
 import { EditReminderSheet } from '@/components/reminders/EditReminderSheet';
+import { RecurringRemindersSection } from '@/components/reminders/RecurringRemindersSection';
 import {
   useRemindersByDate,
   useUpcomingReminders,
@@ -14,14 +15,17 @@ import {
   useDeleteReminder,
 } from '@/hooks/useReminders';
 import { toast } from 'sonner';
-import type { UpcomingReminder } from '@/types/reminders';
+import type { UpcomingReminder, Reminder } from '@/types/reminders';
 import { format, startOfWeek, addWeeks } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+
+// Union type para aceitar ambos os tipos no sheet de edição
+type EditableReminder = UpcomingReminder | Reminder;
 
 export default function Reminders() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [editingReminder, setEditingReminder] = useState<UpcomingReminder | null>(null);
+  const [editingReminder, setEditingReminder] = useState<EditableReminder | null>(null);
   const [weekStart, setWeekStart] = useState(() =>
     startOfWeek(new Date(), { weekStartsOn: 1 })
   );
@@ -34,7 +38,14 @@ export default function Reminders() {
   const snoozeOccurrence = useSnoozeOccurrence();
   const deleteReminder = useDeleteReminder();
 
+  // Handler para editar UpcomingReminder (ocorrência do dia)
   const handleEdit = (reminder: UpcomingReminder) => {
+    setEditingReminder(reminder);
+    setIsEditOpen(true);
+  };
+
+  // Handler para editar Reminder (template recorrente)
+  const handleEditRecurring = (reminder: Reminder) => {
     setEditingReminder(reminder);
     setIsEditOpen(true);
   };
@@ -137,6 +148,12 @@ export default function Reminders() {
             </>
           )}
         </div>
+
+        {/* Seção de Lembretes Recorrentes */}
+        <RecurringRemindersSection
+          onEdit={handleEditRecurring}
+          onDelete={handleDelete}
+        />
       </div>
 
       {/* Dialogs/Sheets */}

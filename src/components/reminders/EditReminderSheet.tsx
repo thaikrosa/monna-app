@@ -10,12 +10,20 @@ import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
 import { useUpdateReminder, useReminder } from '@/hooks/useReminders';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
-import type { UpcomingReminder, ReminderCategory, ReminderPriority, RecurrenceType } from '@/types/reminders';
+import type { UpcomingReminder, Reminder, ReminderCategory, ReminderPriority, RecurrenceType } from '@/types/reminders';
+
+// Union type para aceitar tanto UpcomingReminder quanto Reminder
+type EditableReminder = UpcomingReminder | Reminder;
+
+// Type guard para identificar UpcomingReminder
+function isUpcomingReminder(r: EditableReminder): r is UpcomingReminder {
+  return 'occurrence_id' in r && 'scheduled_at' in r;
+}
 
 interface EditReminderSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  reminder: UpcomingReminder | null;
+  reminder: EditableReminder | null;
 }
 
 export function EditReminderSheet({ open, onOpenChange, reminder }: EditReminderSheetProps) {
@@ -30,12 +38,17 @@ export function EditReminderSheet({ open, onOpenChange, reminder }: EditReminder
   const [intervalValue, setIntervalValue] = useState<number>(1);
   const [effortLevel, setEffortLevel] = useState<number>(1);
 
-  // Fetch full reminder details
-  const { data: reminderData } = useReminder(reminder?.id);
+  // Para UpcomingReminder, precisamos buscar detalhes completos
+  // Para Reminder (template), já temos todos os dados
+  const needsFetch = reminder && isUpcomingReminder(reminder);
+  const { data: reminderData } = useReminder(needsFetch ? reminder?.id : undefined);
   const updateReminder = useUpdateReminder();
 
   useEffect(() => {
-    if (reminder) {
+    if (!reminder) return;
+
+    if (isUpcomingReminder(reminder)) {
+      // UpcomingReminder - usar scheduled_at
       const date = new Date(reminder.scheduled_at);
       setTitle(reminder.title);
       setDescription(reminder.description || '');
@@ -43,10 +56,29 @@ export function EditReminderSheet({ open, onOpenChange, reminder }: EditReminder
       setDueTime(format(date, 'HH:mm'));
       setCategory(reminder.category);
       setPriority(reminder.priority);
+    } else {
+      // Reminder (template) - usar datetime e todos os campos disponíveis
+      const r = reminder as Reminder;
+      const date = new Date(r.datetime);
+      setTitle(r.title);
+      setDescription(r.description || '');
+      setDueDate(format(date, 'yyyy-MM-dd'));
+      setDueTime(format(date, 'HH:mm'));
+      setCategory(r.category);
+      setPriority(r.priority);
+      setIsRecurring(r.recurrence_type !== 'once');
+      setRecurrenceType(r.recurrence_type === 'once' ? 'daily' : r.recurrence_type);
+      setEffortLevel(r.effort_level || 1);
+      if (r.recurrence_config && typeof r.recurrence_config === 'object') {
+        const config = r.recurrence_config as Record<string, unknown>;
+        if (config.interval_value) {
+          setIntervalValue(config.interval_value as number);
+        }
+      }
     }
   }, [reminder]);
 
-  // Load full reminder data when available
+  // Load full reminder data when fetched (for UpcomingReminder)
   useEffect(() => {
     if (reminderData?.reminder) {
       const r = reminderData.reminder;

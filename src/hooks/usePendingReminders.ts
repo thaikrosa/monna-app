@@ -39,7 +39,7 @@ export function usePendingReminders() {
         .in('status', ['pending', 'snoozed'])
         .lte('scheduled_at', endOfToday.toISOString())
         .order('scheduled_at', { ascending: true })
-        .limit(10); // Busca mais para filtrar depois
+        .limit(50); // Busca todos os pendentes do dia
       
       // Debug temporário
       console.log('[usePendingReminders] Data:', data, 'Error:', error);
@@ -50,7 +50,7 @@ export function usePendingReminders() {
       const filtered = (data || []).filter(occ => occ.reminder?.status === 'active');
       
       // Transforma os dados para o formato esperado (PendingReminder)
-      const reminders: PendingReminder[] = filtered.slice(0, 5).map((occ) => {
+      const reminders: PendingReminder[] = filtered.map((occ) => {
         const reminder = occ.reminder as {
           id: string;
           user_id: string;

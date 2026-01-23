@@ -1,5 +1,5 @@
 import { useProfile } from "@/hooks/useProfile";
-import { useShoppingItems } from "@/hooks/useShoppingList";
+import { usePrimaryShoppingItems } from "@/hooks/usePrimaryShoppingItems";
 import { useGoogleCalendarConnection } from "@/hooks/useCalendarConnections";
 import { useAiSuggestions } from "@/hooks/useAiSuggestions";
 import { useTodayCalendarEvents } from "@/hooks/useTodayCalendarEvents";
@@ -21,7 +21,7 @@ export default function Home() {
   const { data: calendarConnection } = useGoogleCalendarConnection();
   const { data: calendarEvents = [] } = useTodayCalendarEvents();
   const { data: pendingReminders = [] } = usePendingReminders();
-  const { data: shoppingItems = [] } = useShoppingItems();
+  const { data: shoppingData } = usePrimaryShoppingItems();
   const { data: suggestions = [] } = useAiSuggestions();
 
   // Loading state
@@ -57,9 +57,12 @@ export default function Home() {
         <RemindersSection reminders={pendingReminders} />
       </div>
 
-      {/* 3. Lista de Compras */}
+      {/* 3. Lista de Compras (tag principal) */}
       <div className="animate-slide-up stagger-3">
-        <ShoppingSection items={shoppingItems} />
+        <ShoppingSection 
+          items={shoppingData?.items || []} 
+          tagName={shoppingData?.tagName || null}
+        />
       </div>
 
       {/* 4. Momento Annia (Sugestões) */}

@@ -16,8 +16,18 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const [showFallback, setShowFallback] = useState(false);
 
   // Detecta se há token OAuth no hash (ainda processando callback)
+  // Isso acontece quando Supabase redireciona com #access_token=...
   const hasOAuthHash = location.hash.includes('access_token') || 
+                       location.hash.includes('refresh_token') ||
                        location.hash.includes('error=');
+
+  // Limpar o hash OAuth da URL após detectá-lo (evita loops e URL limpa)
+  useEffect(() => {
+    if (hasOAuthHash && user) {
+      // Usuário logado e há hash - limpar o hash da URL
+      window.history.replaceState(null, '', location.pathname);
+    }
+  }, [hasOAuthHash, user, location.pathname]);
 
   useEffect(() => {
     // Reset fallback when loading changes
@@ -26,9 +36,9 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
       return;
     }
 
-    // Se há hash OAuth, dar mais tempo para processar (8 segundos)
+    // Se há hash OAuth, dar mais tempo para processar (10 segundos)
     // Caso contrário, 3 segundos
-    const timeout = hasOAuthHash ? 8000 : 3000;
+    const timeout = hasOAuthHash ? 10000 : 3000;
     
     const timeoutId = setTimeout(() => {
       if (loading) {
@@ -38,6 +48,21 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
     return () => clearTimeout(timeoutId);
   }, [loading, hasOAuthHash]);
+
+  // Se há hash OAuth sendo processado, mostrar loading (não redirecionar para /auth)
+  // O Supabase client precisa de tempo para processar o token do hash
+  if (hasOAuthHash) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Skeleton className="h-12 w-12 rounded-full" />
+          <p className="text-sm text-muted-foreground animate-pulse">
+            Finalizando login...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   // Fallback para erro de profile (401/403)
   if (profileError) {

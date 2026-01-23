@@ -39,11 +39,7 @@ export default function Agenda() {
     <div className="max-w-2xl mx-auto pb-4 space-y-6">
       {/* Strip Calendar */}
       <div className="animate-slide-up stagger-1 bg-card border border-border shadow-elevated rounded-lg p-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-medium text-foreground">
-            {format(selectedDate, "MMMM 'de' yyyy", { locale: ptBR })}
-          </h2>
-          
+        <div className="flex items-center justify-end mb-4">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>

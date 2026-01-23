@@ -9,9 +9,10 @@ import type { ShoppingItem } from '@/hooks/useShoppingList';
 
 interface ShoppingSectionProps {
   items: ShoppingItem[];
+  tagName: string | null;
 }
 
-export function ShoppingSection({ items }: ShoppingSectionProps) {
+export function ShoppingSection({ items, tagName }: ShoppingSectionProps) {
   const navigate = useNavigate();
   const [isAddOpen, setIsAddOpen] = useState(false);
   const toggleChecked = useToggleChecked();
@@ -37,7 +38,7 @@ export function ShoppingSection({ items }: ShoppingSectionProps) {
     <>
       <HomeSection
         icon={<ShoppingCart weight="regular" className="h-4 w-4" />}
-        title="Lista de compras"
+        title={tagName || "Lista de compras"}
         count={totalUnchecked}
         onAdd={() => setIsAddOpen(true)}
         onViewAll={() => navigate('/lista')}

@@ -159,7 +159,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let isMounted = true;
     let initTimeoutId: NodeJS.Timeout | null = null;
     let currentUserId: string | null = null;
-    let hasProcessedInitialSession = false;
 
     console.group('[Auth] Initialization');
     console.time('[Auth] Total init');
@@ -170,7 +169,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!isMounted) return;
 
       const elapsed = performance.now() - initStartTimeRef.current;
-      console.log(`[Auth] ${event} @ ${elapsed.toFixed(0)}ms`);
+      console.log(`[Auth] ${event} @ ${elapsed.toFixed(0)}ms`, newSession ? 'with session' : 'no session');
 
       // On sign out, clear everything
       if (event === 'SIGNED_OUT') {
@@ -212,32 +211,57 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    // Set up auth state listener
+    // PRIMEIRO: Verificar se há hash OAuth na URL
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const hasOAuthTokenInHash = hashParams.has('access_token');
+    
+    if (hasOAuthTokenInHash) {
+      console.log('[Auth] OAuth hash detected in URL, will be processed by Supabase client');
+    }
+
+    // Set up auth state listener PRIMEIRO
     console.time('[Auth] Setup listener');
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, newSession) => {
-        // INITIAL_SESSION é tratado aqui, então não precisa de getSession().then()
-        if (event === 'INITIAL_SESSION') {
-          hasProcessedInitialSession = true;
-          // Cancelar timeout já que recebemos resposta
-          if (initTimeoutId) {
-            clearTimeout(initTimeoutId);
-            initTimeoutId = null;
-          }
+        console.log('[Auth] onAuthStateChange:', event, newSession?.user?.email || 'no user');
+        
+        // Cancelar timeout já que recebemos resposta
+        if (initTimeoutId) {
+          clearTimeout(initTimeoutId);
+          initTimeoutId = null;
         }
+        
         processSession(event, newSession);
       }
     );
     console.timeEnd('[Auth] Setup listener');
 
-    // getSession() apenas para trigger INITIAL_SESSION (sem lógica duplicada)
+    // DEPOIS: getSession() - isso dispara o processamento do hash OAuth
+    // e emite INITIAL_SESSION via onAuthStateChange
     console.time('[Auth] getSession call');
-    supabase.auth.getSession().then(() => {
+    supabase.auth.getSession().then(({ data, error }) => {
       console.timeEnd('[Auth] getSession call');
-    }).catch((error) => {
-      console.error('[Auth] getSession error:', error);
-      console.timeEnd('[Auth] getSession call');
-      if (isMounted && !loadingFinishedRef.current) {
+      console.log('[Auth] getSession result:', data.session?.user?.email || 'no session', error?.message || 'no error');
+      
+      if (error) {
+        console.error('[Auth] getSession error:', error);
+        if (isMounted && !loadingFinishedRef.current) {
+          setLoading(false);
+          loadingFinishedRef.current = true;
+          console.timeEnd('[Auth] Total init');
+          console.groupEnd();
+        }
+        return;
+      }
+      
+      // Se temos sessão mas o loading ainda não terminou, processar manualmente
+      // Isso é um fallback para casos onde onAuthStateChange não dispara
+      if (data.session && !loadingFinishedRef.current) {
+        console.log('[Auth] Session from getSession, processing manually (fallback)');
+        processSession('MANUAL_SESSION', data.session);
+      } else if (!data.session && !loadingFinishedRef.current) {
+        // Sem sessão e sem INITIAL_SESSION ainda - liberar loading
+        console.log('[Auth] No session from getSession, releasing loading');
         setLoading(false);
         loadingFinishedRef.current = true;
         console.timeEnd('[Auth] Total init');
@@ -245,12 +269,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     });
 
-    // Timeout de segurança: 5s (reduzido de 10s)
-    // NÃO limpa storage - apenas para de esperar
+    // Timeout de segurança: 5s
     initTimeoutId = setTimeout(() => {
       if (isMounted && !loadingFinishedRef.current) {
         console.warn('[Auth] ⚠️ Session check timeout (5s) - showing login');
-        // NÃO limpar storage, apenas liberar UI
         setLoading(false);
         loadingFinishedRef.current = true;
         console.timeEnd('[Auth] Total init');

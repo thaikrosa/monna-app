@@ -49,9 +49,9 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     return () => clearTimeout(timeoutId);
   }, [loading, hasOAuthHash]);
 
-  // Se há hash OAuth sendo processado E ainda não temos usuário, mostrar loading
+  // Se há hash OAuth sendo processado E ainda não temos usuário E ainda está loading
   // O Supabase client precisa de tempo para processar o token do hash
-  // Mas se já temos usuário, seguir normalmente (o useEffect vai limpar o hash)
+  // Mas se loading=false (auth terminou), seguir o fluxo normal
   if (hasOAuthHash && !user && loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -63,6 +63,14 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
         </div>
       </div>
     );
+  }
+
+  // Se há hash OAuth mas loading terminou sem usuário, algo deu errado
+  // Limpar o hash e deixar o fluxo normal redirecionar para /auth
+  if (hasOAuthHash && !user && !loading) {
+    // Limpar hash da URL para evitar loops
+    window.history.replaceState(null, '', location.pathname);
+    // O fluxo normal vai redirecionar para /auth
   }
 
   // Fallback para erro de profile (401/403)

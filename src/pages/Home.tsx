@@ -12,6 +12,7 @@ import { AnniaMomentSection } from "@/components/home/AnniaMomentSection";
 import { HomeSkeleton } from "@/components/home/HomeSkeleton";
 import { HomeError } from "@/components/home/HomeError";
 import { HomeFooter } from "@/components/home/HomeFooter";
+import { TalkToMonnaButton } from "@/components/home/TalkToMonnaButton";
 
 export default function Home() {
   // Dados do usuário
@@ -71,6 +72,11 @@ export default function Home() {
           <AnniaMomentSection suggestions={suggestions} />
         </div>
       )}
+
+      {/* 5. Botão WhatsApp - Falar com a Monna */}
+      <div className="animate-slide-up stagger-5">
+        <TalkToMonnaButton />
+      </div>
 
       {/* Rodapé discreto */}
       <HomeFooter />

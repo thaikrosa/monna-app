@@ -25,8 +25,8 @@ export function BottomBar() {
               key={item.path}
               onClick={() => navigate(item.path)}
               className={`
-                relative flex flex-col items-center gap-1 py-2 px-4 rounded-lg
-                min-h-[44px] min-w-[44px]
+                relative flex flex-col items-center gap-1 py-2 px-3 rounded-lg
+                min-h-[44px] min-w-[40px]
                 transition-all duration-200
                 ${isActive 
                   ? 'text-primary' 

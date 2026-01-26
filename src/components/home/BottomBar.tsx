@@ -1,4 +1,4 @@
-import { House, BellSimple, ShoppingCart, CalendarBlank } from '@phosphor-icons/react';
+import { House, BellSimple, ShoppingCart, CalendarBlank, Brain } from '@phosphor-icons/react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 export function BottomBar() {
@@ -10,6 +10,7 @@ export function BottomBar() {
     { icon: CalendarBlank, path: '/agenda', label: 'Agenda' },
     { icon: BellSimple, path: '/lembretes', label: 'Lembretes' },
     { icon: ShoppingCart, path: '/lista', label: 'Compras' },
+    { icon: Brain, path: '/memoria', label: 'Memória' },
   ];
 
   return (

@@ -8,10 +8,11 @@ export interface Memory {
   content: string;
   category: string;
   category_normalized: string;
-  keywords: string[];
+  keywords: string[] | null;
   source: string | null;
+  is_active: boolean;
   created_at: string;
-  updated_at: string;
+  updated_at: string | null;
 }
 
 export interface MemoriesData {

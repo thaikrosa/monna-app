@@ -29,7 +29,7 @@ function MemoryCard({ memory }: { memory: {
   content: string;
   category: string;
   category_normalized: string;
-  keywords: string[];
+  keywords: string[] | null;
   source: string | null;
   created_at: string;
 }}) {

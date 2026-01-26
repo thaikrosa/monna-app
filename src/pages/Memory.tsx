@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { MagnifyingGlass, Brain, WhatsappLogo, Desktop, X } from '@phosphor-icons/react';
 import { useMemories } from '@/hooks/useMemories';
 import { Input } from '@/components/ui/input';
@@ -81,7 +81,7 @@ export default function Memory() {
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
   // Debounce search
-  useMemo(() => {
+  useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
     }, 300);

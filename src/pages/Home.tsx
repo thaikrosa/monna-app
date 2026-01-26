@@ -8,6 +8,7 @@ import { usePendingReminders } from "@/hooks/usePendingReminders";
 import { CalendarSection } from "@/components/home/CalendarSection";
 import { RemindersSection } from "@/components/home/RemindersSection";
 import { ShoppingSection } from "@/components/home/ShoppingSection";
+import { MemorySection } from "@/components/home/MemorySection";
 import { AnniaMomentSection } from "@/components/home/AnniaMomentSection";
 import { HomeSkeleton } from "@/components/home/HomeSkeleton";
 import { HomeError } from "@/components/home/HomeError";
@@ -66,15 +67,20 @@ export default function Home() {
         />
       </div>
 
-      {/* 4. Momento Annia (Sugestões) */}
+      {/* 4. Memória */}
+      <div className="animate-slide-up stagger-4">
+        <MemorySection />
+      </div>
+
+      {/* 5. Momento Annia (Sugestões) */}
       {suggestions.length > 0 && (
-        <div className="animate-slide-up stagger-4">
+        <div className="animate-slide-up stagger-5">
           <AnniaMomentSection suggestions={suggestions} />
         </div>
       )}
 
-      {/* 5. Botão WhatsApp - Falar com a Monna */}
-      <div className="animate-slide-up stagger-5">
+      {/* 6. Botão WhatsApp - Falar com a Monna */}
+      <div className="animate-slide-up stagger-6">
         <TalkToMonnaButton />
       </div>
 

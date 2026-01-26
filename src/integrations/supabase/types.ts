@@ -381,6 +381,51 @@ export type Database = {
           },
         ]
       }
+      conversation_messages: {
+        Row: {
+          content: string
+          conversation_state_id: string | null
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          conversation_state_id?: string | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          conversation_state_id?: string | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_messages_conversation_state_id_fkey"
+            columns: ["conversation_state_id"]
+            isOneToOne: false
+            referencedRelation: "conversation_states"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversation_messages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       conversation_states: {
         Row: {
           context: Json | null
@@ -1677,6 +1722,10 @@ export type Database = {
           rejection_message: string
         }[]
       }
+      cleanup_old_conversation_messages: {
+        Args: { p_retention_days?: number }
+        Returns: number
+      }
       cleanup_old_deleted_memories: { Args: never; Returns: number }
       cleanup_old_logs: {
         Args: { days_to_keep?: number }
@@ -1693,12 +1742,20 @@ export type Database = {
           count: number
         }[]
       }
+      finish_conversa_state: {
+        Args: { p_state_id: string }
+        Returns: undefined
+      }
       generate_content_hash: { Args: { content_text: string }; Returns: string }
       generate_reminder_occurrences: {
         Args: { p_count?: number; p_reminder_id: string }
         Returns: number
       }
       get_complete_schema: { Args: never; Returns: Json }
+      get_conversa_context: {
+        Args: { p_state_id?: string; p_user_id: string }
+        Returns: Json
+      }
       get_home_dashboard: { Args: never; Returns: Json }
       get_pending_notifications: {
         Args: { p_minutes_ahead?: number }
@@ -1789,6 +1846,15 @@ export type Database = {
           success: boolean
         }[]
       }
+      save_conversa_messages: {
+        Args: {
+          p_assistant_message: string
+          p_state_id: string
+          p_user_id: string
+          p_user_message: string
+        }
+        Returns: undefined
+      }
       search_memories: {
         Args: {
           p_category_normalized?: string
@@ -1836,6 +1902,14 @@ export type Database = {
         Returns: boolean
       }
       unaccent: { Args: { "": string }; Returns: string }
+      upsert_conversa_state: {
+        Args: { p_existing_state_id?: string; p_user_id: string }
+        Returns: {
+          conversation_key: string
+          is_new: boolean
+          state_id: string
+        }[]
+      }
     }
     Enums: {
       occurrence_status:

@@ -95,10 +95,10 @@ export function MemorySection() {
               <div className="flex items-center gap-2">
                 <SourceBadge source={memory.source} />
                 <span className="text-xs text-muted-foreground">
-                  {formatDistanceToNow(new Date(memory.created_at), {
+                  {memory.created_at ? formatDistanceToNow(new Date(memory.created_at), {
                     addSuffix: true,
                     locale: ptBR,
-                  })}
+                  }) : ''}
                 </span>
               </div>
             </div>

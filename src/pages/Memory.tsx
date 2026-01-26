@@ -31,7 +31,7 @@ function MemoryCard({ memory }: { memory: {
   category_normalized: string;
   keywords: string[] | null;
   source: string | null;
-  created_at: string;
+  created_at: string | null;
 }}) {
   return (
     <div className="bg-background border border-border/50 rounded-lg p-4 break-inside-avoid mb-4 shadow-sm hover:shadow-elevated transition-shadow duration-200">
@@ -63,12 +63,12 @@ function MemoryCard({ memory }: { memory: {
           <span className="inline-flex items-center gap-1">
             <SourceIcon source={memory.source} />
           </span>
-          <span>
-            {formatDistanceToNow(new Date(memory.created_at), {
-              addSuffix: true,
-              locale: ptBR,
-            })}
-          </span>
+        <span>
+          {memory.created_at ? formatDistanceToNow(new Date(memory.created_at), {
+            addSuffix: true,
+            locale: ptBR,
+          }) : ''}
+        </span>
         </div>
       </div>
     </div>

@@ -10,8 +10,8 @@ export interface Memory {
   category_normalized: string;
   keywords: string[] | null;
   source: string | null;
-  is_active: boolean;
-  created_at: string;
+  is_active: boolean | null;
+  created_at: string | null;
   updated_at: string | null;
 }
 

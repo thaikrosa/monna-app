@@ -14,7 +14,7 @@ const footerLinks = {
   ],
   legal: [
     { label: "Termos de uso", href: "/termos", isRoute: true },
-    { label: "Privacidade", href: "/privacidade", isRoute: true },
+    { label: "Política de Privacidade", href: "/privacidade", isRoute: true },
     { label: "Cookies", href: "/cookies", isRoute: true },
   ],
   contato: [

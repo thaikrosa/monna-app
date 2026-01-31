@@ -8,6 +8,10 @@ const faqs = [
     answer: "Sim! Monna sincroniza com Google Calendar. Você não precisa mudar nada da sua rotina.",
   },
   {
+    question: "Como a Monna usa minha agenda do Google?",
+    answer: "A Monna acessa o Google Calendar somente após o seu consentimento explícito, por meio do login Google. O acesso é utilizado exclusivamente para criar, atualizar e organizar eventos e lembretes solicitados por você dentro do aplicativo. Nenhuma informação da sua agenda é utilizada para fins publicitários, compartilhada com terceiros ou usada para treinar modelos de inteligência artificial.",
+  },
+  {
     question: "Meus dados ficam seguros?",
     answer: "Seus dados são criptografados e nunca compartilhados. Sua família, suas informações, seu controle total.",
   },

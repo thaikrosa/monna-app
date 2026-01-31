@@ -1746,6 +1746,34 @@ export type Database = {
         Args: { p_state_id: string }
         Returns: undefined
       }
+      fn_lista_excluir: {
+        Args: { p_items: string[]; p_user_id: string }
+        Returns: {
+          matched_name: string
+          requested_name: string
+          sim_score: number
+          status: string
+        }[]
+      }
+      fn_lista_incluir: {
+        Args: { p_items: string[]; p_tag_name: string; p_user_id: string }
+        Returns: {
+          item_name: string
+          matched_name: string
+          out_tag_id: string
+          out_tag_name: string
+          status: string
+        }[]
+      }
+      fn_lista_ver: {
+        Args: { p_tag_name?: string; p_user_id: string }
+        Returns: {
+          item_count: number
+          items: Json
+          tag_id: string
+          tag_name: string
+        }[]
+      }
       generate_content_hash: { Args: { content_text: string }; Returns: string }
       generate_reminder_occurrences: {
         Args: { p_count?: number; p_reminder_id: string }

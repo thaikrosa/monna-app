@@ -57,6 +57,11 @@ export default function Auth() {
           Continuar com Google
         </Button>
 
+        {/* OAuth transparency text */}
+        <p className="text-xs text-muted-foreground text-center">
+          Usamos sua conta Google apenas para autenticação e, se autorizado por você, para integração com o Google Calendar.
+        </p>
+
         {/* Legal links */}
         <p className="text-xs text-muted-foreground text-center">
           Ao continuar, você concorda com nossos{' '}

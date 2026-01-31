@@ -195,6 +195,10 @@ const Privacy = () => {
                   fornecer o serviço (como provedores de nuvem ou IA) ou para cumprir a lei.
                 </li>
               </ul>
+              <p className="mt-2">
+                Em nenhuma circunstância os dados obtidos via APIs do Google são vendidos, utilizados 
+                para publicidade direcionada ou combinados com dados de outras fontes para fins de perfilamento.
+              </p>
             </section>
 
             <section className="space-y-4 mb-8">

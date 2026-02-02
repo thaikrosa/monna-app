@@ -105,27 +105,35 @@ export default function ShoppingList() {
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="w-full h-auto flex-wrap justify-start gap-1 bg-transparent p-0">
               {/* Tags ordenadas primeiro */}
-              {sortedTags.map((tag) => (
-                <TabsTrigger
-                  key={tag.id}
-                  value={tag.id}
-                  className="relative px-3 py-1.5 text-xs rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground bg-card text-primary/70 border border-border shadow-sm"
-                >
-                  {tag.name}
-                  {/* Ícone de edição - só aparece quando tab está ativa */}
-                  {activeTab === tag.id && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setEditingTag({ id: tag.id, name: tag.name });
-                      }}
-                      className="ml-1.5 opacity-70 hover:opacity-100 transition-opacity"
-                    >
-                      <PencilSimple weight="thin" className="h-3 w-3" />
-                    </button>
-                  )}
-                </TabsTrigger>
-              ))}
+              {sortedTags.map((tag) => {
+                const isMercado = tag.name.toLowerCase().trim() === 'mercado';
+                
+                return (
+                  <TabsTrigger
+                    key={tag.id}
+                    value={tag.id}
+                    className={`relative px-3 py-1.5 text-xs rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground bg-card text-primary/70 shadow-sm transition-colors duration-150 ${
+                      isMercado 
+                        ? 'border-2 border-primary/40' 
+                        : 'border border-border'
+                    }`}
+                  >
+                    {tag.name}
+                    {/* Ícone de edição - só aparece quando tab está ativa E não é Mercado */}
+                    {activeTab === tag.id && !isMercado && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingTag({ id: tag.id, name: tag.name });
+                        }}
+                        className="ml-1.5 opacity-70 hover:opacity-100 transition-opacity"
+                      >
+                        <PencilSimple weight="thin" className="h-3 w-3" />
+                      </button>
+                    )}
+                  </TabsTrigger>
+                );
+              })}
               {/* "Todos" sempre por último */}
               <TabsTrigger
                 value="todos"

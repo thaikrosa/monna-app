@@ -1,95 +1,88 @@
 
-# Plano: Adicionar Transparência OAuth para Verificação Google
+# Plano: Destacar Visualmente a Lista "Mercado"
 
 ## Resumo
 
-Adicionar textos mínimos e discretos para atender aos requisitos de verificação OAuth do Google, sem alterar a identidade visual ou funcionalidades existentes.
+Adicionar diferenciação visual sutil para a tab "Mercado" (lista principal protegida), usando uma borda com cor `primary` que a destaca das demais listas, respeitando o design system Monna.
 
 ---
 
-## Alteração 1: Nova Pergunta no FAQ
+## O Que Será Feito
 
-**Arquivo:** `src/components/landing/FAQSection.tsx`
+**Arquivo:** `src/pages/ShoppingList.tsx`
 
-**O que será feito:**
-Inserir uma nova entrada no array `faqs`, logo após a pergunta "Funciona com a agenda que eu já uso?" (posição 1 do array).
+Modificar a renderização das tabs para aplicar uma classe diferenciada à tag "Mercado":
 
-**Conteúdo exato:**
-- **Pergunta:** "Como a Monna usa minha agenda do Google?"
-- **Resposta:** "A Monna acessa o Google Calendar somente após o seu consentimento explícito, por meio do login Google. O acesso é utilizado exclusivamente para criar, atualizar e organizar eventos e lembretes solicitados por você dentro do aplicativo. Nenhuma informação da sua agenda é utilizada para fins publicitários, compartilhada com terceiros ou usada para treinar modelos de inteligência artificial."
+- **Tabs normais (não-ativas):** `bg-card text-primary/70 border border-border`
+- **Tab Mercado (não-ativa):** `bg-card text-primary/70 border-2 border-primary/40`
+- **Qualquer tab ativa:** mantém o comportamento atual com `bg-primary text-primary-foreground`
 
-**Visual:** Mantém o mesmo estilo de accordion das outras perguntas (sem alteração de CSS).
-
----
-
-## Alteração 2: Texto de Transparência na Tela de Login
-
-**Arquivo:** `src/pages/Auth.tsx`
-
-**O que será feito:**
-Adicionar um parágrafo discreto entre o botão "Continuar com Google" e os links de Termos/Privacidade.
-
-**Conteúdo exato:**
-"Usamos sua conta Google apenas para autenticação e, se autorizado por você, para integração com o Google Calendar."
-
-**Estilo:** Utilizará exatamente as mesmas classes CSS dos textos auxiliares existentes:
-```
-text-xs text-muted-foreground text-center
-```
+Essa diferenciação sutil (borda mais espessa e com cor primary) indica visualmente que "Mercado" é especial, sem quebrar a harmonia do design system.
 
 ---
 
-## O Que NÃO Será Alterado
+## Visual Esperado
 
-- Cores, tipografia, espaçamentos
-- Headlines, CTAs ou textos existentes
-- Estrutura visual das seções
-- Links de Política de Privacidade
-- Nenhuma funcionalidade existente
-- Nenhum banner, pop-up ou checkbox
+| Estado | Tab Normal | Tab Mercado |
+|--------|------------|-------------|
+| Não-ativa | `border border-border` | `border-2 border-primary/40` |
+| Ativa | `bg-primary text-primary-foreground` | `bg-primary text-primary-foreground` |
+
+---
+
+## Comportamento Adicional
+
+A tab "Mercado" também não exibirá o ícone de edição (lápis), já que seu nome não pode ser alterado. Isso reforça a mensagem de que é uma lista protegida.
 
 ---
 
 ## Seção Técnica
 
-### Mudanças no código
+### Mudança no código (ShoppingList.tsx, linhas 108-127)
 
-**FAQSection.tsx (linhas 5-26)**
-```typescript
-const faqs = [
-  {
-    question: "Funciona com a agenda que eu já uso?",
-    answer: "Sim! Monna sincroniza com Google Calendar. Você não precisa mudar nada da sua rotina.",
-  },
-  // NOVA ENTRADA AQUI (posição 1)
-  {
-    question: "Como a Monna usa minha agenda do Google?",
-    answer: "A Monna acessa o Google Calendar somente após o seu consentimento explícito, por meio do login Google. O acesso é utilizado exclusivamente para criar, atualizar e organizar eventos e lembretes solicitados por você dentro do aplicativo. Nenhuma informação da sua agenda é utilizada para fins publicitários, compartilhada com terceiros ou usada para treinar modelos de inteligência artificial.",
-  },
-  // ... restante do array permanece igual
-];
-```
-
-**Auth.tsx (entre linhas 58 e 60)**
 ```tsx
-{/* Novo texto de transparência OAuth */}
-<p className="text-xs text-muted-foreground text-center">
-  Usamos sua conta Google apenas para autenticação e, se autorizado por você, para integração com o Google Calendar.
-</p>
-
-{/* Legal links - já existente */}
-<p className="text-xs text-muted-foreground text-center">
-  Ao continuar, você concorda com nossos...
+{sortedTags.map((tag) => {
+  const isMercado = tag.name.toLowerCase().trim() === 'mercado';
+  
+  return (
+    <TabsTrigger
+      key={tag.id}
+      value={tag.id}
+      className={`relative px-3 py-1.5 text-xs rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground bg-card text-primary/70 shadow-sm transition-colors duration-150 ${
+        isMercado 
+          ? 'border-2 border-primary/40' 
+          : 'border border-border'
+      }`}
+    >
+      {tag.name}
+      {/* Ícone de edição - só aparece quando tab está ativa E não é Mercado */}
+      {activeTab === tag.id && !isMercado && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setEditingTag({ id: tag.id, name: tag.name });
+          }}
+          className="ml-1.5 opacity-70 hover:opacity-100 transition-opacity"
+        >
+          <PencilSimple weight="thin" className="h-3 w-3" />
+        </button>
+      )}
+    </TabsTrigger>
+  );
+})}
 ```
+
+### Resumo das alterações
+
+1. Adiciona verificação `isMercado` baseada no nome normalizado da tag
+2. Aplica `border-2 border-primary/40` para Mercado, `border border-border` para as demais
+3. Remove o ícone de edição da tab Mercado (já que não pode ser renomeada)
 
 ---
 
-## Critérios de Aceitação Atendidos
+## O Que NÃO Será Alterado
 
-| Critério | Status |
-|----------|--------|
-| Landing page visualmente idêntica | Sim |
-| Nenhuma funcionalidade alterada | Sim |
-| Explica uso de Google Calendar e OAuth | Sim |
-| Conteúdo visível sem login | Sim (FAQ na landing) |
-| Link de Privacidade inalterado | Sim |
+- Cores do design system
+- Comportamento de seleção das tabs
+- Lógica de ordenação (Mercado continua primeiro)
+- Proteção de exclusão no EditTagDialog

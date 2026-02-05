@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Termos de Uso - Monna</title>
+  <meta name="description" content="Termos de Uso do aplicativo Monna. Leia os termos e condições para utilização do serviço.">
+  <meta name="author" content="Monna">
+  <link rel="icon" type="image/png" href="/monna-favicon.png">
+  <link rel="canonical" href="https://monna.ia.br/termos">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --background: hsl(30, 33%, 85%);
+      --foreground: hsl(0, 69%, 8%);
+      --card: hsl(30, 47%, 95%);
+      --primary: hsl(353, 50%, 22%);
+      --primary-foreground: hsl(30, 47%, 95%);
+      --secondary: hsl(30, 33%, 80%);
+      --muted-foreground: hsl(0, 40%, 35%);
+      --border: hsl(30, 25%, 80%);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--secondary);
+      color: var(--foreground);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    a {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    
+    a:hover {
+      opacity: 0.8;
+    }
+    
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background-color: var(--secondary);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .header-inner {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .back-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 0.375rem;
+      color: var(--muted-foreground);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    
+    .back-btn:hover {
+      color: var(--foreground);
+    }
+    
+    .header-logo {
+      height: 1.5rem;
+      width: auto;
+    }
+    
+    .header-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+    
+    /* Content */
+    .content {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 1.5rem 1rem;
+    }
+    
+    .card {
+      background-color: var(--card);
+      border-radius: 0.5rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px -2px rgba(0,0,0,0.08), 0 4px 16px -4px rgba(0,0,0,0.12);
+      padding: 1.5rem;
+    }
+    
+    .last-updated {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      margin-bottom: 1.5rem;
+    }
+    
+    section {
+      margin-bottom: 2rem;
+    }
+    
+    section:last-child {
+      margin-bottom: 0;
+    }
+    
+    h2 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--foreground);
+      margin-bottom: 1rem;
+    }
+    
+    h3 {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--foreground);
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    p {
+      color: var(--muted-foreground);
+      margin-bottom: 0.75rem;
+    }
+    
+    ul {
+      list-style: disc;
+      padding-left: 1.5rem;
+      color: var(--muted-foreground);
+    }
+    
+    ul li {
+      margin-bottom: 0.5rem;
+    }
+    
+    ul li strong {
+      color: var(--foreground);
+    }
+    
+    /* Health Warning */
+    .health-warning {
+      background-color: rgba(83, 28, 34, 0.05);
+      border: 1px solid rgba(83, 28, 34, 0.2);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      color: var(--foreground);
+    }
+    
+    .health-warning strong {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    
+    /* Footer */
+    .footer {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .footer-links a {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      text-decoration: none;
+    }
+    
+    .footer-links a:hover {
+      color: var(--foreground);
+    }
+    
+    .footer-copy {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="back-btn">
+        <svg width="20" height="20" viewBox="0 0 256 256" fill="currentColor"><path d="M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z"/></svg>
+      </a>
+      <img src="https://anniawebapp.lovable.app/assets/logo-monna-BQjBg9UU.png" alt="Monna" class="header-logo">
+      <h1 class="header-title">Termos de Uso</h1>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <main class="content">
+    <div class="card">
+      <p class="last-updated">Última atualização: 19 de janeiro de 2025</p>
+      
+      <section>
+        <h2>1. Aceitação dos Termos</h2>
+        <p>Ao acessar e usar o aplicativo Monna ("Serviço"), você concorda em cumprir e estar vinculado a estes Termos de Uso. Se você não concordar com qualquer parte destes termos, não poderá acessar o Serviço.</p>
+      </section>
+
+      <section>
+        <h2>2. Descrição do Serviço</h2>
+        <p>A Monna é um assistente digital de organização familiar que ajuda mães a gerenciar sua rotina, lembretes, compromissos, lista de compras e informações sobre seus filhos. O Serviço inclui:</p>
+        <ul>
+          <li>Gerenciamento de lembretes e compromissos</li>
+          <li>Lista de compras compartilhável</li>
+          <li>Acompanhamento de informações dos filhos</li>
+          <li>Rede de contatos de apoio</li>
+          <li>Integração com calendários externos</li>
+          <li>Notificações via WhatsApp</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>3. Cadastro e Conta</h2>
+        
+        <h3>3.1 Elegibilidade</h3>
+        <p>Para usar o Serviço, você deve ter pelo menos 18 anos de idade ou ser emancipado legalmente.</p>
+        
+        <h3>3.2 Informações da Conta</h3>
+        <p>Você é responsável por manter a confidencialidade de sua conta e senha. Você concorda em aceitar responsabilidade por todas as atividades que ocorram em sua conta.</p>
+        
+        <h3>3.3 Informações Precisas</h3>
+        <p>Você concorda em fornecer informações precisas, atuais e completas durante o processo de registro e manter essas informações atualizadas.</p>
+      </section>
+
+      <section>
+        <h2>4. Uso Aceitável</h2>
+        <p>Você concorda em não usar o Serviço para:</p>
+        <ul>
+          <li>Violar qualquer lei aplicável</li>
+          <li>Transmitir material ilegal, prejudicial ou ofensivo</li>
+          <li>Interferir no funcionamento do Serviço</li>
+          <li>Tentar acessar contas de outros usuários</li>
+          <li>Usar o Serviço para fins comerciais não autorizados</li>
+          <li>Copiar, modificar ou distribuir conteúdo do Serviço</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>5. Informações sobre Saúde</h2>
+        <div class="health-warning">
+          <strong>AVISO IMPORTANTE:</strong>
+          A Monna é uma ferramenta de organização e não substitui aconselhamento médico profissional. Informações sobre saúde armazenadas no aplicativo são apenas para fins de organização. Sempre consulte profissionais de saúde qualificados para questões médicas.
+        </div>
+      </section>
+
+      <section>
+        <h2>6. Propriedade Intelectual</h2>
+        <p>O Serviço e seu conteúdo original, recursos e funcionalidades são e permanecerão propriedade exclusiva da Monna. O Serviço é protegido por direitos autorais, marcas registradas e outras leis.</p>
+      </section>
+
+      <section>
+        <h2>7. Conteúdo do Usuário</h2>
+        <p>Você mantém todos os direitos sobre o conteúdo que criar ou fornecer ao Serviço. Ao fornecer conteúdo, você nos concede uma licença limitada para usar, armazenar e processar esse conteúdo exclusivamente para fornecer o Serviço a você.</p>
+      </section>
+
+      <section>
+        <h2>8. Limitação de Responsabilidade</h2>
+        <p>Em nenhuma circunstância a Monna será responsável por danos indiretos, incidentais, especiais, consequenciais ou punitivos, incluindo perda de lucros, dados, uso ou outras perdas intangíveis.</p>
+      </section>
+
+      <section>
+        <h2>9. Isenção de Garantias</h2>
+        <p>O Serviço é fornecido "como está" e "conforme disponível", sem garantias de qualquer tipo, expressas ou implícitas, incluindo garantias de comercialização, adequação a um propósito específico e não violação.</p>
+      </section>
+
+      <section>
+        <h2>10. Rescisão</h2>
+        <p>Podemos encerrar ou suspender sua conta imediatamente, sem aviso prévio, por qualquer motivo, incluindo violação destes Termos. Você pode encerrar sua conta a qualquer momento entrando em contato conosco.</p>
+      </section>
+
+      <section>
+        <h2>11. Alterações nos Termos</h2>
+        <p>Reservamo-nos o direito de modificar estes Termos a qualquer momento. Notificaremos você sobre alterações significativas. O uso continuado do Serviço após alterações constitui aceitação dos novos Termos.</p>
+      </section>
+
+      <section>
+        <h2>12. Lei Aplicável</h2>
+        <p>Estes Termos serão regidos e interpretados de acordo com as leis do Brasil, sem consideração a conflitos de disposições legais.</p>
+      </section>
+
+      <section>
+        <h2>13. Contato</h2>
+        <p>Se você tiver dúvidas sobre estes Termos, entre em contato conosco:</p>
+        <ul>
+          <li>E-mail: contato@monna.ia.br</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="/">Início</a>
+      <a href="/privacidade">Política de Privacidade</a>
+      <a href="mailto:contato@monna.ia.br">Contato</a>
+    </div>
+    <p class="footer-copy">© 2026 Annia Labs. Todos os direitos reservados.</p>
+  </footer>
+</body>
+</html>

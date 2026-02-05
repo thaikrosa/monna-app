@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monna - Sua parceira no invisível da maternidade</title>
+  <meta name="description" content="A assistente via WhatsApp que organiza sua rotina, antecipa lembretes e guarda o que importa sobre sua família.">
+  <meta name="author" content="Monna">
+  <link rel="icon" type="image/png" href="/monna-favicon.png">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Monna - Sua parceira no invisível da maternidade">
+  <meta property="og:description" content="A assistente via WhatsApp que organiza sua rotina, antecipa lembretes e guarda o que importa sobre sua família.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://monna.ia.br">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@monnaapp">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --background: hsl(30, 33%, 85%);
+      --foreground: hsl(0, 69%, 8%);
+      --card: hsl(30, 47%, 95%);
+      --primary: hsl(353, 50%, 22%);
+      --primary-foreground: hsl(30, 47%, 95%);
+      --secondary: hsl(30, 33%, 80%);
+      --muted-foreground: hsl(0, 40%, 35%);
+      --border: hsl(30, 25%, 80%);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background-color: var(--primary);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .navbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .navbar-logo {
+      height: 3.5rem;
+      width: auto;
+      filter: brightness(0) invert(1);
+    }
+    
+    .navbar-link {
+      color: var(--primary-foreground);
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      opacity: 0.9;
+      transition: opacity 0.2s;
+    }
+    
+    .navbar-link:hover {
+      opacity: 1;
+    }
+    
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 6rem 1.5rem 4rem;
+      background-color: var(--secondary);
+    }
+    
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      background-color: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      color: var(--primary);
+      margin-bottom: 2rem;
+    }
+    
+    .hero h1 {
+      font-size: clamp(2.25rem, 5vw, 3.75rem);
+      font-weight: 300;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    
+    .hero h1 span {
+      display: block;
+      color: var(--primary);
+      margin-top: 0.25rem;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.125rem;
+      color: var(--muted-foreground);
+      max-width: 28rem;
+      margin-bottom: 2.5rem;
+    }
+    
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--primary);
+      color: var(--primary-foreground);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+    
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+    
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem 2rem;
+      background-color: var(--card);
+      color: var(--primary);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    
+    .btn-secondary:hover {
+      background-color: var(--primary-foreground);
+    }
+    
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    
+    .trust-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      background-color: var(--secondary);
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    /* Sections */
+    .section {
+      padding: 5rem 1.5rem;
+    }
+    
+    .section-card {
+      background-color: var(--card);
+    }
+    
+    .section-primary {
+      background-color: var(--primary);
+      color: var(--primary-foreground);
+    }
+    
+    .section-dark {
+      background-color: var(--foreground);
+      color: var(--card);
+    }
+    
+    .section-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .section-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.6;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+    
+    .section-title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 300;
+      letter-spacing: -0.025em;
+    }
+    
+    /* Testimonials Grid */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    
+    .testimonial-card {
+      padding: 1.5rem 2rem;
+      background-color: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 0.5rem;
+    }
+    
+    .testimonial-quote {
+      font-style: italic;
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+    
+    .testimonial-author {
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+    
+    .testimonial-role {
+      font-size: 0.75rem;
+      opacity: 0.6;
+      margin-top: 0.25rem;
+    }
+    
+    .testimonial-highlight {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 3rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .testimonial-highlight p {
+      font-size: 1.25rem;
+      font-style: italic;
+      font-weight: 300;
+    }
+    
+    .testimonial-highlight span {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+      opacity: 0.6;
+    }
+    
+    /* Steps */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .step-card {
+      padding: 1.5rem 2rem;
+      background-color: var(--secondary);
+      border-radius: 0.5rem;
+      transition: transform 0.2s;
+    }
+    
+    .step-card:hover {
+      transform: translateY(-4px);
+    }
+    
+    .step-number {
+      font-size: 4.5rem;
+      font-weight: 200;
+      color: var(--primary);
+      opacity: 0.3;
+      line-height: 1;
+      margin-bottom: 0.75rem;
+    }
+    
+    .step-title {
+      font-size: 1.125rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    
+    .step-desc {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+    }
+    
+    /* Features */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    
+    .feature-card {
+      padding: 1.5rem 2rem;
+      background-color: var(--card);
+      border-radius: 0.5rem;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+    
+    .feature-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    
+    .feature-icon {
+      width: 3rem;
+      height: 3rem;
+      background-color: var(--primary);
+      border-radius: 0.375rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      font-size: 1.5rem;
+    }
+    
+    .feature-title {
+      font-size: 1.125rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    
+    .feature-desc {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      line-height: 1.6;
+    }
+    
+    .features-cta {
+      text-align: center;
+      margin-top: 3rem;
+    }
+    
+    /* FAQ */
+    .faq-list {
+      max-width: 48rem;
+      margin: 0 auto;
+    }
+    
+    details {
+      background-color: var(--card);
+      border-radius: 0.5rem;
+      margin-bottom: 0.75rem;
+      transition: border-color 0.2s;
+    }
+    
+    details[open] {
+      border: 1px solid var(--primary);
+    }
+    
+    details:not([open]) {
+      border: 1px solid transparent;
+    }
+    
+    details:hover:not([open]) {
+      border-color: rgba(83, 28, 34, 0.3);
+    }
+    
+    summary {
+      padding: 1rem 1.5rem;
+      font-weight: 500;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    summary::-webkit-details-marker {
+      display: none;
+    }
+    
+    summary::after {
+      content: '+';
+      font-size: 1.25rem;
+      font-weight: 300;
+      transition: transform 0.2s;
+    }
+    
+    details[open] summary::after {
+      transform: rotate(45deg);
+    }
+    
+    .faq-answer {
+      padding: 0 1.5rem 1rem;
+      color: var(--muted-foreground);
+      line-height: 1.7;
+    }
+    
+    /* CTA Final */
+    .cta-final {
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .cta-final::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(83, 28, 34, 0.4), transparent);
+      pointer-events: none;
+    }
+    
+    .cta-final-inner {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .cta-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 300;
+      letter-spacing: -0.025em;
+      margin-bottom: 1rem;
+    }
+    
+    .cta-title span {
+      display: block;
+      color: var(--secondary);
+      margin-top: 0.25rem;
+    }
+    
+    .cta-subtitle {
+      font-size: 1.125rem;
+      opacity: 0.7;
+      margin-bottom: 2.5rem;
+    }
+    
+    .cta-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+      font-size: 0.875rem;
+      opacity: 0.6;
+    }
+    
+    .cta-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+      font-size: 0.875rem;
+      opacity: 0.5;
+    }
+    
+    .cta-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+    
+    /* Footer */
+    .footer {
+      padding: 4rem 1.5rem;
+      background-color: var(--primary);
+      color: var(--primary-foreground);
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .footer-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr repeat(4, 1fr);
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    @media (max-width: 768px) {
+      .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .footer-brand {
+        grid-column: span 2;
+      }
+    }
+    
+    .footer-logo {
+      height: 2rem;
+      width: auto;
+      filter: brightness(0) invert(1);
+      margin-bottom: 1rem;
+    }
+    
+    .footer-desc {
+      font-size: 0.875rem;
+      opacity: 0.6;
+      max-width: 200px;
+    }
+    
+    .footer-title {
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      letter-spacing: 0.05em;
+    }
+    
+    .footer-links {
+      list-style: none;
+    }
+    
+    .footer-links li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .footer-links a {
+      font-size: 0.875rem;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+    }
+    
+    .footer-links a:hover {
+      opacity: 1;
+    }
+    
+    .footer-bottom {
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 1rem;
+      font-size: 0.75rem;
+      opacity: 0.4;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="/">
+        <img src="https://anniawebapp.lovable.app/assets/logo-monna-BQjBg9UU.png" alt="Monna" class="navbar-logo">
+      </a>
+      <a href="https://anniawebapp.lovable.app/auth" class="navbar-link">
+        <svg width="16" height="16" viewBox="0 0 256 256" fill="currentColor"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm48-88a48,48,0,1,1-48-48A48.05,48.05,0,0,1,176,128Z"/></svg>
+        <span>Entrar</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <svg width="16" height="16" viewBox="0 0 256 256" fill="currentColor"><path d="M225.86,102.82c-3.77-3.94-7.67-8-9.14-11.57-1.36-3.27-1.44-8.69-1.52-13.94-.15-9.76-.31-20.82-8-28.51s-18.75-7.85-28.51-8c-5.25-.08-10.67-.16-13.94-1.52-3.56-1.47-7.63-5.37-11.57-9.14C146.28,23.51,138.44,16,128,16s-18.27,7.51-25.18,14.14c-3.94,3.77-8,7.67-11.57,9.14C88,40.64,82.56,40.72,77.31,40.8c-9.76.15-20.82.31-28.51,8S41,67.55,40.8,77.31c-.08,5.25-.16,10.67-1.52,13.94-1.47,3.56-5.37,7.63-9.14,11.57C23.51,109.72,16,117.56,16,128s7.51,18.27,14.14,25.18c3.77,3.94,7.67,8,9.14,11.57,1.36,3.27,1.44,8.69,1.52,13.94.15,9.76.31,20.82,8,28.51s18.75,7.85,28.51,8c5.25.08,10.67.16,13.94,1.52,3.56,1.47,7.63,5.37,11.57,9.14C109.72,232.49,117.56,240,128,240s18.27-7.51,25.18-14.14c3.94-3.77,8-7.67,11.57-9.14,3.27-1.36,8.69-1.44,13.94-1.52,9.76-.15,20.82-.31,28.51-8s7.85-18.75,8-28.51c.08-5.25.16-10.67,1.52-13.94,1.47-3.56,5.37-7.63,9.14-11.57C232.49,146.28,240,138.44,240,128S232.49,109.73,225.86,102.82Zm-11.55,39.29c-4.79,5-9.75,10.17-12.38,16.52-2.52,6.1-2.63,13.07-2.73,19.82-.1,7-.21,14.33-3.32,17.43s-10.39,3.22-17.43,3.32c-6.75.1-13.72.21-19.82,2.73-6.35,2.63-11.52,7.59-16.52,12.38S132,224,128,224s-9.15-4.92-14.11-9.69-10.17-9.75-16.52-12.38c-6.1-2.52-13.07-2.63-19.82-2.73-7-.1-14.33-.21-17.43-3.32s-3.22-10.39-3.32-17.43c-.1-6.75-.21-13.72-2.73-19.82-2.63-6.35-7.59-11.52-12.38-16.52S32,132,32,128s4.92-9.15,9.69-14.11,9.75-10.17,12.38-16.52c2.52-6.1,2.63-13.07,2.73-19.82.1-7,.21-14.33,3.32-17.43S70.51,56.9,77.55,56.8c6.75-.1,13.72-.21,19.82-2.73,6.35-2.63,11.52-7.59,16.52-12.38S124,32,128,32s9.15,4.92,14.11,9.69,10.17,9.75,16.52,12.38c6.1,2.52,13.07,2.63,19.82,2.73,7,.1,14.33.21,17.43,3.32s3.22,10.39,3.32,17.43c.1,6.75.21,13.72,2.73,19.82,2.63,6.35,7.59,11.52,12.38,16.52S224,124,224,128,219.08,137.15,214.31,142.11ZM173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34Z"/></svg>
+        100% das mães que testaram querem continuar
+      </div>
+      
+      <h1>
+        Sua cabeça tá cheia demais.
+        <span>Deixa a Monna ajudar.</span>
+      </h1>
+      
+      <p class="hero-subtitle">
+        A assistente via WhatsApp que organiza sua rotina, antecipa lembretes e guarda o que importa sobre sua família.
+      </p>
+      
+      <a href="#cta-final" class="btn-primary">
+        Quero testar grátis
+        <svg width="16" height="16" viewBox="0 0 256 256" fill="currentColor"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
+      </a>
+      
+      <div class="hero-badges">
+        <span class="trust-badge">
+          <svg width="20" height="20" viewBox="0 0 256 256" fill="currentColor"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg>
+          Sem baixar app
+        </span>
+        <span class="trust-badge">
+          <svg width="20" height="20" viewBox="0 0 256 256" fill="currentColor"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg>
+          Sem cadastros infinitos
+        </span>
+        <span class="trust-badge">
+          <svg width="20" height="20" viewBox="0 0 256 256" fill="currentColor"><path d="M216,48H40A16,16,0,0,0,24,64V224a15.84,15.84,0,0,0,9.25,14.5A16.13,16.13,0,0,0,40,240a15.89,15.89,0,0,0,10.25-3.78.69.69,0,0,0,.13-.11L82.5,208H216a16,16,0,0,0,16-16V64A16,16,0,0,0,216,48ZM40,224h0ZM216,192H82.5a16,16,0,0,0-10.3,3.75l-.12.11L40,224V64H216Z"/></svg>
+          Direto no WhatsApp
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section section-primary">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-label">Depoimentos</span>
+        <h2 class="section-title">O que as mães estão dizendo</h2>
+      </div>
+      
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <p class="testimonial-quote">"Eu me impressionei muito com a Monna. Gosto muito da facilidade do áudio. Isso é vida!"</p>
+          <p class="testimonial-author">Viridiane</p>
+          <p class="testimonial-role">engenheira e mãe</p>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-quote">"Eu e meu marido usamos vários métodos para lembrarmos dos eventos, mas a Monna converge tudo num grupo só."</p>
+          <p class="testimonial-author">Priscila</p>
+          <p class="testimonial-role">fisioterapeuta e mãe</p>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-quote">"Eu estou gostando muito. Achei bem prático e fácil. A gente visualiza muito mais no WhatsApp."</p>
+          <p class="testimonial-author">Gabriela</p>
+          <p class="testimonial-role">mentora de mães e mãe</p>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-quote">"Gostei do jeito que ela manda mensagem, do checklist no fim do dia e no início da manhã."</p>
+          <p class="testimonial-author">Giselly</p>
+          <p class="testimonial-role">empresária e mãe</p>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-quote">"Achei ela maravilhosa!"</p>
+          <p class="testimonial-author">Vanessa</p>
+          <p class="testimonial-role">empresária</p>
+        </div>
+      </div>
+      
+      <div class="testimonial-highlight">
+        <p>"A Monna já é minha best!"</p>
+        <span>— Mãe testadora beta</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Steps -->
+  <section class="section section-card">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-label">Como funciona</span>
+        <h2 class="section-title">Simples como mandar uma mensagem</h2>
+      </div>
+      
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3 class="step-title">Conecte</h3>
+          <p class="step-desc">Adicione a Monna no WhatsApp, apresente-se e inicie seu teste grátis</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3 class="step-title">Converse</h3>
+          <p class="step-desc">Mande suas listas, compromissos e informações da família</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3 class="step-title">Relaxe</h3>
+          <p class="step-desc">A Monna organiza tudo e lembra no momento certo</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-label">Funcionalidades</span>
+        <h2 class="section-title">O que a Monna faz por você</h2>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📅</div>
+          <h3 class="feature-title">Agenda Inteligente</h3>
+          <p class="feature-desc">"Consulta do Pedro quarta às 15h" — e pronto. Ela lembra, encaixa na agenda e avisa no dia anterior.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛒</div>
+          <h3 class="feature-title">Listas que Vivem</h3>
+          <p class="feature-desc">Mercado, farmácia, material escolar. Você fala, ela adiciona. Nunca mais esquecer o leite.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🧠</div>
+          <h3 class="feature-title">Segundo Cérebro</h3>
+          <p class="feature-desc">"Qual a alergia do João?" — Ela sabe. Guarda tudo que importa sobre sua família.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌅</div>
+          <h3 class="feature-title">Check-in de Cuidado</h3>
+          <p class="feature-desc">Bom dia com o resumo do que vem. Lembrete gentil quando percebe que você precisa.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">✈️</div>
+          <h3 class="feature-title">Recados pra Família</h3>
+          <p class="feature-desc">"Avisa minha mãe do remédio do Lucas" — e ela avisa. Você não precisa ligar, mandar mensagem, nem lembrar de lembrar.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📷</div>
+          <h3 class="feature-title">Entende o que Você Manda</h3>
+          <p class="feature-desc">Mandou o convite da festa? A foto da agenda escolar? Ela lê, entende e já cria os lembretes pra você.</p>
+        </div>
+      </div>
+      
+      <div class="features-cta">
+        <a href="#cta-final" class="btn-primary">Começar meu teste grátis</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section section-secondary" style="background-color: var(--secondary);">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-label">Dúvidas</span>
+        <h2 class="section-title">Perguntas frequentes</h2>
+      </div>
+      
+      <div class="faq-list">
+        <details>
+          <summary>Funciona com a agenda que eu já uso?</summary>
+          <div class="faq-answer">Sim! Monna sincroniza com Google Calendar. Você não precisa mudar nada da sua rotina.</div>
+        </details>
+        <details>
+          <summary>Como a Monna usa minha agenda do Google?</summary>
+          <div class="faq-answer">A Monna acessa o Google Calendar somente após o seu consentimento explícito, por meio do login Google. O acesso é utilizado exclusivamente para criar, atualizar e organizar eventos e lembretes solicitados por você dentro do aplicativo. Nenhuma informação da sua agenda é utilizada para fins publicitários, compartilhada com terceiros ou usada para treinar modelos de inteligência artificial.</div>
+        </details>
+        <details>
+          <summary>Meus dados ficam seguros?</summary>
+          <div class="faq-answer">Seus dados são criptografados e nunca compartilhados. Sua família, suas informações, seu controle total.</div>
+        </details>
+        <details>
+          <summary>Preciso ser boa de tecnologia?</summary>
+          <div class="faq-answer">Se você sabe mandar mensagem no WhatsApp, sabe usar a Monna. Zero configuração complicada.</div>
+        </details>
+        <details>
+          <summary>Vai me mandar notificação demais?</summary>
+          <div class="faq-answer">Não. A Monna só fala quando tem algo útil. Silêncio também é cuidado.</div>
+        </details>
+        <details>
+          <summary>Posso cancelar quando quiser?</summary>
+          <div class="faq-answer">Sim, a qualquer momento, sem burocracia. Mas apostamos que você não vai querer.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Final -->
+  <section id="cta-final" class="section section-dark cta-final">
+    <div class="section-inner cta-final-inner">
+      <h2 class="cta-title">
+        Uma coisa de cada vez.
+        <span>As outras, a Monna segura.</span>
+      </h2>
+      
+      <p class="cta-subtitle">7 dias grátis para sentir a diferença. Sem compromisso.</p>
+      
+      <a href="https://wa.me/5516996036137?text=Oi%20Monna!%20Quero%20testar%20grátis" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+        Começar meu teste grátis
+      </a>
+      
+      <p class="cta-note">
+        <span style="color: var(--secondary);">❤️</span>
+        Você merece esse alívio.
+      </p>
+      
+      <div class="cta-badges">
+        <span class="cta-badge">
+          <svg width="16" height="16" viewBox="0 0 256 256" fill="currentColor"><path d="M208,40H48A16,16,0,0,0,32,56v58.77c0,89.62,75.82,119.34,91,124.38a15.44,15.44,0,0,0,10,0c15.2-5,91-34.76,91-124.38V56A16,16,0,0,0,208,40Zm0,74.79c0,78.42-66.35,104.62-80,109.18-13.53-4.51-80-30.69-80-109.18V56H208ZM82.34,141.66a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32l-56,56a8,8,0,0,1-11.32,0Z"/></svg>
+          Dados criptografados
+        </span>
+        <span class="cta-badge">
+          <svg width="16" height="16" viewBox="0 0 256 256" fill="currentColor"><path d="M232,128a8,8,0,0,0-8,8,88.1,88.1,0,0,1-88,88H51.31l34.35-34.34a8,8,0,1,0-11.32-11.32l-48,48a8,8,0,0,0,0,11.32l48,48a8,8,0,0,0,11.32-11.32L51.31,240H136a104.11,104.11,0,0,0,104-104A8,8,0,0,0,232,128ZM79.66,82.34a8,8,0,0,0,11.32,0l48-48a8,8,0,0,0,0-11.32l-48-48a8,8,0,0,0-11.32,11.32L114.69,16H56A104.11,104.11,0,0,0,24,120a8,8,0,0,0,16,0,88.1,88.1,0,0,1,88-88h58.69L152,66.34A8,8,0,0,0,163.32,77.66Z"/></svg>
+          Suporte humanizado
+        </span>
+        <span class="cta-badge">
+          <svg width="16" height="16" viewBox="0 0 256 256" fill="currentColor"><path d="M165.66,101.66,139.31,128l26.35,26.34a8,8,0,0,1-11.32,11.32L128,139.31l-26.34,26.35a8,8,0,0,1-11.32-11.32L116.69,128,90.34,101.66a8,8,0,0,1,11.32-11.32L128,116.69l26.34-26.35a8,8,0,0,1,11.32,11.32ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg>
+          Cancele quando quiser
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="https://anniawebapp.lovable.app/assets/logo-monna-BQjBg9UU.png" alt="Monna" class="footer-logo">
+          <p class="footer-desc">A assistente de IA que cuida da logística invisível da maternidade.</p>
+        </div>
+        
+        <div>
+          <h4 class="footer-title">Produto</h4>
+          <ul class="footer-links">
+            <li><a href="#steps">Como funciona</a></li>
+            <li><a href="#features">Funcionalidades</a></li>
+            <li><a href="https://anniawebapp.lovable.app/auth">Entrar</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="footer-title">Empresa</h4>
+          <ul class="footer-links">
+            <li><a href="/sobre">Sobre</a></li>
+            <li><a href="/faq">FAQ</a></li>
+            <li><a href="/contato">Contato</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="footer-title">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="/termos">Termos de uso</a></li>
+            <li><a href="/privacidade">Política de Privacidade</a></li>
+            <li><a href="/cookies">Cookies</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="footer-title">Contato</h4>
+          <ul class="footer-links">
+            <li><a href="mailto:contato@monna.ia.br">contato@monna.ia.br</a></li>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">LinkedIn</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>© 2026 Annia Labs</p>
+        <p>Feito para mães brasileiras</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -492,36 +492,6 @@ export type Database = {
         }
         Relationships: []
       }
-      dead_letter_queue: {
-        Row: {
-          created_at: string | null
-          error_message: string | null
-          id: string
-          last_retry_at: string | null
-          payload: Json
-          retry_count: number | null
-          source_workflow: string
-        }
-        Insert: {
-          created_at?: string | null
-          error_message?: string | null
-          id?: string
-          last_retry_at?: string | null
-          payload: Json
-          retry_count?: number | null
-          source_workflow: string
-        }
-        Update: {
-          created_at?: string | null
-          error_message?: string | null
-          id?: string
-          last_retry_at?: string | null
-          payload?: Json
-          retry_count?: number | null
-          source_workflow?: string
-        }
-        Relationships: []
-      }
       error_logs: {
         Row: {
           created_at: string | null
@@ -1948,6 +1918,9 @@ export type Database = {
         | "missed"
         | "skipped"
         | "sent"
+        | "retry_1"
+        | "retry_2"
+        | "failed"
       recurrence_type:
         | "once"
         | "daily"
@@ -2107,6 +2080,9 @@ export const Constants = {
         "missed",
         "skipped",
         "sent",
+        "retry_1",
+        "retry_2",
+        "failed",
       ],
       recurrence_type: [
         "once",

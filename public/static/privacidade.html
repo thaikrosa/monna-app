@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Política de Privacidade - Monna</title>
+  <meta name="description" content="Política de Privacidade do aplicativo Monna. Saiba como coletamos, usamos e protegemos seus dados.">
+  <meta name="author" content="Monna">
+  <link rel="icon" type="image/png" href="/monna-favicon.png">
+  <link rel="canonical" href="https://monna.ia.br/privacidade">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --background: hsl(30, 33%, 85%);
+      --foreground: hsl(0, 69%, 8%);
+      --card: hsl(30, 47%, 95%);
+      --primary: hsl(353, 50%, 22%);
+      --primary-foreground: hsl(30, 47%, 95%);
+      --secondary: hsl(30, 33%, 80%);
+      --muted-foreground: hsl(0, 40%, 35%);
+      --border: hsl(30, 25%, 80%);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--secondary);
+      color: var(--foreground);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    a {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    
+    a:hover {
+      opacity: 0.8;
+    }
+    
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background-color: var(--secondary);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .header-inner {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .back-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 0.375rem;
+      color: var(--muted-foreground);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    
+    .back-btn:hover {
+      color: var(--foreground);
+    }
+    
+    .header-logo {
+      height: 1.5rem;
+      width: auto;
+    }
+    
+    .header-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+    
+    /* Content */
+    .content {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 1.5rem 1rem;
+    }
+    
+    .card {
+      background-color: var(--card);
+      border-radius: 0.5rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px -2px rgba(0,0,0,0.08), 0 4px 16px -4px rgba(0,0,0,0.12);
+      padding: 1.5rem;
+    }
+    
+    .last-updated {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      margin-bottom: 1.5rem;
+    }
+    
+    section {
+      margin-bottom: 2rem;
+    }
+    
+    section:last-child {
+      margin-bottom: 0;
+    }
+    
+    h2 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--foreground);
+      margin-bottom: 1rem;
+    }
+    
+    h3 {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--foreground);
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    p {
+      color: var(--muted-foreground);
+      margin-bottom: 0.75rem;
+    }
+    
+    ul {
+      list-style: disc;
+      padding-left: 1.5rem;
+      color: var(--muted-foreground);
+    }
+    
+    ul li {
+      margin-bottom: 0.5rem;
+    }
+    
+    ul li strong {
+      color: var(--foreground);
+    }
+    
+    /* Footer */
+    .footer {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .footer-links a {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      text-decoration: none;
+    }
+    
+    .footer-links a:hover {
+      color: var(--foreground);
+    }
+    
+    .footer-copy {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="back-btn">
+        <svg width="20" height="20" viewBox="0 0 256 256" fill="currentColor"><path d="M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z"/></svg>
+      </a>
+      <img src="https://anniawebapp.lovable.app/assets/logo-monna-BQjBg9UU.png" alt="Monna" class="header-logo">
+      <h1 class="header-title">Política de Privacidade</h1>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <main class="content">
+    <div class="card">
+      <p class="last-updated">Última atualização: 23 de janeiro de 2026</p>
+      
+      <section>
+        <h2>1. Introdução</h2>
+        <p>A Monna ("nós", "nosso" ou "Monna") opera o aplicativo Monna (o "Serviço"). Esta página informa sobre nossas políticas relativas à coleta, uso e divulgação de informações pessoais quando você utiliza nosso Serviço.</p>
+        <p>Ao utilizar o Serviço, você concorda com a coleta e uso de informações de acordo com esta política. As informações pessoais que coletamos são utilizadas para fornecer e melhorar o Serviço. Não usaremos ou compartilharemos suas informações com ninguém, exceto conforme descrito nesta Política de Privacidade.</p>
+      </section>
+
+      <section>
+        <h2>2. Definições</h2>
+        <ul>
+          <li><strong>Dados Pessoais:</strong> informações que podem identificá-lo direta ou indiretamente.</li>
+          <li><strong>Dados de Uso:</strong> informações coletadas automaticamente pela utilização do Serviço.</li>
+          <li><strong>Cookies:</strong> pequenos arquivos armazenados em seu dispositivo.</li>
+          <li><strong>Controlador de Dados:</strong> pessoa jurídica que determina as finalidades do tratamento.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>3. Coleta e Uso de Informações</h2>
+        <p>Coletamos diferentes tipos de informações para diversos fins, visando fornecer e melhorar nosso Serviço.</p>
+        
+        <h3>3.1 Dados Pessoais</h3>
+        <p>Durante o uso do nosso Serviço, podemos solicitar certas informações pessoalmente identificáveis:</p>
+        <ul>
+          <li>Endereço de e-mail</li>
+          <li>Nome e sobrenome</li>
+          <li>Número de telefone (WhatsApp)</li>
+          <li>Informações sobre seus filhos (nome, data de nascimento, informações de saúde)</li>
+          <li>Contatos da sua rede de apoio</li>
+          <li>Lembretes e compromissos</li>
+          <li>Lista de compras</li>
+        </ul>
+
+        <h3>3.2 Dados de Uso</h3>
+        <p>Também coletamos informações sobre como o Serviço é acessado e utilizado:</p>
+        <ul>
+          <li>Tipo de dispositivo</li>
+          <li>Identificadores únicos do dispositivo</li>
+          <li>Sistema operacional</li>
+          <li>Horários e datas de acesso</li>
+          <li>Páginas visitadas</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>4. Uso dos Dados</h2>
+        <p>A Monna utiliza os dados coletados para:</p>
+        <ul>
+          <li>Fornecer e manter o Serviço</li>
+          <li>Notificá-lo sobre alterações no Serviço</li>
+          <li>Permitir recursos interativos</li>
+          <li>Fornecer suporte ao cliente</li>
+          <li>Fornecer análises para melhorar o Serviço</li>
+          <li>Monitorar o uso do Serviço</li>
+          <li>Detectar e prevenir problemas técnicos</li>
+          <li>Enviar lembretes e notificações personalizadas</li>
+          <li>Oferecer sugestões proativas baseadas em seu perfil</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>5. Transferência de Dados</h2>
+        <p>Suas informações podem ser transferidas e mantidas em computadores localizados fora de sua jurisdição. Se você está localizado fora do Brasil e opta por nos fornecer informações, observe que transferimos os dados para o Brasil e os processamos lá.</p>
+        <p>Seu consentimento com esta Política de Privacidade, seguido pelo envio de tais informações, representa sua concordância com essa transferência.</p>
+      </section>
+
+      <section>
+        <h2>6. Segurança dos Dados</h2>
+        <p>A segurança dos seus dados é importante para nós, mas lembre-se que nenhum método de transmissão pela Internet ou método de armazenamento eletrônico é 100% seguro. Embora nos esforcemos para usar meios comercialmente aceitáveis para proteger seus Dados Pessoais, não podemos garantir sua segurança absoluta.</p>
+      </section>
+
+      <section>
+        <h2>7. Seus Direitos (LGPD)</h2>
+        <p>De acordo com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018), você tem direito a:</p>
+        <ul>
+          <li>Confirmar a existência de tratamento de dados</li>
+          <li>Acessar seus dados</li>
+          <li>Corrigir dados incompletos, inexatos ou desatualizados</li>
+          <li>Anonimizar, bloquear ou eliminar dados desnecessários</li>
+          <li>Portabilidade dos dados</li>
+          <li>Eliminar dados tratados com seu consentimento</li>
+          <li>Informação sobre compartilhamento de dados</li>
+          <li>Revogar o consentimento</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>8. Privacidade de Menores</h2>
+        <p>Nosso Serviço pode coletar informações sobre menores fornecidas pelos pais ou responsáveis legais. Não coletamos intencionalmente informações de identificação pessoal diretamente de menores de 18 anos. Se você é pai/mãe ou responsável e sabe que seu filho nos forneceu Dados Pessoais diretamente, entre em contato conosco.</p>
+      </section>
+
+      <section>
+        <h2>9. Integrações com Terceiros</h2>
+        <p>Nosso Serviço pode integrar-se com serviços de terceiros, incluindo:</p>
+        <ul>
+          <li><strong>Google Calendar:</strong> para sincronizar seus compromissos</li>
+          <li><strong>WhatsApp:</strong> para enviar notificações e lembretes</li>
+        </ul>
+        <p>Cada serviço de terceiros possui sua própria Política de Privacidade. Recomendamos que você revise as políticas de privacidade desses serviços.</p>
+
+        <h3>9.1 Conformidade com a Política de Dados do Usuário do Google</h3>
+        <p>O uso e a transferência de informações recebidas das APIs do Google para qualquer outro aplicativo aderirão à <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener noreferrer">Política de Dados do Usuário dos Serviços de API do Google</a>, incluindo os requisitos de Uso Limitado.</p>
+        <p>Especificamente em relação aos dados obtidos através das APIs do Google Workspace (como o Google Calendar), a Monna afirma que:</p>
+        <ul>
+          <li><strong>Não utilizamos para IA generalizada:</strong> Não utilizamos esses dados para treinar, melhorar ou desenvolver modelos de inteligência artificial ou aprendizado de máquina generalizados.</li>
+          <li><strong>Uso estrito para funcionalidades:</strong> Os dados são utilizados estritamente para fornecer as funcionalidades do aplicativo (criar e gerenciar eventos) solicitadas pelo usuário.</li>
+          <li><strong>Não compartilhamos com terceiros:</strong> Não compartilhamos seus dados do Google com terceiros, exceto conforme necessário para fornecer o serviço (como provedores de nuvem ou IA) ou para cumprir a lei.</li>
+        </ul>
+        <p>Em nenhuma circunstância os dados obtidos via APIs do Google são vendidos, utilizados para publicidade direcionada ou combinados com dados de outras fontes para fins de perfilamento.</p>
+      </section>
+
+      <section>
+        <h2>10. Alterações nesta Política</h2>
+        <p>Podemos atualizar nossa Política de Privacidade periodicamente. Notificaremos você sobre quaisquer alterações publicando a nova Política de Privacidade nesta página e atualizando a data de "última atualização".</p>
+      </section>
+
+      <section>
+        <h2>11. Contato</h2>
+        <p>Se você tiver dúvidas sobre esta Política de Privacidade, entre em contato conosco:</p>
+        <ul>
+          <li>E-mail: contato@monna.ia.br</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="/">Início</a>
+      <a href="/termos">Termos de Uso</a>
+      <a href="mailto:contato@monna.ia.br">Contato</a>
+    </div>
+    <p class="footer-copy">© 2026 Annia Labs. Todos os direitos reservados.</p>
+  </footer>
+</body>
+</html>

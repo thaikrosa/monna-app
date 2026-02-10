@@ -85,8 +85,12 @@ export default function OAuthCallback() {
         setErrorMessage(err.message || "Erro inesperado");
       }
 
-      // Redirect after processing
-      setTimeout(() => navigate("/configuracoes"), 2000);
+      // Redirect after processing — back to wizard if onboarding
+      const redirectTarget = sessionStorage.getItem('onboarding_calendar_redirect')
+        ? '/bem-vinda'
+        : '/configuracoes';
+      sessionStorage.removeItem('onboarding_calendar_redirect');
+      setTimeout(() => navigate(redirectTarget), 2000);
     };
 
     processCallback();

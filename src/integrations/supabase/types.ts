@@ -50,66 +50,93 @@ export type Database = {
         }
         Relationships: []
       }
-      calendar_connections: {
+      calendar_event_instances: {
         Row: {
-          access_token: string | null
-          access_token_expires_at: string | null
           created_at: string
-          external_calendar_id: string
+          ends_at: string
+          event_id: string
+          exception_type: string | null
+          external_instance_id: string | null
           id: string
-          last_error: string | null
-          last_synced_at: string | null
-          provider: string
-          refresh_token: string | null
-          scopes: string[]
+          is_all_day: boolean
+          is_exception: boolean
+          modified_data: Json | null
+          recurrence_rule_id: string | null
+          starts_at: string
           status: string
+          synced_from_google: boolean
           updated_at: string
           user_id: string
         }
         Insert: {
-          access_token?: string | null
-          access_token_expires_at?: string | null
           created_at?: string
-          external_calendar_id?: string
+          ends_at: string
+          event_id: string
+          exception_type?: string | null
+          external_instance_id?: string | null
           id?: string
-          last_error?: string | null
-          last_synced_at?: string | null
-          provider?: string
-          refresh_token?: string | null
-          scopes?: string[]
+          is_all_day?: boolean
+          is_exception?: boolean
+          modified_data?: Json | null
+          recurrence_rule_id?: string | null
+          starts_at: string
           status?: string
+          synced_from_google?: boolean
           updated_at?: string
-          user_id?: string
+          user_id: string
         }
         Update: {
-          access_token?: string | null
-          access_token_expires_at?: string | null
           created_at?: string
-          external_calendar_id?: string
+          ends_at?: string
+          event_id?: string
+          exception_type?: string | null
+          external_instance_id?: string | null
           id?: string
-          last_error?: string | null
-          last_synced_at?: string | null
-          provider?: string
-          refresh_token?: string | null
-          scopes?: string[]
+          is_all_day?: boolean
+          is_exception?: boolean
+          modified_data?: Json | null
+          recurrence_rule_id?: string | null
+          starts_at?: string
           status?: string
+          synced_from_google?: boolean
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "calendar_event_instances_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "calendar_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "calendar_event_instances_recurrence_rule_id_fkey"
+            columns: ["recurrence_rule_id"]
+            isOneToOne: false
+            referencedRelation: "calendar_recurrence_rules"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       calendar_events: {
         Row: {
           created_at: string
+          description: string | null
           ends_at: string
           external_calendar_id: string
           external_event_id: string
           id: string
           is_all_day: boolean
+          is_recurring: boolean
+          last_synced_at: string | null
           location: string | null
           provider: string
+          raw_google_data: Json | null
+          source: string
           starts_at: string
           status: string
+          sync_token: string | null
           title: string | null
           updated_at: string
           updated_from_provider_at: string | null
@@ -117,15 +144,21 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          description?: string | null
           ends_at: string
           external_calendar_id?: string
           external_event_id: string
           id?: string
           is_all_day?: boolean
+          is_recurring?: boolean
+          last_synced_at?: string | null
           location?: string | null
           provider?: string
+          raw_google_data?: Json | null
+          source?: string
           starts_at: string
           status?: string
+          sync_token?: string | null
           title?: string | null
           updated_at?: string
           updated_from_provider_at?: string | null
@@ -133,21 +166,77 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          description?: string | null
           ends_at?: string
           external_calendar_id?: string
           external_event_id?: string
           id?: string
           is_all_day?: boolean
+          is_recurring?: boolean
+          last_synced_at?: string | null
           location?: string | null
           provider?: string
+          raw_google_data?: Json | null
+          source?: string
           starts_at?: string
           status?: string
+          sync_token?: string | null
           title?: string | null
           updated_at?: string
           updated_from_provider_at?: string | null
           user_id?: string
         }
         Relationships: []
+      }
+      calendar_recurrence_rules: {
+        Row: {
+          by_day: string[] | null
+          count: number | null
+          created_at: string
+          dtstart: string
+          event_id: string
+          frequency: string
+          id: string
+          interval_value: number
+          rrule: string
+          until_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          by_day?: string[] | null
+          count?: number | null
+          created_at?: string
+          dtstart: string
+          event_id: string
+          frequency: string
+          id?: string
+          interval_value?: number
+          rrule: string
+          until_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          by_day?: string[] | null
+          count?: number | null
+          created_at?: string
+          dtstart?: string
+          event_id?: string
+          frequency?: string
+          id?: string
+          interval_value?: number
+          rrule?: string
+          until_date?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_recurrence_rules_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: true
+            referencedRelation: "calendar_events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       children: {
         Row: {
@@ -492,6 +581,27 @@ export type Database = {
         }
         Relationships: []
       }
+      environment: {
+        Row: {
+          created_at: string
+          id: number
+          key: string | null
+          value: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          key?: string | null
+          value?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          key?: string | null
+          value?: string | null
+        }
+        Relationships: []
+      }
       error_logs: {
         Row: {
           created_at: string | null
@@ -650,53 +760,38 @@ export type Database = {
         }
         Relationships: []
       }
-      onboarding_progress: {
+      onboarding: {
         Row: {
-          created_at: string | null
+          completed_at: string | null
+          created_at: string
+          flow: string
           id: string
-          kickstart_completed_at: string | null
-          last_prompt_shown_at: string | null
-          prompts_dismissed: number | null
-          step_calendar: boolean | null
-          step_children: boolean | null
-          step_desires: boolean | null
-          step_feelings: boolean | null
-          step_routines: boolean | null
-          step_support_areas: boolean | null
-          step_welcome: boolean | null
-          updated_at: string | null
+          started_at: string | null
+          status: string
+          step: number
+          updated_at: string
           user_id: string
         }
         Insert: {
-          created_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          flow: string
           id?: string
-          kickstart_completed_at?: string | null
-          last_prompt_shown_at?: string | null
-          prompts_dismissed?: number | null
-          step_calendar?: boolean | null
-          step_children?: boolean | null
-          step_desires?: boolean | null
-          step_feelings?: boolean | null
-          step_routines?: boolean | null
-          step_support_areas?: boolean | null
-          step_welcome?: boolean | null
-          updated_at?: string | null
-          user_id?: string
+          started_at?: string | null
+          status?: string
+          step?: number
+          updated_at?: string
+          user_id: string
         }
         Update: {
-          created_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          flow?: string
           id?: string
-          kickstart_completed_at?: string | null
-          last_prompt_shown_at?: string | null
-          prompts_dismissed?: number | null
-          step_calendar?: boolean | null
-          step_children?: boolean | null
-          step_desires?: boolean | null
-          step_feelings?: boolean | null
-          step_routines?: boolean | null
-          step_support_areas?: boolean | null
-          step_welcome?: boolean | null
-          updated_at?: string | null
+          started_at?: string | null
+          status?: string
+          step?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -843,6 +938,45 @@ export type Database = {
           },
         ]
       }
+      reminder_occurrences_archive: {
+        Row: {
+          acknowledged_at: string | null
+          archived_at: string | null
+          created_at: string
+          id: string
+          notification_sent_at: string | null
+          reminder_id: string
+          scheduled_at: string
+          snoozed_until: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          archived_at?: string | null
+          created_at: string
+          id: string
+          notification_sent_at?: string | null
+          reminder_id: string
+          scheduled_at: string
+          snoozed_until?: string | null
+          status: string
+          updated_at: string
+        }
+        Update: {
+          acknowledged_at?: string | null
+          archived_at?: string | null
+          created_at?: string
+          id?: string
+          notification_sent_at?: string | null
+          reminder_id?: string
+          scheduled_at?: string
+          snoozed_until?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       reminders: {
         Row: {
           call_guarantee: boolean | null
@@ -909,6 +1043,69 @@ export type Database = {
           status?: Database["public"]["Enums"]["reminder_status"] | null
           suggested_by_ai?: boolean | null
           timezone?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reminders_archive: {
+        Row: {
+          archived_at: string | null
+          category: string | null
+          created_at: string
+          datetime: string
+          description: string | null
+          id: string
+          metadata: Json | null
+          notify_minutes_before: number | null
+          priority: string | null
+          recurrence_config: Json | null
+          recurrence_end: string | null
+          recurrence_type: string
+          send_whatsapp: boolean | null
+          source: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          category?: string | null
+          created_at: string
+          datetime: string
+          description?: string | null
+          id: string
+          metadata?: Json | null
+          notify_minutes_before?: number | null
+          priority?: string | null
+          recurrence_config?: Json | null
+          recurrence_end?: string | null
+          recurrence_type: string
+          send_whatsapp?: boolean | null
+          source?: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          category?: string | null
+          created_at?: string
+          datetime?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          notify_minutes_before?: number | null
+          priority?: string | null
+          recurrence_config?: Json | null
+          recurrence_end?: string | null
+          recurrence_type?: string
+          send_whatsapp?: boolean | null
+          source?: string | null
+          status?: string
           title?: string
           updated_at?: string
           user_id?: string
@@ -1201,26 +1398,38 @@ export type Database = {
       }
       subscriptions: {
         Row: {
+          cancelled_at: string | null
           created_at: string
           current_period_end: string | null
           plan: string
+          started_at: string | null
           status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          cancelled_at?: string | null
           created_at?: string
           current_period_end?: string | null
           plan?: string
+          started_at?: string | null
           status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          cancelled_at?: string | null
           created_at?: string
           current_period_end?: string | null
           plan?: string
+          started_at?: string | null
           status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -1496,6 +1705,54 @@ export type Database = {
       }
     }
     Views: {
+      calendar_connections: {
+        Row: {
+          access_token: string | null
+          access_token_expires_at: string | null
+          created_at: string | null
+          external_calendar_id: string | null
+          id: string | null
+          last_error: string | null
+          last_synced_at: string | null
+          provider: string | null
+          refresh_token: string | null
+          scopes: string[] | null
+          status: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          access_token?: string | null
+          access_token_expires_at?: string | null
+          created_at?: string | null
+          external_calendar_id?: string | null
+          id?: string | null
+          last_error?: never
+          last_synced_at?: string | null
+          provider?: never
+          refresh_token?: string | null
+          scopes?: never
+          status?: never
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          access_token?: string | null
+          access_token_expires_at?: string | null
+          created_at?: string | null
+          external_calendar_id?: string | null
+          id?: string | null
+          last_error?: never
+          last_synced_at?: string | null
+          provider?: never
+          refresh_token?: string | null
+          scopes?: never
+          status?: never
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       errors_recent: {
         Row: {
           affected_users: number | null
@@ -1675,6 +1932,13 @@ export type Database = {
       }
     }
     Functions: {
+      archive_old_reminders: {
+        Args: { days_threshold?: number }
+        Returns: {
+          occurrences_archived: number
+          reminders_archived: number
+        }[]
+      }
       calculate_next_run: {
         Args: {
           p_current_run: string
@@ -1717,7 +1981,7 @@ export type Database = {
         Returns: undefined
       }
       fn_lista_excluir: {
-        Args: { p_items: string[]; p_user_id: string }
+        Args: { p_items: string[]; p_tag_name: string; p_user_id: string }
         Returns: {
           matched_name: string
           requested_name: string
@@ -1749,7 +2013,24 @@ export type Database = {
         Args: { p_count?: number; p_reminder_id: string }
         Returns: number
       }
+      get_calendar_instances: {
+        Args: { p_end_date: string; p_start_date: string; p_user_id: string }
+        Returns: {
+          description: string
+          ends_at: string
+          event_id: string
+          exception_type: string
+          instance_id: string
+          is_exception: boolean
+          is_recurring: boolean
+          location: string
+          starts_at: string
+          status: string
+          title: string
+        }[]
+      }
       get_complete_schema: { Args: never; Returns: Json }
+      get_config: { Args: never; Returns: Json }
       get_conversa_context: {
         Args: { p_state_id?: string; p_user_id: string }
         Returns: Json
@@ -1899,6 +2180,14 @@ export type Database = {
         Args: { memory_id: string; requesting_user_id: string }
         Returns: boolean
       }
+      to_local: {
+        Args: { p_timezone?: string; p_utc_time: string }
+        Returns: string
+      }
+      to_utc: {
+        Args: { p_local_time: string; p_timezone?: string }
+        Returns: string
+      }
       unaccent: { Args: { "": string }; Returns: string }
       upsert_conversa_state: {
         Args: { p_existing_state_id?: string; p_user_id: string }
@@ -1912,6 +2201,7 @@ export type Database = {
     Enums: {
       occurrence_status:
         | "pending"
+        | "sending"
         | "notified"
         | "acknowledged"
         | "snoozed"
@@ -2074,6 +2364,7 @@ export const Constants = {
     Enums: {
       occurrence_status: [
         "pending",
+        "sending",
         "notified",
         "acknowledged",
         "snoozed",

@@ -22,7 +22,7 @@ interface AuthContextType {
   loading: boolean;
   profileLoading: boolean;
   profileError: boolean;
-  signInWithGoogle: (redirectTo?: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   forceLogout: () => void;
 }
@@ -291,16 +291,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const signInWithGoogle = async (redirectTo?: string) => {
-    const redirectUrl = redirectTo
-      ? `${window.location.origin}${redirectTo}`
-      : `${window.location.origin}/home`;
-    console.log('[Auth] Redirect URL:', redirectUrl);
-    
+  const signInWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: redirectUrl,
         queryParams: {
           access_type: 'offline',
           prompt: 'select_account',

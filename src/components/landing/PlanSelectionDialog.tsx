@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Star, CircleNotch } from '@phosphor-icons/react';
+import { CircleNotch } from '@phosphor-icons/react';
 import {
   Dialog,
   DialogContent,
@@ -51,10 +51,10 @@ export function PlanSelectionDialog({ open, onOpenChange }: PlanSelectionDialogP
       <DialogContent className="sm:max-w-lg p-0 gap-0 border-border bg-background">
         <DialogHeader className="p-6 pb-2">
           <DialogTitle className="text-xl font-medium text-foreground text-center">
-            Escolha seu plano
+            Respira. A Monna cuida do resto.
           </DialogTitle>
           <DialogDescription className="text-center text-muted-foreground">
-            7 dias grátis em qualquer plano. Cancele quando quiser.
+            Sua paz mental por menos de R$1 ao dia.
           </DialogDescription>
         </DialogHeader>
 
@@ -76,6 +76,7 @@ export function PlanSelectionDialog({ open, onOpenChange }: PlanSelectionDialogP
               </Badge>
 
               <div className="mt-1">
+                <p className="text-sm font-medium text-muted-foreground">Anual</p>
                 <p className="text-2xl font-semibold text-foreground">
                   R$ 29,90
                   <span className="text-sm font-normal text-muted-foreground">/mês</span>
@@ -84,7 +85,7 @@ export function PlanSelectionDialog({ open, onOpenChange }: PlanSelectionDialogP
                   R$ 358,80/ano
                 </p>
                 <Badge variant="secondary" className="mt-2 text-[10px]">
-                  Economize 14%
+                  🎁 2 meses grátis
                 </Badge>
               </div>
 
@@ -117,6 +118,7 @@ export function PlanSelectionDialog({ open, onOpenChange }: PlanSelectionDialogP
               )}
             >
               <div>
+                <p className="text-sm font-medium text-muted-foreground">Mensal</p>
                 <p className="text-2xl font-semibold text-foreground">
                   R$ 34,90
                   <span className="text-sm font-normal text-muted-foreground">/mês</span>
@@ -155,7 +157,7 @@ export function PlanSelectionDialog({ open, onOpenChange }: PlanSelectionDialogP
                 Redirecionando...
               </>
             ) : (
-              'Começar meu teste grátis'
+              'TESTAR 7 DIAS GRÁTIS'
             )}
           </Button>
 
@@ -164,7 +166,7 @@ export function PlanSelectionDialog({ open, onOpenChange }: PlanSelectionDialogP
           )}
 
           <p className="text-xs text-muted-foreground text-center leading-relaxed">
-            Não gostou? Cancele com uma mensagem no WhatsApp. Sem burocracia.
+            Não gostou? Cancele com um zap.
           </p>
         </div>
       </DialogContent>

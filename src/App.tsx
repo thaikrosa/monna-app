@@ -26,6 +26,7 @@ import FAQ from "./pages/FAQ";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Cookies from "./pages/Cookies";
+import BemVinda from "./pages/BemVinda";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,7 +55,7 @@ const App = () => (
             <Route path="/sobre" element={<About />} />
             <Route path="/contato" element={<Contact />} />
             <Route path="/cookies" element={<Cookies />} />
-            
+            <Route path="/bem-vinda" element={<BemVinda />} />
             {/* Protected routes */}
             <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
               <Route path="/home" element={<Home />} />

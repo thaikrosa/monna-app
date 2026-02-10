@@ -131,5 +131,12 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     return <Navigate to="/auth" replace />;
   }
 
+  // Intercept onboarding redirect after OAuth login
+  const onboardingRedirect = sessionStorage.getItem('onboarding_redirect');
+  if (onboardingRedirect) {
+    sessionStorage.removeItem('onboarding_redirect');
+    return <Navigate to="/bem-vinda" replace />;
+  }
+
   return <>{children}</>;
 }

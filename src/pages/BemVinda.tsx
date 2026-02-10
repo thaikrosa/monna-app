@@ -142,7 +142,8 @@ export default function BemVinda() {
   const handleGoogleLogin = async () => {
     setSigningIn(true);
     try {
-      await signInWithGoogle('/bem-vinda');
+      sessionStorage.setItem('onboarding_redirect', 'true');
+      await signInWithGoogle();
     } catch {
       setSigningIn(false);
     }

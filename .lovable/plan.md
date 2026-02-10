@@ -1,82 +1,109 @@
 
 
-# Fix: Login Google loop na /bem-vinda
+# Roteamento baseado em onboarding_completed
 
-## Causa raiz
+## Resumo
 
-A URL `/bem-vinda` nao esta na whitelist de Redirect URLs do Supabase (Authentication > URL Configuration). Apenas `/home` esta configurada. Quando o OAuth redireciona para uma URL nao-whitelisted, o Supabase descarta os tokens — a usuaria chega sem sessao.
+Implementar verificacao de `onboarding_completed` em 3 pontos do app para garantir que usuarias com onboarding incompleto sempre sejam direcionadas ao wizard `/bem-vinda`.
 
-## Solucao
+## Problema atual
 
-Usar `/home` como redirect do OAuth (ja whitelisted) e um flag em `sessionStorage` para redirecionar de volta a `/bem-vinda`.
-
----
+- ProtectedRoute nao verifica `onboarding_completed` -- usuaria com onboarding incompleto consegue acessar `/home`
+- Auth.tsx redireciona sempre para `/home` apos login, ignorando estado do onboarding
+- Profile interface no AuthContext nao inclui `onboarding_completed`
 
 ## Arquivos modificados
 
-### 1. `src/pages/BemVinda.tsx`
+### 1. `src/contexts/AuthContext.tsx` — Adicionar campo ao Profile
 
-Na funcao `handleGoogleLogin`:
-
-```typescript
-// ANTES:
-await signInWithGoogle('/bem-vinda');
-
-// DEPOIS:
-sessionStorage.setItem('onboarding_redirect', 'true');
-await signInWithGoogle(); // usa default /home (whitelisted)
-```
-
-Remover o parametro '/bem-vinda' do signInWithGoogle. Adicionar flag em sessionStorage ANTES de iniciar o OAuth.
-
-### 2. `src/components/ProtectedRoute.tsx`
-
-Adicionar verificacao apos o usuario ser detectado (antes de renderizar children):
+Adicionar `onboarding_completed` na interface `Profile`:
 
 ```typescript
-// Apos confirmar que user existe e loading = false:
-const onboardingRedirect = sessionStorage.getItem('onboarding_redirect');
-if (onboardingRedirect) {
-  sessionStorage.removeItem('onboarding_redirect');
-  return <Navigate to="/bem-vinda" replace />;
+export interface Profile {
+  // ... campos existentes ...
+  onboarding_completed: boolean | null;
 }
 ```
 
-Isso intercepta a chegada em `/home` e redireciona para `/bem-vinda` antes de renderizar o dashboard.
+Nenhuma outra mudanca neste arquivo. O `select('*')` no fetchProfile ja traz o campo do banco.
 
----
+### 2. `src/components/ProtectedRoute.tsx` — Verificar onboarding_completed
 
-## Fluxo corrigido
+Atualmente o ProtectedRoute libera loading antes do profile carregar (`profileLoading` nao e considerado). Para verificar `onboarding_completed`, precisamos esperar o profile.
 
+Mudancas:
+- Importar `profile` e `profileLoading` do `useAuth()`
+- Apos confirmar que `user` existe e `loading` e false, verificar se `profileLoading` ainda e true — se sim, mostrar skeleton
+- Apos profile carregar, verificar `onboarding_completed`:
+  - Se `false` ou `null` → `<Navigate to="/bem-vinda" replace />`
+  - Se `true` → continuar normalmente
+- Manter o check do `sessionStorage('onboarding_redirect')` ANTES do check de onboarding (para nao criar loop)
+
+Logica final (simplificada):
 ```text
-1. Usuaria clica "Entrar com Google" em /bem-vinda
-2. sessionStorage.setItem('onboarding_redirect', 'true')
-3. signInWithGoogle() → redirect para /home (whitelisted)
-4. Google OAuth completa → Supabase redireciona para /home com tokens
-5. AuthContext processa tokens, sessao estabelecida
-6. ProtectedRoute detecta flag 'onboarding_redirect' em sessionStorage
-7. ProtectedRoute redireciona para /bem-vinda
-8. BemVinda detecta user logado, calcula step → Step 2
+loading? → skeleton
+hasOAuthHash processing? → "Finalizando login..."
+profileError? → botao "Entrar novamente"
+!user? → Navigate /auth
+sessionStorage 'onboarding_redirect'? → Navigate /bem-vinda (remove flag)
+profileLoading? → skeleton (aguardando profile)
+profile.onboarding_completed === false? → Navigate /bem-vinda
+render children
 ```
 
-## Alternativa descartada
+### 3. `src/pages/Auth.tsx` — Redirecionar baseado em onboarding
 
-Adicionar `/bem-vinda` na whitelist do Supabase resolveria tambem, mas depende de configuracao manual no dashboard e no dominio de producao. A solucao via sessionStorage e auto-contida no codigo e funciona em qualquer ambiente (preview, producao).
+Atualmente redireciona sempre para `/home`. Precisa verificar `onboarding_completed` do profile.
+
+Mudancas:
+- Importar `profile` e `profileLoading` do `useAuth()`
+- No useEffect de redirect, esperar `profile` carregar antes de decidir destino:
+  - Se `profile.onboarding_completed === true` → navigate `/home`
+  - Se `profile.onboarding_completed === false/null` → navigate `/bem-vinda`
+- Enquanto profile carrega, nao redirecionar (mostrar UI de login normalmente)
+
+### 4. `src/pages/BemVinda.tsx` — Redirecionar se onboarding ja completo
+
+Adicionar verificacao: se user logado E `onboarding_completed === true`, redirecionar para `/home`.
+
+Mudanca minima:
+- Importar `useNavigate` de react-router-dom
+- No `calculateStep`, antes de calcular, verificar `onboarding_completed` do profile
+- Se `onboarding_completed === true` → `navigate('/home', { replace: true })` e retornar
 
 ---
+
+## Tabela de decisao implementada
+
+| Situacao | Resultado |
+|----------|-----------|
+| /home sem login | → /auth |
+| /home logada, onboarding=false | → /bem-vinda |
+| /home logada, onboarding=true | dashboard |
+| /auth logada, onboarding=false | → /bem-vinda |
+| /auth logada, onboarding=true | → /home |
+| /bem-vinda sem login | Step 1 (login) |
+| /bem-vinda logada, onboarding=false | calcula step 2/3/4 |
+| /bem-vinda logada, onboarding=true | → /home |
 
 ## Secao tecnica
 
-### Mudancas em BemVinda.tsx
-- Linha do `handleGoogleLogin`: trocar `signInWithGoogle('/bem-vinda')` por `sessionStorage.setItem(...)` + `signInWithGoogle()`
+### Timing do profile
 
-### Mudancas em ProtectedRoute.tsx
-- Apos `if (!user) return <Navigate to="/auth" />` (linha ~130), ANTES de retornar children, adicionar check do sessionStorage
+O AuthContext carrega profile em background apos liberar `loading`. Isso significa que quando ProtectedRoute detecta `user` e `loading=false`, o `profile` pode ainda ser `null` com `profileLoading=true`.
 
-### Nenhum arquivo novo. Nenhuma dependencia nova.
+Para evitar flash de redirect incorreto, o ProtectedRoute deve mostrar skeleton enquanto `profileLoading === true` (apos user existir). Isso adiciona um breve delay (~100-300ms) mas garante decisao correta.
+
+### Nenhuma migracao necessaria
+
+O campo `onboarding_completed` (boolean, default false) ja existe na tabela `profiles`.
+
+### Nenhuma dependencia nova
 
 | Arquivo | Mudanca |
 |---------|---------|
-| `src/pages/BemVinda.tsx` | Remover redirectTo, adicionar sessionStorage flag |
-| `src/components/ProtectedRoute.tsx` | Interceptar flag e redirecionar para /bem-vinda |
+| `src/contexts/AuthContext.tsx` | Adicionar `onboarding_completed` ao interface Profile |
+| `src/components/ProtectedRoute.tsx` | Aguardar profile + verificar onboarding_completed |
+| `src/pages/Auth.tsx` | Redirecionar baseado em onboarding_completed |
+| `src/pages/BemVinda.tsx` | Redirecionar para /home se onboarding ja completo |
 

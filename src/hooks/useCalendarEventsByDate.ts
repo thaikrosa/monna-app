@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { format, startOfDay, endOfDay } from "date-fns";
+import type { AgendaEvent } from "./useTodayCalendarEvents";
 
 export function useCalendarEventsByDate(date: Date) {
   const { user } = useAuth();
@@ -13,14 +14,14 @@ export function useCalendarEventsByDate(date: Date) {
       const end = endOfDay(date).toISOString();
 
       const { data, error } = await supabase
-        .from('calendar_events')
+        .from('agenda_view')
         .select('*')
         .gte('starts_at', start)
         .lt('starts_at', end)
         .order('starts_at', { ascending: true });
 
       if (error) throw error;
-      return data || [];
+      return (data || []) as unknown as AgendaEvent[];
     },
     enabled: !!user,
   });

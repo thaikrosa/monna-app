@@ -8,11 +8,11 @@ import { HomeSection } from './HomeSection';
 import { AddEventDialog } from '@/components/agenda/AddEventDialog';
 import { useGoogleCalendarOAuth } from '@/hooks/useGoogleCalendarOAuth';
 import type { CalendarConnection } from '@/hooks/useCalendarConnections';
-import type { CalendarEvent } from '@/hooks/useTodayCalendarEvents';
+import type { AgendaEvent } from '@/hooks/useTodayCalendarEvents';
 
 interface CalendarSectionProps {
   connection: CalendarConnection | null | undefined;
-  events: CalendarEvent[];
+  events: AgendaEvent[];
   isLoading?: boolean;
 }
 
@@ -102,7 +102,7 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
         <div className="space-y-2">
           {events.slice(0, 4).map((event) => (
             <div 
-              key={event.id}
+              key={event.instance_id}
               className="flex items-center gap-3 py-2.5 border-b border-border/30 last:border-0"
             >
               <span className="text-xs font-medium text-primary w-12">

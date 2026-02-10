@@ -151,9 +151,9 @@ export function useHomeDashboard() {
         supabase.from('today_reminders').select('*').limit(5),
         supabase.from('v_shopping_items_with_frequency').select('*').eq('is_checked', false),
         supabase.from('children').select('*').limit(2),
-        // Buscar eventos de hoje com timezone correto
+        // Buscar eventos de hoje via agenda_view (corrige recorrentes)
         supabase
-          .from('calendar_events')
+          .from('agenda_view')
           .select('*')
           .gte('starts_at', startOfDay)
           .lt('starts_at', endOfDay)
@@ -175,7 +175,7 @@ export function useHomeDashboard() {
         },
         today: {
           agenda: (calendarResult.data || []).map(event => ({
-            id: event.id,
+            id: (event as any).instance_id || (event as any).event_id,
             start_time: event.is_all_day 
               ? 'Dia todo'
               : new Date(event.starts_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),

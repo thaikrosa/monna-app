@@ -1,146 +1,163 @@
 
-# Plano: Integrar Stripe Checkout na Landing Page
+# Plano: Wizard Multi-Step na pagina /bem-vinda
 
 ## Resumo
 
-Criar o fluxo completo de checkout com Stripe: uma Edge Function que gera a sessao de pagamento, um dialog de selecao de plano na landing page, e uma pagina de sucesso `/bem-vinda`.
+Substituir a pagina estatica `/bem-vinda` por um wizard de 4 steps com barra de progresso, login Google, coleta de nickname + aceites legais, conexao opcional com Google Calendar, e tela final com disparo de onboarding.
 
 ---
 
-## Pre-requisito: Secret do Stripe
+## Decisoes de Arquitetura
 
-A secret `STRIPE_SECRET_KEY` ainda nao esta configurada no Supabase. Sera necessario adiciona-la antes de prosseguir com a implementacao.
+### Redirect do Google Auth
+O `signInWithGoogle` atual redireciona para `/home`. Para o wizard, sera criada uma variante que redireciona de volta para `/bem-vinda`. Isso sera feito adicionando um parametro `redirectTo` ao `signInWithGoogle` no AuthContext.
+
+### Deteccao de step atual
+Ao carregar a pagina, o wizard detecta o estado da usuaria:
+- Sem sessao -> Step 1 (login)
+- Logada, sem nickname -> Step 2
+- Logada, com nickname, sem onboarding completo -> Step 3
+- Logada, com onboarding completo -> Step 4
+
+### Campos do banco
+Os campos `terms_accepted_at`, `privacy_accepted_at`, `onboarding_completed`, `onboarding_completed_at` e `nickname` ja existem na tabela `profiles`. Nenhuma migracao necessaria.
+
+### Seguranca do trigger-onboarding
+A Edge Function `trigger-onboarding` usa `verify_jwt = false` no config.toml (abordagem recomendada com signing-keys), mas valida o JWT **no codigo** via `getClaims()`. O `user_id` e extraido do token JWT, NAO aceito do body. Isso impede que qualquer pessoa chame o endpoint com user_ids arbitrarios.
 
 ---
 
-## 1. Edge Function: `create-checkout-session`
+## Arquivos Criados
 
-**Arquivo:** `supabase/functions/create-checkout-session/index.ts`
+### 1. `supabase/functions/trigger-onboarding/index.ts`
+Edge Function que:
+- Valida o JWT via `getClaims()` (rejeita requests nao autenticados com 401)
+- Extrai `user_id` do claim `sub` do JWT (ignora qualquer user_id do body)
+- Retorna `{ success: true }`
+- CORS headers inclusos
+- `verify_jwt = false` no config.toml (validacao feita no codigo)
 
-- Recebe POST com `{ plan: "monthly" | "annual" }`
-- Usa `stripe@14` via esm.sh
-- Cria Checkout Session com:
-  - `mode: "subscription"`
-  - `trial_period_days: 7`
-  - Campo customizado para WhatsApp
-  - `success_url: "https://monna.ia.br/bem-vinda"`
-  - `cancel_url: "https://monna.ia.br/"`
-  - `allow_promotion_codes: true`
-- Price IDs fixos no codigo conforme fornecido
-- CORS headers padrao do Supabase
+### 2. Componentes do Wizard (dentro de `src/pages/BemVinda.tsx`)
+O wizard sera implementado diretamente no arquivo `BemVinda.tsx`, substituindo o conteudo atual. Os 4 steps serao componentes internos no mesmo arquivo (ou extraidos para `src/components/onboarding/` se ficarem grandes).
 
-**Arquivo:** `supabase/config.toml` -- adicionar:
+---
+
+## Arquivos Modificados
+
+### 1. `src/pages/BemVinda.tsx` — Reescrita completa
+Wizard com 4 steps, barra de progresso (4 bolinhas conectadas por linhas), transicoes suaves via CSS (opacity + translate).
+
+**Step 1 — Login Google**
+- Logo Monna, titulo "Prontinho!", subtitulo sobre assinatura confirmada
+- Botao "Entrar com Google" (chama `signInWithGoogle` com redirect para `/bem-vinda`)
+- Texto "Usamos o Google para criar sua conta de forma segura."
+- Apos login detectado via `useAuth`, avanca automaticamente
+
+**Step 2 — Nickname + Aceites**
+- Campo texto pre-preenchido com `profile?.first_name` ou `user.user_metadata.full_name?.split(' ')[0]`
+- Dois checkboxes obrigatorios com links para `/termos` e `/privacidade` (target=_blank)
+- Botao "Continuar" desabilitado ate validacao
+- Ao clicar: atualiza `profiles` com `nickname`, `terms_accepted_at: new Date().toISOString()`, `privacy_accepted_at: new Date().toISOString()`
+
+**Step 3 — Google Calendar (opcional)**
+- Titulo, subtitulo e 3 beneficios com icones Phosphor (weight="thin")
+- Botao primario "Conectar Google Calendar" (usa `useGoogleCalendarOAuth().initiateCalendarOAuth()`)
+- Botao secundario "Farei depois"
+- Antes de chamar OAuth, salva flag em `sessionStorage` para redirect de volta ao wizard
+
+**Step 4 — Tela final (dispara onboarding)**
+- Titulo "Prontinho, {nickname}!"
+- Subtitulo sobre WhatsApp
+- Ao montar: POST autenticado para `trigger-onboarding` (sem body, user_id vem do JWT) e marca `onboarding_completed = true`, `onboarding_completed_at = now()` no `profiles`
+
+### 2. `src/contexts/AuthContext.tsx` — Parametro redirectTo
+Adicionar parametro opcional `redirectTo` ao `signInWithGoogle`:
+```
+signInWithGoogle: (redirectTo?: string) => Promise<void>
+```
+Se fornecido, usa esse valor como `redirectTo` no OAuth. Caso contrario, usa `/home` (comportamento atual mantido).
+
+### 3. `src/pages/OAuthCallback.tsx` — Redirect condicional
+Detectar via `sessionStorage` se o OAuth do Calendar foi iniciado durante o onboarding. Se sim, redirecionar para `/bem-vinda` em vez de `/configuracoes`.
+
+### 4. `supabase/config.toml` — Nova function
+Adicionar:
 ```toml
-[functions.create-checkout-session]
+[functions.trigger-onboarding]
 verify_jwt = false
 ```
+(Validacao JWT feita no codigo via getClaims para compatibilidade com signing-keys)
+
+### 5. `src/contexts/AuthContext.tsx` — Profile interface
+Adicionar campos `onboarding_completed`, `terms_accepted_at` ao `Profile` interface para que o wizard possa detectar o step correto.
 
 ---
 
-## 2. Dialog de Selecao de Plano
+## Fluxo Completo
 
-**Novo arquivo:** `src/components/landing/PlanSelectionDialog.tsx`
-
-Um Dialog (Radix) que abre ao clicar em qualquer CTA da landing page. Conteudo:
-
-- **Dois cards lado a lado** (empilhados no mobile)
-- **Plano Anual (pre-selecionado, destaque):**
-  - Badge "Melhor valor" com cor primary
-  - R$ 29,90/mês (grande)
-  - R$ 358,80/ano (menor)
-  - Badge "Economize 14%"
-  - Borda primary, shadow elevada
-- **Plano Mensal:**
-  - Visual neutro, borda border
-  - R$ 34,90/mês (grande)
-- Ambos: "7 dias gratis para testar" abaixo do preco
-- Indicador de selecao via borda colorida + radio visual
-- Botao full-width: "Comecar meu teste gratis"
-- Texto abaixo: "Nao gostou? Cancele com uma mensagem no WhatsApp. Sem burocracia."
-- Estado de loading no botao durante o redirect
-- Ao clicar: POST para a Edge Function, recebe `{ url }`, faz `window.location.href = url`
-
----
-
-## 3. Alterar CTAs da Landing Page
-
-**Arquivos modificados:**
-- `src/components/landing/HeroSection.tsx` -- botao "Quero testar gratis" abre o dialog em vez de scrollar para #cta-final
-- `src/components/landing/FinalCTASection.tsx` -- botao "Comecar meu teste gratis" abre o dialog em vez de link WhatsApp
-- `src/components/landing/StepsSection.tsx` -- se houver CTA, mesmo tratamento (verificacao: nao tem CTA nesta secao, sem alteracao)
-
-Os 3 botoes de CTA mencionados (Hero + FinalCTA + possivelmente outro) passam a chamar `setDialogOpen(true)`. O estado do dialog sera gerenciado no componente pai `LandingPage.tsx` e passado via props, ou o dialog sera incluido diretamente em cada secao que precisa dele. Abordagem escolhida: **estado no LandingPage.tsx** com callback passado por props.
-
----
-
-## 4. Pagina `/bem-vinda`
-
-**Novo arquivo:** `src/pages/BemVinda.tsx`
-
-- Pagina estatica simples
-- Layout centralizado, fundo `bg-secondary`
-- Logo Monna no topo
-- Titulo: "Prontinho!" (com emoji)
-- Subtitulo: "Vai la no WhatsApp que a Monna ja te mandou uma mensagem."
-- Texto menor: "Se a mensagem ainda nao chegou, aguarde alguns segundinhos."
-- Sem botoes de CTA
-- Design system Monna (mesmas cores, fontes)
-
-**Arquivo modificado:** `src/App.tsx` -- adicionar rota publica `/bem-vinda`
+```text
+Stripe Checkout sucesso
+    |
+    v
+/bem-vinda (Step 1)
+    |
+    v
+Clica "Entrar com Google"
+    |
+    v
+Google OAuth -> redirect /bem-vinda#access_token=...
+    |
+    v
+Supabase processa hash, detecta sessao
+    |
+    v
+/bem-vinda (Step 2 — auto-avanca)
+    |
+    v
+Preenche nickname + aceita termos
+    |
+    v
+Salva no profiles -> avanca Step 3
+    |
+    v
+Conecta Calendar (opcional) ou "Farei depois"
+    |
+    v
+/bem-vinda (Step 4 — tela final)
+    |
+    v
+POST trigger-onboarding (JWT auth, user_id do token) + marca onboarding_completed
+```
 
 ---
 
 ## Secao Tecnica
 
-### Arquivos criados
-| Arquivo | Descricao |
-|---------|-----------|
-| `supabase/functions/create-checkout-session/index.ts` | Edge Function Stripe |
-| `src/components/landing/PlanSelectionDialog.tsx` | Dialog de selecao de plano |
-| `src/pages/BemVinda.tsx` | Pagina de sucesso pos-pagamento |
+### Barra de progresso
+4 circulos (24px) conectados por linhas horizontais. Step atual tem fundo `primary`, completos tem fundo `primary`, futuros tem fundo `border`. Linhas entre circulos: completas tem cor `primary`, futuras `border`.
 
-### Arquivos modificados
-| Arquivo | Mudanca |
-|---------|---------|
-| `supabase/config.toml` | Adicionar config da nova function |
-| `src/App.tsx` | Adicionar rota `/bem-vinda` |
-| `src/pages/LandingPage.tsx` | Estado do dialog + passar props |
-| `src/components/landing/HeroSection.tsx` | CTA abre dialog |
-| `src/components/landing/FinalCTASection.tsx` | CTA abre dialog |
+### Transicoes
+CSS transitions com `opacity` e `transform: translateX()` para efeito de slide horizontal entre steps. Duration de 300ms com ease-out.
 
-### Fluxo do checkout
+### Protecao de rota
+A pagina `/bem-vinda` NAO usa `ProtectedRoute`. O Step 1 funciona sem autenticacao. A partir do Step 2, o componente verifica `user` do `useAuth()` e se nao houver, volta para Step 1.
 
-```text
-Usuaria clica CTA
-    |
-    v
-Dialog de plano abre (anual pre-selecionado)
-    |
-    v
-Seleciona plano + clica "Comecar meu teste gratis"
-    |
-    v
-POST /create-checkout-session { plan: "annual" }
-    |
-    v
-Edge Function cria Stripe Session
-    |
-    v
-Retorna { url: "https://checkout.stripe.com/..." }
-    |
-    v
-window.location.href = url (redirect ao Stripe)
-    |
-    v
-Stripe Checkout (cartao + trial 7 dias)
-    |
-    v
-Sucesso -> redirect para /bem-vinda
+### Google Calendar OAuth — ida e volta
+Antes de chamar `initiateCalendarOAuth()`, salvar `sessionStorage.setItem('onboarding_calendar_redirect', 'true')`. No `OAuthCallback.tsx`, verificar essa flag e redirecionar para `/bem-vinda` em vez de `/configuracoes`. O wizard detecta que Calendar ja esta conectado (via query de `calendar_connections` ou `google_oauth_tokens`) e avanca para Step 4.
+
+### Seguranca do trigger-onboarding
+```typescript
+// Na Edge Function:
+const authHeader = req.headers.get('Authorization');
+if (!authHeader?.startsWith('Bearer ')) {
+  return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+}
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  global: { headers: { Authorization: authHeader } }
+});
+const { data, error } = await supabase.auth.getClaims(token);
+const userId = data.claims.sub; // user_id vem do JWT, nao do body
 ```
 
 ### Dependencias
-- Nenhuma nova dependencia necessaria (Stripe roda server-side na Edge Function via esm.sh)
-- Dialog usa Radix Dialog ja instalado
-
-### Secret necessaria
-- `STRIPE_SECRET_KEY` -- sera adicionada via ferramenta de secrets antes de implementar
+Nenhuma nova dependencia. Usa Phosphor Icons, Radix Checkbox, componentes UI existentes.

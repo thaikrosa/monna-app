@@ -813,8 +813,10 @@ export type Database = {
           nickname: string | null
           onboarding_completed: boolean | null
           onboarding_completed_at: string | null
+          privacy_accepted_at: string | null
           proactive_suggestions_enabled: boolean | null
           state: string | null
+          terms_accepted_at: string | null
           timezone: string | null
           updated_at: string | null
           whatsapp: string | null
@@ -835,8 +837,10 @@ export type Database = {
           nickname?: string | null
           onboarding_completed?: boolean | null
           onboarding_completed_at?: string | null
+          privacy_accepted_at?: string | null
           proactive_suggestions_enabled?: boolean | null
           state?: string | null
+          terms_accepted_at?: string | null
           timezone?: string | null
           updated_at?: string | null
           whatsapp?: string | null
@@ -857,8 +861,10 @@ export type Database = {
           nickname?: string | null
           onboarding_completed?: boolean | null
           onboarding_completed_at?: string | null
+          privacy_accepted_at?: string | null
           proactive_suggestions_enabled?: boolean | null
           state?: string | null
+          terms_accepted_at?: string | null
           timezone?: string | null
           updated_at?: string | null
           whatsapp?: string | null

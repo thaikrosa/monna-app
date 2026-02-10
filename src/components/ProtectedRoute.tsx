@@ -10,48 +10,34 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { user, loading, profileError, forceLogout } = useAuth();
+  const { user, loading, profile, profileLoading, profileError, forceLogout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [showFallback, setShowFallback] = useState(false);
 
-  // Detecta se há token OAuth no hash (ainda processando callback)
-  // Isso acontece quando Supabase redireciona com #access_token=...
   const hasOAuthHash = location.hash.includes('access_token') || 
                        location.hash.includes('refresh_token') ||
                        location.hash.includes('error=');
 
-  // Limpar o hash OAuth da URL após detectá-lo (evita loops e URL limpa)
   useEffect(() => {
     if (hasOAuthHash && user) {
-      // Usuário logado e há hash - limpar o hash da URL
       window.history.replaceState(null, '', location.pathname);
     }
   }, [hasOAuthHash, user, location.pathname]);
 
   useEffect(() => {
-    // Reset fallback when loading changes
     if (!loading) {
       setShowFallback(false);
       return;
     }
-
-    // Se há hash OAuth, dar mais tempo para processar (10 segundos)
-    // Caso contrário, 3 segundos
     const timeout = hasOAuthHash ? 10000 : 3000;
-    
     const timeoutId = setTimeout(() => {
-      if (loading) {
-        setShowFallback(true);
-      }
+      if (loading) setShowFallback(true);
     }, timeout);
-
     return () => clearTimeout(timeoutId);
   }, [loading, hasOAuthHash]);
 
-  // Se há hash OAuth sendo processado E ainda não temos usuário E ainda está loading
-  // O Supabase client precisa de tempo para processar o token do hash
-  // Mas se loading=false (auth terminou), seguir o fluxo normal
+  // OAuth hash being processed
   if (hasOAuthHash && !user && loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -65,15 +51,12 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
 
-  // Se há hash OAuth mas loading terminou sem usuário, algo deu errado
-  // Limpar o hash e deixar o fluxo normal redirecionar para /auth
+  // OAuth hash but no session after loading
   if (hasOAuthHash && !user && !loading) {
-    // Limpar hash da URL para evitar loops
     window.history.replaceState(null, '', location.pathname);
-    // O fluxo normal vai redirecionar para /auth
   }
 
-  // Fallback para erro de profile (401/403)
+  // Profile auth error
   if (profileError) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6 px-4">
@@ -95,6 +78,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
 
+  // Auth loading
   if (loading) {
     if (showFallback) {
       return (
@@ -127,14 +111,32 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
 
+  // No user → login
   if (!user) {
     return <Navigate to="/auth" replace />;
   }
 
-  // Intercept onboarding redirect after OAuth login
+  // Intercept onboarding redirect after OAuth login (sessionStorage flag)
   const onboardingRedirect = sessionStorage.getItem('onboarding_redirect');
   if (onboardingRedirect) {
     sessionStorage.removeItem('onboarding_redirect');
+    return <Navigate to="/bem-vinda" replace />;
+  }
+
+  // Wait for profile to load before checking onboarding
+  if (profileLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Skeleton className="h-12 w-12 rounded-full" />
+          <Skeleton className="h-4 w-32" />
+        </div>
+      </div>
+    );
+  }
+
+  // Onboarding not completed → redirect to wizard
+  if (!profile?.onboarding_completed) {
     return <Navigate to="/bem-vinda" replace />;
   }
 

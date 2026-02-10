@@ -1711,6 +1711,26 @@ export type Database = {
       }
     }
     Views: {
+      agenda_view: {
+        Row: {
+          description: string | null
+          ends_at: string | null
+          event_id: string | null
+          external_event_id: string | null
+          external_instance_id: string | null
+          instance_id: string | null
+          is_all_day: boolean | null
+          is_recurring: boolean | null
+          location: string | null
+          provider: string | null
+          source: string | null
+          starts_at: string | null
+          status: string | null
+          title: string | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
       calendar_connections: {
         Row: {
           access_token: string | null

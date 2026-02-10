@@ -6,11 +6,15 @@ interface EventCardProps {
   endTime?: string;
   title: string;
   isAllDay?: boolean;
+  onClick?: () => void;
 }
 
-export function EventCard({ startTime, endTime, title, isAllDay }: EventCardProps) {
+export function EventCard({ startTime, endTime, title, isAllDay, onClick }: EventCardProps) {
   return (
-    <Card className={`border border-border shadow-elevated ${isAllDay ? 'bg-secondary' : 'bg-card'}`}>
+    <Card
+      className={`border border-border shadow-elevated ${isAllDay ? 'bg-secondary' : 'bg-card'} ${onClick ? 'cursor-pointer active:scale-[0.98] transition-transform duration-100' : ''}`}
+      onClick={onClick}
+    >
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
           <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0">

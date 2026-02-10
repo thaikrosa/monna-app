@@ -12,6 +12,7 @@ export interface Profile {
   whatsapp: string | null;
   created_at: string | null;
   updated_at: string | null;
+  onboarding_completed: boolean | null;
 }
 
 interface AuthContextType {

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useGoogleCalendarOAuth } from '@/hooks/useGoogleCalendarOAuth';
@@ -45,8 +46,9 @@ function StepIndicator({ currentStep }: { currentStep: WizardStep }) {
 }
 
 export default function BemVinda() {
-  const { user, session, signInWithGoogle, loading: authLoading } = useAuth();
+  const { user, session, profile, signInWithGoogle, loading: authLoading } = useAuth();
   const { initiateCalendarOAuth } = useGoogleCalendarOAuth();
+  const navigate = useNavigate();
 
   const [step, setStep] = useState<WizardStep | null>(null);
   const [initializing, setInitializing] = useState(true);
@@ -67,24 +69,31 @@ export default function BemVinda() {
   // Track if user just logged in (was null, now has value)
   const prevUserRef = useRef<string | null | undefined>(undefined);
 
+  // Redirect to /home if onboarding already completed
+  useEffect(() => {
+    if (!authLoading && user && profile?.onboarding_completed) {
+      navigate('/home', { replace: true });
+    }
+  }, [authLoading, user, profile, navigate]);
+
   const calculateStep = useCallback(async (userId: string) => {
     // Fetch profile data
-    const { data: profile } = await supabase
+    const { data: profileData } = await supabase
       .from('profiles')
       .select('nickname, terms_accepted_at, privacy_accepted_at, first_name')
       .eq('id', userId)
       .maybeSingle();
 
     // Check LGPD acceptance
-    if (!profile?.terms_accepted_at || !profile?.privacy_accepted_at) {
+    if (!profileData?.terms_accepted_at || !profileData?.privacy_accepted_at) {
       // Pre-fill nickname
-      const defaultNick = profile?.nickname || profile?.first_name || '';
+      const defaultNick = profileData?.nickname || profileData?.first_name || '';
       setNickname(defaultNick);
       setDisplayNickname(defaultNick);
       return 2 as WizardStep;
     }
 
-    setDisplayNickname(profile.nickname || profile.first_name || '');
+    setDisplayNickname(profileData.nickname || profileData.first_name || '');
 
     // Check Google Calendar connection
     const { count } = await supabase

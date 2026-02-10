@@ -7,15 +7,20 @@ import { toast } from 'sonner';
 import logoMonna from '@/assets/logo-monna.png';
 
 export default function Auth() {
-  const { user, loading, signInWithGoogle } = useAuth();
+  const { user, loading, profile, profileLoading, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
-  // Redireciona se já estiver logado
+  // Redireciona se já estiver logado (espera profile carregar para decidir destino)
   useEffect(() => {
-    if (!loading && user) {
+    if (loading || !user) return;
+    if (profileLoading) return;
+
+    if (profile?.onboarding_completed) {
       navigate('/home', { replace: true });
+    } else {
+      navigate('/bem-vinda', { replace: true });
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, profile, profileLoading, navigate]);
 
   const handleGoogleLogin = async () => {
     try {
@@ -24,11 +29,6 @@ export default function Auth() {
       toast.error('Erro ao entrar com Google. Tente novamente.');
     }
   };
-
-  // IMPORTANTE: Mostrar UI imediatamente, não bloquear em loading
-  // Se estiver logado, o useEffect acima redireciona
-  // Se loading=true mas user=null, mostrar botão de login mesmo assim
-  // (previne tela presa em loading por muito tempo)
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">

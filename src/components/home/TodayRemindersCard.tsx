@@ -1,4 +1,5 @@
 import { Bell, CaretRight } from '@phosphor-icons/react';
+import { capitalizeFirst } from '@/lib/reminder-utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ReminderItem } from '@/types/home-dashboard';
@@ -61,7 +62,7 @@ export function TodayRemindersCard({ reminders, isTeaser = false }: TodayReminde
       <div className="space-y-2">
         {displayReminders.map((reminder) => (
           <div key={reminder.id} className="flex items-center justify-between py-2 border-b border-border/40 last:border-0">
-            <span className="text-sm text-foreground">{reminder.title}</span>
+            <span className="text-sm text-foreground">{capitalizeFirst(reminder.title)}</span>
             {getPriorityBadge(reminder.priority)}
           </div>
         ))}

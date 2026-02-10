@@ -37,6 +37,7 @@ const queryClient = new QueryClient({
   },
 });
 
+// Monna App
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>

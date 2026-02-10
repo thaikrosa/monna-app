@@ -53,26 +53,48 @@ export function useUpcomingReminders() {
 }
 
 /**
- * Busca lembretes de uma data específica
+ * Busca lembretes de uma data específica usando timezone local.
+ * Se includeOverdue=true (para "hoje"), também traz atrasados.
  */
-export function useRemindersByDate(date: Date) {
+export function useRemindersByDate(date: Date, includeOverdue: boolean = false) {
   const { user } = useAuth();
-  const dateStr = date.toISOString().split('T')[0];
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const dateStr = `${year}-${month}-${day}`;
   
   return useQuery({
-    queryKey: ['reminders', 'date', dateStr],
+    queryKey: ['reminders', 'date', dateStr, includeOverdue],
     queryFn: async () => {
       const startOfDay = `${dateStr}T00:00:00`;
       const endOfDay = `${dateStr}T23:59:59`;
       
-      const { data, error } = await supabase
+      // Fetch reminders for the selected day
+      const { data: dayReminders, error } = await supabase
         .from('upcoming_reminders')
         .select('*')
         .gte('scheduled_at', startOfDay)
         .lte('scheduled_at', endOfDay)
         .order('scheduled_at', { ascending: true });
       if (error) throw error;
-      return data as UpcomingReminder[];
+      
+      let allReminders = (dayReminders || []) as UpcomingReminder[];
+      
+      // For "today", also fetch overdue reminders (before today, still pending/snoozed)
+      if (includeOverdue) {
+        const { data: overdueReminders, error: overdueError } = await supabase
+          .from('upcoming_reminders')
+          .select('*')
+          .lt('scheduled_at', startOfDay)
+          .in('occurrence_status', ['pending', 'snoozed', 'notified'])
+          .order('scheduled_at', { ascending: true });
+        if (overdueError) throw overdueError;
+        
+        // Overdue first, then today's in chronological order
+        allReminders = [...(overdueReminders || []) as UpcomingReminder[], ...allReminders];
+      }
+      
+      return allReminders;
     },
     enabled: !!user && !!date,
   });

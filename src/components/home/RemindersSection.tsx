@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { capitalizeFirst } from '@/lib/reminder-utils';
 import { HomeSection } from './HomeSection';
 import { AddReminderDialog } from '@/components/reminders/AddReminderDialog';
 import { useAcknowledgeOccurrence } from '@/hooks/useReminders';
@@ -90,7 +91,7 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
                   <p className={`text-sm truncate ${
                     reminder.isOverdue ? 'text-destructive' : 'text-foreground'
                   } ${isAcknowledged ? 'line-through' : ''}`}>
-                    {reminder.title}
+                    {capitalizeFirst(reminder.title)}
                   </p>
                   
                   {reminder.scheduled_at && (

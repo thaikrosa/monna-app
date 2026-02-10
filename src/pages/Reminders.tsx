@@ -1,50 +1,49 @@
-import { useState } from 'react';
-import { Plus } from '@phosphor-icons/react';
-import { Button } from '@/components/ui/button';
+import { useState, useMemo } from 'react';
+import { Plus, CheckCircle } from '@phosphor-icons/react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { WeekSelector } from '@/components/reminders/WeekSelector';
-import { ReminderCard } from '@/components/reminders/ReminderCard';
+import { DaySelector } from '@/components/reminders/DaySelector';
+import { SwipeableReminderCard } from '@/components/reminders/SwipeableReminderCard';
 import { AddReminderDialog } from '@/components/reminders/AddReminderDialog';
 import { EditReminderSheet } from '@/components/reminders/EditReminderSheet';
 import { RecurringRemindersSection } from '@/components/reminders/RecurringRemindersSection';
 import {
   useRemindersByDate,
-  useUpcomingReminders,
   useAcknowledgeOccurrence,
   useSnoozeOccurrence,
   useDeleteReminder,
 } from '@/hooks/useReminders';
 import { toast } from 'sonner';
 import type { UpcomingReminder, Reminder } from '@/types/reminders';
-import { format, startOfWeek, addWeeks } from 'date-fns';
+import { format, isSameDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { motion, AnimatePresence } from 'framer-motion';
 
-// Union type para aceitar ambos os tipos no sheet de edição
 type EditableReminder = UpcomingReminder | Reminder;
 
 export default function Reminders() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editingReminder, setEditingReminder] = useState<EditableReminder | null>(null);
-  const [weekStart, setWeekStart] = useState(() =>
-    startOfWeek(new Date(), { weekStartsOn: 1 })
-  );
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [justCleared, setJustCleared] = useState(false);
 
-  const { data: upcomingReminders = [] } = useUpcomingReminders();
-  const { data: selectedDateReminders = [], isLoading } = useRemindersByDate(selectedDate);
+  const today = useMemo(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  }, []);
+
+  const isToday = isSameDay(selectedDate, today);
+  const { data: selectedDateReminders = [], isLoading } = useRemindersByDate(selectedDate, isToday);
 
   const acknowledgeOccurrence = useAcknowledgeOccurrence();
   const snoozeOccurrence = useSnoozeOccurrence();
   const deleteReminder = useDeleteReminder();
 
-  // Handler para editar UpcomingReminder (ocorrência do dia)
   const handleEdit = (reminder: UpcomingReminder) => {
     setEditingReminder(reminder);
     setIsEditOpen(true);
   };
 
-  // Handler para editar Reminder (template recorrente)
   const handleEditRecurring = (reminder: Reminder) => {
     setEditingReminder(reminder);
     setIsEditOpen(true);
@@ -53,6 +52,15 @@ export default function Reminders() {
   const handleComplete = async (occurrenceId: string) => {
     await acknowledgeOccurrence.mutateAsync(occurrenceId);
     toast.success('Lembrete concluído');
+
+    // Check if this was the last pending reminder
+    const pendingAfter = selectedDateReminders.filter(
+      r => r.occurrence_status !== 'acknowledged' && r.occurrence_id !== occurrenceId
+    );
+    if (pendingAfter.length === 0) {
+      setJustCleared(true);
+      setTimeout(() => setJustCleared(false), 3000);
+    }
   };
 
   const handleSnooze = async (occurrenceId: string) => {
@@ -65,19 +73,7 @@ export default function Reminders() {
     toast.success('Lembrete excluído');
   };
 
-  const handlePrevWeek = () => {
-    setWeekStart((prev) => addWeeks(prev, -1));
-  };
-
-  const handleNextWeek = () => {
-    setWeekStart((prev) => addWeeks(prev, 1));
-  };
-
-  const handleSelectDate = (date: Date) => {
-    setSelectedDate(date);
-  };
-
-  const pendingCount = selectedDateReminders.filter((r) => r.occurrence_status === 'pending').length;
+  const pendingCount = selectedDateReminders.filter((r) => r.occurrence_status === 'pending' || r.occurrence_status === 'snoozed').length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -94,15 +90,11 @@ export default function Reminders() {
           </div>
         </div>
 
-        {/* Week Selector */}
+        {/* Day Selector (3 days) */}
         <div className="bg-card p-3 rounded-lg border border-border shadow-elevated">
-          <WeekSelector
-            weekStart={weekStart}
+          <DaySelector
             selectedDate={selectedDate}
-            onSelectDate={handleSelectDate}
-            onPrevWeek={handlePrevWeek}
-            onNextWeek={handleNextWeek}
-            reminders={upcomingReminders}
+            onSelectDate={setSelectedDate}
           />
         </div>
 
@@ -114,12 +106,22 @@ export default function Reminders() {
                 <Skeleton key={i} className="h-16 rounded-lg" />
               ))}
             </div>
-          ) : selectedDateReminders.length === 0 ? (
+          ) : selectedDateReminders.length === 0 || (selectedDateReminders.every(r => r.occurrence_status === 'acknowledged') && !justCleared) ? (
             <div className="py-16 text-center">
               <p className="text-muted-foreground/60 text-sm">
                 Sua mente está livre para este dia.
               </p>
             </div>
+          ) : justCleared ? (
+            <motion.div 
+              className="py-16 text-center flex flex-col items-center gap-3"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <CheckCircle weight="thin" className="h-12 w-12 text-primary/60 animate-scale-in" />
+              <p className="text-muted-foreground/60 text-sm">Tudo em dia</p>
+            </motion.div>
           ) : (
             <>
               {pendingCount > 0 && (
@@ -127,16 +129,24 @@ export default function Reminders() {
                   {pendingCount} pendente{pendingCount > 1 ? 's' : ''}
                 </p>
               )}
-              {selectedDateReminders.map((reminder) => (
-                <ReminderCard
-                  key={reminder.occurrence_id}
-                  reminder={reminder}
-                  onComplete={handleComplete}
-                  onSnooze={handleSnooze}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                />
-              ))}
+              <AnimatePresence>
+                {selectedDateReminders.map((reminder) => (
+                  <motion.div
+                    key={reminder.occurrence_id}
+                    layout
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <SwipeableReminderCard
+                      reminder={reminder}
+                      onComplete={handleComplete}
+                      onSnooze={handleSnooze}
+                      onEdit={handleEdit}
+                      onDelete={handleDelete}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </>
           )}
         </div>

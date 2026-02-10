@@ -1,54 +1,20 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
 import { useAddReminder } from '@/hooks/useReminders';
 import { toast } from 'sonner';
 import { format, addDays, differenceInDays } from 'date-fns';
-import { 
-  Heart, 
-  GraduationCap, 
-  House, 
-  Briefcase, 
-  User, 
-  UsersThree, 
-  Bank, 
-  DotsThree,
-  CaretDown,
-  WhatsappLogo
-} from '@phosphor-icons/react';
+import { WhatsappLogo } from '@phosphor-icons/react';
 import type { ReminderCategory, ReminderPriority, RecurrenceType } from '@/types/reminders';
 
 interface AddReminderDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
-
-const categoryIcons: Record<ReminderCategory, React.ElementType> = {
-  health: Heart,
-  school: GraduationCap,
-  home: House,
-  work: Briefcase,
-  personal: User,
-  family: UsersThree,
-  finance: Bank,
-  other: DotsThree,
-};
-
-const categoryLabels: Record<ReminderCategory, string> = {
-  health: 'Saúde',
-  school: 'Escola',
-  home: 'Casa',
-  work: 'Trabalho',
-  personal: 'Pessoal',
-  family: 'Família',
-  finance: 'Finanças',
-  other: 'Outros',
-};
 
 const recurrenceOptions: { value: RecurrenceType; label: string }[] = [
   { value: 'daily', label: 'Diário' },
@@ -68,31 +34,38 @@ function getNextFullHour(): string {
 }
 
 export function AddReminderDialog({ open, onOpenChange }: AddReminderDialogProps) {
-  // Etapa 1 - Essenciais
+  const titleRef = useRef<HTMLInputElement>(null);
+
+  // Essenciais
   const [title, setTitle] = useState('');
   const [dueDate, setDueDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [dueTime, setDueTime] = useState(getNextFullHour());
 
-  // Etapa 2 - Recorrência
+  // Recorrência
   const [showRecurrence, setShowRecurrence] = useState(false);
   const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>('daily');
   const [daysOfWeek, setDaysOfWeek] = useState<number[]>([]);
-  
   const [intervalHoursStr, setIntervalHoursStr] = useState('24');
   const [durationDaysStr, setDurationDaysStr] = useState('7');
   const [recurrenceEnd, setRecurrenceEnd] = useState('');
-  
   const [lastEdited, setLastEdited] = useState<'duration' | 'endDate' | null>(null);
 
-  // Etapa 3 - Mais opções
-  const [showMoreOptions, setShowMoreOptions] = useState(false);
-  const [category, setCategory] = useState<ReminderCategory>('other');
-  const [priority, setPriority] = useState<ReminderPriority>('normal');
-  const [effortLevel, setEffortLevel] = useState<number>(1);
-  const [description, setDescription] = useState('');
+  // Notificação
   const [sendWhatsapp, setSendWhatsapp] = useState(true);
 
+  // Validação
+  const [attempted, setAttempted] = useState(false);
+
   const addReminder = useAddReminder();
+
+  // Autofocus on title when dialog opens
+  useEffect(() => {
+    if (open) {
+      setDueDate(format(new Date(), 'yyyy-MM-dd'));
+      setDueTime(getNextFullHour());
+      setTimeout(() => titleRef.current?.focus(), 100);
+    }
+  }, [open]);
 
   useEffect(() => {
     if (lastEdited === 'duration' && durationDaysStr && dueDate) {
@@ -124,24 +97,24 @@ export function AddReminderDialog({ open, onOpenChange }: AddReminderDialogProps
     setDurationDaysStr('7');
     setRecurrenceEnd('');
     setLastEdited(null);
-    setShowMoreOptions(false);
-    setCategory('other');
-    setPriority('normal');
-    setEffortLevel(1);
-    setDescription('');
     setSendWhatsapp(true);
+    setAttempted(false);
   };
 
   const toggleDayOfWeek = (day: number) => {
     setDaysOfWeek(prev => 
-      prev.includes(day) 
-        ? prev.filter(d => d !== day) 
-        : [...prev, day].sort()
+      prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day].sort()
     );
   };
 
   const handleSubmit = async () => {
-    if (!title.trim() || !dueDate) return;
+    setAttempted(true);
+
+    if (!title.trim()) {
+      titleRef.current?.focus();
+      return;
+    }
+    if (!dueDate || !dueTime) return;
 
     const datetime = new Date(`${dueDate}T${dueTime}:00`);
 
@@ -151,38 +124,30 @@ export function AddReminderDialog({ open, onOpenChange }: AddReminderDialogProps
     }
 
     const intervalHours = parseInt(intervalHoursStr) || 24;
-    const durationDays = parseInt(durationDaysStr) || 7;
 
     let recurrence_config: Record<string, unknown> | null = null;
-    
     if (showRecurrence && recurrenceType === 'weekly' && daysOfWeek.length > 0) {
       recurrence_config = { days_of_week: daysOfWeek };
     } else if (showRecurrence && recurrenceType === 'interval') {
-      recurrence_config = { 
-        interval_hours: intervalHours, 
-        duration_days: durationDays 
-      };
+      recurrence_config = { interval_hours: intervalHours, duration_days: parseInt(durationDaysStr) || 7 };
     }
 
-    // Capitalizar primeira letra do título
     const trimmedTitle = title.trim();
     const capitalizedTitle = trimmedTitle.charAt(0).toUpperCase() + trimmedTitle.slice(1);
 
     const payload = {
       title: capitalizedTitle,
-      description: description.trim() || null,
+      description: null,
       datetime: datetime.toISOString(),
-      category,
-      priority,
+      category: 'other' as ReminderCategory,
+      priority: 'normal' as ReminderPriority,
       recurrence_type: showRecurrence ? recurrenceType : 'once',
       recurrence_config,
       recurrence_end: recurrenceEnd || null,
-      effort_level: effortLevel,
+      effort_level: 1,
       call_guarantee: false,
       send_whatsapp: sendWhatsapp,
     };
-
-    console.log('[DEBUG] Creating reminder with payload:', payload);
 
     try {
       await addReminder.mutateAsync(payload);
@@ -195,83 +160,85 @@ export function AddReminderDialog({ open, onOpenChange }: AddReminderDialogProps
     }
   };
 
-  const selectedDateTime = new Date(`${dueDate}T${dueTime}:00`);
-  const isDateInPast = selectedDateTime < new Date();
-  const isValid = title.trim() && dueDate && !isDateInPast;
+  const selectedDateTime = dueDate && dueTime ? new Date(`${dueDate}T${dueTime}:00`) : null;
+  const isDateInPast = selectedDateTime ? selectedDateTime < new Date() : false;
+  const isValid = title.trim() && dueDate && dueTime && !isDateInPast;
 
   const inputClass = "bg-transparent border-0 border-b border-border/30 rounded-none focus:border-primary/50 focus:ring-0 transition-colors duration-150 placeholder:text-muted-foreground/40";
-
-  const selectedClass = "bg-primary/20 text-primary";
   const selectedSolidClass = "bg-primary text-primary-foreground";
-  const urgentSelectedClass = "bg-destructive/20 text-destructive";
   const unselectedClass = "bg-muted/20 text-muted-foreground hover:bg-muted/40";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto max-w-md px-5 py-6">
-        <DialogHeader>
-          <DialogTitle className="text-lg font-medium">Novo Lembrete</DialogTitle>
-          <DialogDescription className="text-muted-foreground/70">
-            Organize sua mente
-          </DialogDescription>
+      <DialogContent className="max-h-[90vh] overflow-y-auto max-w-md px-5 py-6 sm:rounded-lg">
+        {/* Visually hidden for accessibility */}
+        <DialogHeader className="sr-only">
+          <DialogTitle>Novo Lembrete</DialogTitle>
+          <DialogDescription>Criar um novo lembrete</DialogDescription>
         </DialogHeader>
 
-        <div className="mt-6 space-y-8">
-          {/* ETAPA 1 - ESSENCIAIS */}
-          <div className="space-y-5">
-            <div className="space-y-3">
-              <Label htmlFor="title" className="text-xs text-muted-foreground/70">
-                O que você quer lembrar?
-              </Label>
-              <Input
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Ex: Consulta pediatra"
-                className={inputClass}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-3">
-                <Label htmlFor="date" className="text-xs text-muted-foreground/70">
-                  Quando?
-                </Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
-                  className={`${inputClass} ${isDateInPast ? 'border-destructive/50' : ''}`}
-                />
-              </div>
-              <div className="space-y-3">
-                <Label htmlFor="time" className="text-xs text-muted-foreground/70">
-                  Hora
-                </Label>
-                <Input
-                  id="time"
-                  type="time"
-                  value={dueTime}
-                  onChange={(e) => setDueTime(e.target.value)}
-                  className={`${inputClass} ${isDateInPast ? 'border-destructive/50' : ''}`}
-                />
-              </div>
-            </div>
-            
-            {isDateInPast && (
-              <p className="text-xs text-destructive/80 mt-2">
-                Essa data já passou. Escolhe um horário a partir de agora?
+        <div className="space-y-8">
+          {/* TITLE */}
+          <div className="space-y-3">
+            <Input
+              ref={titleRef}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="O que você quer lembrar?"
+              className={inputClass}
+              autoFocus
+            />
+            {attempted && !title.trim() && (
+              <p className="text-xs text-muted-foreground">
+                Escreva o que você quer lembrar 😉
               </p>
             )}
           </div>
 
-          {/* ETAPA 2 - RECORRÊNCIA */}
+          {/* DATE + TIME */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-3">
+              <Label htmlFor="date" className="text-xs text-muted-foreground/70">Quando?</Label>
+              <Input
+                id="date"
+                type="date"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                className={`${inputClass} ${isDateInPast ? 'border-destructive/50' : ''}`}
+              />
+              {attempted && !dueDate && (
+                <p className="text-xs text-muted-foreground">
+                  Preencha a data para não esquecer 😉
+                </p>
+              )}
+            </div>
+            <div className="space-y-3">
+              <Label htmlFor="time" className="text-xs text-muted-foreground/70">Hora</Label>
+              <Input
+                id="time"
+                type="time"
+                value={dueTime}
+                onChange={(e) => setDueTime(e.target.value)}
+                className={`${inputClass} ${isDateInPast ? 'border-destructive/50' : ''}`}
+              />
+              {attempted && !dueTime && (
+                <p className="text-xs text-muted-foreground">
+                  Informe o horário para te lembrar na hora certa
+                </p>
+              )}
+            </div>
+          </div>
+
+          {isDateInPast && (
+            <p className="text-xs text-destructive/80">
+              Essa data já passou. Escolhe um horário a partir de agora?
+            </p>
+          )}
+
+          {/* RECURRENCE */}
           <div className="space-y-4">
             <div className="flex items-center justify-between py-2">
-              <Label htmlFor="recurring" className="text-sm text-muted-foreground">
-                Recorrente?
-              </Label>
+              <Label htmlFor="recurring" className="text-sm text-muted-foreground">Recorrente?</Label>
               <Switch
                 id="recurring"
                 checked={showRecurrence}
@@ -378,7 +345,7 @@ export function AddReminderDialog({ open, onOpenChange }: AddReminderDialogProps
             </Collapsible>
           </div>
 
-          {/* ETAPA 3 - NOTIFICAÇÕES */}
+          {/* WHATSAPP */}
           <div className="space-y-3 py-2">
             <div className="flex items-center justify-between py-2">
               <div className="flex items-center gap-2">
@@ -394,101 +361,6 @@ export function AddReminderDialog({ open, onOpenChange }: AddReminderDialogProps
               />
             </div>
           </div>
-
-          {/* ETAPA 4 - MAIS OPÇÕES */}
-          <Collapsible open={showMoreOptions} onOpenChange={setShowMoreOptions}>
-            <CollapsibleTrigger asChild>
-              <button 
-                type="button"
-                className="flex items-center gap-2 text-sm text-muted-foreground/70 hover:text-muted-foreground transition-colors duration-150"
-              >
-                <CaretDown 
-                  weight="thin" 
-                  className={`h-4 w-4 transition-transform duration-150 ${showMoreOptions ? 'rotate-180' : ''}`} 
-                />
-                Mais opções
-              </button>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="space-y-6 pt-6">
-              <div className="space-y-3">
-                <Label className="text-xs text-muted-foreground/70">Categoria</Label>
-                <div className="grid grid-cols-4 gap-2">
-                  {(Object.keys(categoryIcons) as ReminderCategory[]).map((cat) => {
-                    const Icon = categoryIcons[cat];
-                    return (
-                      <button
-                        key={cat}
-                        type="button"
-                        onClick={() => setCategory(cat)}
-                        className={`
-                          flex flex-col items-center gap-1.5 p-3 rounded-lg
-                          transition-all duration-150
-                          ${category === cat ? selectedClass : unselectedClass}
-                        `}
-                      >
-                        <Icon weight="thin" className="h-5 w-5" />
-                        <span className="text-[10px]">{categoryLabels[cat]}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <Label className="text-xs text-muted-foreground/70">Prioridade</Label>
-                <div className="flex gap-2">
-                  {(['normal', 'important', 'urgent'] as ReminderPriority[]).map((p) => (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() => setPriority(p)}
-                      className={`
-                        flex-1 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-150
-                        ${priority === p
-                          ? p === 'urgent' ? urgentSelectedClass : selectedClass
-                          : unselectedClass
-                        }
-                      `}
-                    >
-                      {p === 'normal' ? 'Normal' : p === 'important' ? 'Importante' : 'Urgente'}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <Label className="text-xs text-muted-foreground/70">Nível de esforço</Label>
-                <div className="flex gap-3 justify-center py-2">
-                  {[1, 2, 3, 4, 5].map((level) => (
-                    <button
-                      key={level}
-                      type="button"
-                      onClick={() => setEffortLevel(level)}
-                      className={`
-                        w-3 h-3 rounded-full transition-all duration-150
-                        ${effortLevel >= level 
-                          ? 'bg-primary scale-110' 
-                          : 'bg-muted-foreground/20 hover:bg-muted-foreground/40'}
-                      `}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <Label htmlFor="description" className="text-xs text-muted-foreground/70">
-                  Detalhes (opcional)
-                </Label>
-                <Textarea
-                  id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Notas adicionais..."
-                  className={`${inputClass} min-h-[60px] resize-none`}
-                />
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
 
           {/* Submit */}
           <Button

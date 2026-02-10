@@ -1,6 +1,6 @@
 import { ArrowsClockwise, PencilSimple, TrashSimple } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
-import { formatRecurrenceDescription } from '@/lib/reminder-utils';
+import { formatRecurrenceDescription, capitalizeFirst } from '@/lib/reminder-utils';
 import type { Reminder } from '@/types/reminders';
 
 interface RecurringReminderCardProps {
@@ -24,7 +24,7 @@ export function RecurringReminderCard({ reminder, onEdit, onDelete }: RecurringR
         {/* Título + Descrição */}
         <div className="flex-1 min-w-0">
           <h3 className="font-medium text-foreground truncate">
-            {reminder.title}
+            {capitalizeFirst(reminder.title)}
           </h3>
           <p className="text-xs text-muted-foreground/70 mt-0.5">
             {formatRecurrenceDescription(reminder)}

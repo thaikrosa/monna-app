@@ -1,10 +1,10 @@
 import { 
-  Check, PencilSimple, TrashSimple, Clock,
+  Check, Clock,
   Heart, GraduationCap, House, Briefcase, User, UsersThree, Bank, DotsThree
 } from '@phosphor-icons/react';
-import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import type { UpcomingReminder, ReminderCategory } from '@/types/reminders';
+import { capitalizeFirst } from '@/lib/reminder-utils';
 
 const categoryIcons: Record<ReminderCategory, React.ElementType> = {
   health: Heart,
@@ -74,7 +74,7 @@ export function ReminderCard({ reminder, onComplete, onSnooze, onEdit, onDelete 
               ${isCompleted ? 'line-through decoration-muted-foreground/30' : ''}
             `}
           >
-            {reminder.title}
+            {capitalizeFirst(reminder.title)}
           </h3>
           {isSnoozed && (
             <Clock weight="thin" className="h-4 w-4 text-muted-foreground/50 flex-shrink-0" />
@@ -92,37 +92,6 @@ export function ReminderCard({ reminder, onComplete, onSnooze, onEdit, onDelete 
             {reminder.priority === 'urgent' ? 'Urgente' : 'Importante'}
           </span>
         )}
-
-        {/* Actions - revealed on hover */}
-        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
-          {!isCompleted && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onSnooze(reminder.occurrence_id)}
-              className="h-7 w-7 text-muted-foreground/60 hover:text-foreground active:text-foreground hover:bg-transparent"
-              title="Adiar 1h"
-            >
-              <Clock weight="thin" className="h-4 w-4" />
-            </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onEdit(reminder)}
-            className="h-7 w-7 text-muted-foreground/60 hover:text-foreground active:text-foreground hover:bg-transparent"
-          >
-            <PencilSimple weight="thin" className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onDelete(reminder.id)}
-            className="h-7 w-7 text-muted-foreground/60 hover:text-foreground active:text-foreground hover:bg-transparent"
-          >
-            <TrashSimple weight="thin" className="h-4 w-4" />
-          </Button>
-        </div>
       </div>
     </div>
   );

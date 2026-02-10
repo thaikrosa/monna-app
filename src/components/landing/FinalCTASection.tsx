@@ -3,7 +3,11 @@ import { Button } from '@/components/ui/button';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { cn } from '@/lib/utils';
 
-export function FinalCTASection() {
+interface FinalCTASectionProps {
+  onCtaClick?: () => void;
+}
+
+export function FinalCTASection({ onCtaClick }: FinalCTASectionProps) {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
@@ -49,16 +53,10 @@ export function FinalCTASection() {
           <Button
             size="lg"
             variant="secondary"
-            asChild
             className="gap-3 h-14 px-8 text-base text-primary hover:bg-card"
+            onClick={onCtaClick}
           >
-            <a
-              href="https://wa.me/5516999999999?text=Oi%20Monna!%20Quero%20testar%20grátis"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Começar meu teste grátis
-            </a>
+            Começar meu teste grátis
           </Button>
         </div>
 

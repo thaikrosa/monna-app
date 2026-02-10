@@ -3,7 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { PhoneMockup } from './PhoneMockup';
 
-export function HeroSection() {
+interface HeroSectionProps {
+  onCtaClick?: () => void;
+}
+
+export function HeroSection({ onCtaClick }: HeroSectionProps) {
   return (
     <section className="min-h-screen flex items-center pt-24 pb-16 px-4 sm:px-6 bg-secondary">
 
@@ -29,11 +33,9 @@ export function HeroSection() {
 
           {/* CTA */}
           <div className="mb-6 animate-slide-up stagger-2">
-            <Button size="lg" asChild className="gap-3 h-12 px-6 text-base">
-              <a href="#cta-final">
-                Quero testar grátis
-                <ArrowRight weight="regular" className="h-4 w-4" />
-              </a>
+            <Button size="lg" className="gap-3 h-12 px-6 text-base" onClick={onCtaClick}>
+              Quero testar grátis
+              <ArrowRight weight="regular" className="h-4 w-4" />
             </Button>
           </div>
 

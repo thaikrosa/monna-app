@@ -1,109 +1,103 @@
 
 
-# Roteamento baseado em onboarding_completed
+# Fix: OAuth redirect perde tokens porque redirectTo nao esta na whitelist
 
-## Resumo
+## Causa raiz
 
-Implementar verificacao de `onboarding_completed` em 3 pontos do app para garantir que usuarias com onboarding incompleto sempre sejam direcionadas ao wizard `/bem-vinda`.
+`signInWithGoogle()` envia `redirectTo: ${window.location.origin}/home`. No ambiente preview, essa URL (`https://preview-id.lovable.app/home`) nao esta na whitelist do Supabase. Quando a URL nao esta na whitelist, o Supabase redireciona para a Site URL configurada SEM os tokens no hash. A sessao e perdida.
 
-## Problema atual
+## Solucao
 
-- ProtectedRoute nao verifica `onboarding_completed` -- usuaria com onboarding incompleto consegue acessar `/home`
-- Auth.tsx redireciona sempre para `/home` apos login, ignorando estado do onboarding
-- Profile interface no AuthContext nao inclui `onboarding_completed`
+Remover o parametro `redirectTo` do `signInWithOAuth`. Sem `redirectTo`, o Supabase usa a Site URL configurada no dashboard (que ja esta whitelisted por definicao). Os tokens chegam no hash, o `AuthContext` processa, e a logica de redirecionamento existente (`Auth.tsx`, `ProtectedRoute`) cuida do resto.
 
-## Arquivos modificados
+## Mudancas
 
-### 1. `src/contexts/AuthContext.tsx` — Adicionar campo ao Profile
-
-Adicionar `onboarding_completed` na interface `Profile`:
+### 1. `src/contexts/AuthContext.tsx` — Remover redirectTo do OAuth
 
 ```typescript
-export interface Profile {
-  // ... campos existentes ...
-  onboarding_completed: boolean | null;
-}
+// ANTES (linhas 294-315):
+const signInWithGoogle = async (redirectTo?: string) => {
+  const redirectUrl = redirectTo
+    ? `${window.location.origin}${redirectTo}`
+    : `${window.location.origin}/home`;
+  
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: redirectUrl,
+      queryParams: { ... },
+    },
+  });
+};
+
+// DEPOIS:
+const signInWithGoogle = async () => {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'select_account',
+      },
+    },
+  });
+
+  if (error) {
+    console.error('[Auth] Google sign-in error:', error);
+    throw error;
+  }
+};
 ```
 
-Nenhuma outra mudanca neste arquivo. O `select('*')` no fetchProfile ja traz o campo do banco.
+Remover o parametro `redirectTo` da funcao e da chamada OAuth. Sem esse parametro, o Supabase usa a Site URL do dashboard.
 
-### 2. `src/components/ProtectedRoute.tsx` — Verificar onboarding_completed
+Atualizar a interface `AuthContextType` tambem:
+```typescript
+signInWithGoogle: () => Promise<void>;  // remover parametro opcional
+```
 
-Atualmente o ProtectedRoute libera loading antes do profile carregar (`profileLoading` nao e considerado). Para verificar `onboarding_completed`, precisamos esperar o profile.
+### 2. `src/pages/BemVinda.tsx` — Ja esta correto
 
-Mudancas:
-- Importar `profile` e `profileLoading` do `useAuth()`
-- Apos confirmar que `user` existe e `loading` e false, verificar se `profileLoading` ainda e true — se sim, mostrar skeleton
-- Apos profile carregar, verificar `onboarding_completed`:
-  - Se `false` ou `null` → `<Navigate to="/bem-vinda" replace />`
-  - Se `true` → continuar normalmente
-- Manter o check do `sessionStorage('onboarding_redirect')` ANTES do check de onboarding (para nao criar loop)
+A chamada `signInWithGoogle()` em BemVinda ja nao passa argumentos (fix anterior). Nenhuma mudanca necessaria.
 
-Logica final (simplificada):
+### 3. `src/pages/Auth.tsx` — Ja esta correto
+
+A chamada `signInWithGoogle()` em Auth ja nao passa argumentos. Nenhuma mudanca necessaria.
+
+## Configuracao necessaria no Supabase Dashboard
+
+O usuario precisa verificar que a Site URL no Supabase (Authentication > URL Configuration) esta configurada como `https://monna.ia.br`.
+
+Para testar no preview, adicionar a URL do preview (`https://id-preview--20f0cae3-cccb-4cdf-9b5a-e66cb61791cd.lovable.app`) na lista de Redirect URLs do dashboard.
+
+## Fluxo corrigido
+
 ```text
-loading? → skeleton
-hasOAuthHash processing? → "Finalizando login..."
-profileError? → botao "Entrar novamente"
-!user? → Navigate /auth
-sessionStorage 'onboarding_redirect'? → Navigate /bem-vinda (remove flag)
-profileLoading? → skeleton (aguardando profile)
-profile.onboarding_completed === false? → Navigate /bem-vinda
-render children
+1. Usuaria clica "Entrar com Google" em /bem-vinda
+2. sessionStorage.setItem('onboarding_redirect', 'true')
+3. signInWithGoogle() → OAuth SEM redirectTo
+4. Supabase usa Site URL (https://monna.ia.br) como destino
+5. Usuaria volta para monna.ia.br com tokens no hash (#access_token=...)
+6. AuthContext detecta hash, processa tokens, sessao estabelecida
+7. Landing page detecta sessao → LandingNavbar mostra "Ir para o app"
+   OU Auth.tsx (se Site URL = /auth) detecta sessao e profile → redireciona
+8. Ao chegar em rota protegida (/home), ProtectedRoute detecta flag 'onboarding_redirect'
+9. Redireciona para /bem-vinda
+10. Wizard calcula step (provavelmente Step 2)
 ```
-
-### 3. `src/pages/Auth.tsx` — Redirecionar baseado em onboarding
-
-Atualmente redireciona sempre para `/home`. Precisa verificar `onboarding_completed` do profile.
-
-Mudancas:
-- Importar `profile` e `profileLoading` do `useAuth()`
-- No useEffect de redirect, esperar `profile` carregar antes de decidir destino:
-  - Se `profile.onboarding_completed === true` → navigate `/home`
-  - Se `profile.onboarding_completed === false/null` → navigate `/bem-vinda`
-- Enquanto profile carrega, nao redirecionar (mostrar UI de login normalmente)
-
-### 4. `src/pages/BemVinda.tsx` — Redirecionar se onboarding ja completo
-
-Adicionar verificacao: se user logado E `onboarding_completed === true`, redirecionar para `/home`.
-
-Mudanca minima:
-- Importar `useNavigate` de react-router-dom
-- No `calculateStep`, antes de calcular, verificar `onboarding_completed` do profile
-- Se `onboarding_completed === true` → `navigate('/home', { replace: true })` e retornar
-
----
-
-## Tabela de decisao implementada
-
-| Situacao | Resultado |
-|----------|-----------|
-| /home sem login | → /auth |
-| /home logada, onboarding=false | → /bem-vinda |
-| /home logada, onboarding=true | dashboard |
-| /auth logada, onboarding=false | → /bem-vinda |
-| /auth logada, onboarding=true | → /home |
-| /bem-vinda sem login | Step 1 (login) |
-| /bem-vinda logada, onboarding=false | calcula step 2/3/4 |
-| /bem-vinda logada, onboarding=true | → /home |
 
 ## Secao tecnica
 
-### Timing do profile
-
-O AuthContext carrega profile em background apos liberar `loading`. Isso significa que quando ProtectedRoute detecta `user` e `loading=false`, o `profile` pode ainda ser `null` com `profileLoading=true`.
-
-Para evitar flash de redirect incorreto, o ProtectedRoute deve mostrar skeleton enquanto `profileLoading === true` (apos user existir). Isso adiciona um breve delay (~100-300ms) mas garante decisao correta.
-
-### Nenhuma migracao necessaria
-
-O campo `onboarding_completed` (boolean, default false) ja existe na tabela `profiles`.
-
-### Nenhuma dependencia nova
+### Arquivo unico modificado
 
 | Arquivo | Mudanca |
 |---------|---------|
-| `src/contexts/AuthContext.tsx` | Adicionar `onboarding_completed` ao interface Profile |
-| `src/components/ProtectedRoute.tsx` | Aguardar profile + verificar onboarding_completed |
-| `src/pages/Auth.tsx` | Redirecionar baseado em onboarding_completed |
-| `src/pages/BemVinda.tsx` | Redirecionar para /home se onboarding ja completo |
+| `src/contexts/AuthContext.tsx` | Remover `redirectTo` param da funcao e do OAuth call |
 
+### Dependencia de configuracao
+
+O Site URL no Supabase Dashboard DEVE apontar para uma pagina que carrega o app React (onde AuthContext processa os tokens). Ideal: `https://monna.ia.br` ou `https://monna.ia.br/auth`.
+
+### Preview/desenvolvimento
+
+Para testar no preview Lovable, a URL do preview precisa estar na lista de Redirect URLs no Supabase Dashboard. Isso e uma limitacao do Supabase OAuth, nao do codigo.

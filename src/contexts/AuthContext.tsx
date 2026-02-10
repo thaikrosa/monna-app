@@ -21,7 +21,7 @@ interface AuthContextType {
   loading: boolean;
   profileLoading: boolean;
   profileError: boolean;
-  signInWithGoogle: () => Promise<void>;
+  signInWithGoogle: (redirectTo?: string) => Promise<void>;
   signOut: () => Promise<void>;
   forceLogout: () => void;
 }
@@ -290,9 +290,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const signInWithGoogle = async () => {
-    // Redirecionar para /home após login (funciona em preview e produção)
-    const redirectUrl = `${window.location.origin}/home`;
+  const signInWithGoogle = async (redirectTo?: string) => {
+    const redirectUrl = redirectTo
+      ? `${window.location.origin}${redirectTo}`
+      : `${window.location.origin}/home`;
     console.log('[Auth] Redirect URL:', redirectUrl);
     
     const { error } = await supabase.auth.signInWithOAuth({

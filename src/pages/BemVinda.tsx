@@ -290,7 +290,7 @@ export default function BemVinda() {
                 <Label htmlFor="terms" className="text-sm leading-snug text-foreground/80 cursor-pointer">
                   Li e aceito os{' '}
                   <a
-                    href="/termos"
+                    href="/static/termos.html"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="underline text-primary hover:text-primary/80"
@@ -310,7 +310,7 @@ export default function BemVinda() {
                 <Label htmlFor="privacy" className="text-sm leading-snug text-foreground/80 cursor-pointer">
                   Li e aceito a{' '}
                   <a
-                    href="/privacidade"
+                    href="/static/privacidade.html"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="underline text-primary hover:text-primary/80"

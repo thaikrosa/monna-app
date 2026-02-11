@@ -65,13 +65,13 @@ export default function Auth() {
         {/* Legal links */}
         <p className="text-xs text-muted-foreground text-center">
           Ao continuar, você concorda com nossos{' '}
-          <Link to="/termos" className="underline hover:text-foreground transition-colors duration-150">
+          <a href="/static/termos.html" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors duration-150">
             Termos de Uso
-          </Link>
+          </a>
           {' '}e{' '}
-          <Link to="/privacidade" className="underline hover:text-foreground transition-colors duration-150">
+          <a href="/static/privacidade.html" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors duration-150">
             Política de Privacidade
-          </Link>
+          </a>
         </p>
 
         {/* Indicador sutil de loading (não bloqueia interação) */}

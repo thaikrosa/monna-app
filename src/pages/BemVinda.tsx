@@ -2,20 +2,19 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { useGoogleCalendarOAuth } from '@/hooks/useGoogleCalendarOAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { Check, GoogleLogo, CalendarBlank, ArrowsClockwise, Lock, Spinner } from '@phosphor-icons/react';
+import { Check, GoogleLogo, Spinner, EnvelopeSimple } from '@phosphor-icons/react';
 import logoMonna from '@/assets/logo-monna.png';
 
-type WizardStep = 1 | 2 | 3 | 4;
+type WizardStep = 1 | 2 | 3;
 
 function StepIndicator({ currentStep }: { currentStep: WizardStep }) {
   return (
     <div className="flex items-center justify-center gap-2 mb-8">
-      {([1, 2, 3, 4] as const).map((step, i) => (
+      {([1, 2, 3] as const).map((step, i) => (
         <div key={step} className="flex items-center gap-2">
           <div
             className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
@@ -32,7 +31,7 @@ function StepIndicator({ currentStep }: { currentStep: WizardStep }) {
               step
             )}
           </div>
-          {i < 3 && (
+          {i < 2 && (
             <div
               className={`w-6 h-0.5 ${
                 step < currentStep ? 'bg-primary' : 'bg-border'
@@ -46,27 +45,33 @@ function StepIndicator({ currentStep }: { currentStep: WizardStep }) {
 }
 
 export default function BemVinda() {
-  const { user, session, profile, signInWithGoogle, loading: authLoading } = useAuth();
-  const { initiateCalendarOAuth } = useGoogleCalendarOAuth();
+  const { user, session, profile, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   const [step, setStep] = useState<WizardStep | null>(null);
   const [initializing, setInitializing] = useState(true);
 
+  // Step 1 state
+  const [signingIn, setSigningIn] = useState(false);
+  const [showMagicLink, setShowMagicLink] = useState(false);
+  const [magicEmail, setMagicEmail] = useState('');
+  const [magicLinkSent, setMagicLinkSent] = useState(false);
+  const [sendingMagicLink, setSendingMagicLink] = useState(false);
+
   // Step 2 state
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [nickname, setNickname] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
 
-  // Step 4 state
+  // Step 3 state
   const [displayNickname, setDisplayNickname] = useState('');
+  const [appReady, setAppReady] = useState(false);
   const triggerRef = useRef(false);
 
-  // Login state
-  const [signingIn, setSigningIn] = useState(false);
-
-  // Track if user just logged in (was null, now has value)
+  // Track if user just logged in
   const prevUserRef = useRef<string | null | undefined>(undefined);
 
   // Redirect to /home if onboarding already completed
@@ -77,35 +82,32 @@ export default function BemVinda() {
   }, [authLoading, user, profile, navigate]);
 
   const calculateStep = useCallback(async (userId: string) => {
-    // Fetch profile data
     const { data: profileData } = await supabase
       .from('profiles')
-      .select('nickname, terms_accepted_at, privacy_accepted_at, first_name')
+      .select('nickname, terms_accepted_at, privacy_accepted_at, first_name, last_name, onboarding_completed')
       .eq('id', userId)
       .maybeSingle();
 
+    // Already completed — don't show wizard
+    if (profileData?.onboarding_completed) {
+      return null; // signal to redirect
+    }
+
     // Check LGPD acceptance
     if (!profileData?.terms_accepted_at || !profileData?.privacy_accepted_at) {
-      // Pre-fill nickname
-      const defaultNick = profileData?.nickname || profileData?.first_name || '';
+      // Pre-fill from profile or Google metadata
+      const defaultFirst = profileData?.first_name || '';
+      const defaultLast = profileData?.last_name || '';
+      const defaultNick = profileData?.nickname || defaultFirst;
+      setFirstName(defaultFirst);
+      setLastName(defaultLast);
       setNickname(defaultNick);
       setDisplayNickname(defaultNick);
       return 2 as WizardStep;
     }
 
     setDisplayNickname(profileData.nickname || profileData.first_name || '');
-
-    // Check Google Calendar connection
-    const { count } = await supabase
-      .from('google_oauth_tokens')
-      .select('id', { count: 'exact', head: true })
-      .eq('user_id', userId);
-
-    if (!count || count === 0) {
-      return 3 as WizardStep;
-    }
-
-    return 4 as WizardStep;
+    return 3 as WizardStep;
   }, []);
 
   // Initialize step based on auth + data
@@ -120,12 +122,16 @@ export default function BemVinda() {
       }
 
       const computed = await calculateStep(user.id);
+      if (computed === null) {
+        navigate('/home', { replace: true });
+        return;
+      }
       setStep(computed);
       setInitializing(false);
     };
 
     init();
-  }, [authLoading, user, calculateStep]);
+  }, [authLoading, user, calculateStep, navigate]);
 
   // Auto-advance from Step 1 when user logs in
   useEffect(() => {
@@ -135,27 +141,55 @@ export default function BemVinda() {
     }
 
     if (prevUserRef.current === null && user?.id) {
-      // User just logged in — recalculate
       prevUserRef.current = user.id;
       setInitializing(true);
       calculateStep(user.id).then((computed) => {
+        if (computed === null) {
+          navigate('/home', { replace: true });
+          return;
+        }
         setStep(computed);
         setInitializing(false);
       });
     } else {
       prevUserRef.current = user?.id ?? null;
     }
-  }, [user, calculateStep]);
+  }, [user, calculateStep, navigate]);
 
-  // Step 1 — Login
+  // Step 1 — Google Login (inline, redirects to /bem-vinda)
   const handleGoogleLogin = async () => {
     setSigningIn(true);
     try {
-      sessionStorage.setItem('onboarding_redirect', 'true');
-      await signInWithGoogle();
+      await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/bem-vinda`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'select_account',
+          },
+        },
+      });
     } catch {
       setSigningIn(false);
     }
+  };
+
+  // Step 1 — Magic Link
+  const handleMagicLink = async () => {
+    setSendingMagicLink(true);
+    const { error } = await supabase.auth.signInWithOtp({
+      email: magicEmail,
+      options: {
+        emailRedirectTo: `${window.location.origin}/bem-vinda`,
+      },
+    });
+    if (error) {
+      console.error('[BemVinda] Magic link error:', error);
+    } else {
+      setMagicLinkSent(true);
+    }
+    setSendingMagicLink(false);
   };
 
   // Step 2 — Save profile
@@ -163,9 +197,11 @@ export default function BemVinda() {
     if (!user) return;
     setSavingProfile(true);
     try {
-      await supabase
+      const { error } = await supabase
         .from('profiles')
         .update({
+          first_name: firstName,
+          last_name: lastName,
           nickname,
           terms_accepted_at: new Date().toISOString(),
           privacy_accepted_at: new Date().toISOString(),
@@ -173,36 +209,26 @@ export default function BemVinda() {
         })
         .eq('id', user.id);
 
+      if (error) {
+        console.error('[BemVinda] Profile save error:', error);
+        return;
+      }
+
       setDisplayNickname(nickname);
-
-      // Check if calendar is connected to decide next step
-      const { count } = await supabase
-        .from('google_oauth_tokens')
-        .select('id', { count: 'exact', head: true })
-        .eq('user_id', user.id);
-
-      setStep(!count || count === 0 ? 3 : 4);
-    } catch (err) {
-      console.error('[BemVinda] Profile save error:', err);
+      setStep(3);
     } finally {
       setSavingProfile(false);
     }
   };
 
-  // Step 3 — Calendar
-  const handleConnectCalendar = () => {
-    sessionStorage.setItem('onboarding_calendar_redirect', 'true');
-    initiateCalendarOAuth();
-  };
-
-  // Step 4 — Trigger onboarding
+  // Step 3 — Release app access + trigger WhatsApp
   useEffect(() => {
-    if (step !== 4 || triggerRef.current || !session) return;
+    if (step !== 3 || triggerRef.current || !session) return;
     triggerRef.current = true;
 
-    const trigger = async () => {
-      // Liberar acesso ao app
-      const { error: profileError } = await supabase
+    const setupAndRelease = async () => {
+      // 1. CRITICAL: Set onboarding_completed = true
+      const { error } = await supabase
         .from('profiles')
         .update({
           onboarding_completed: true,
@@ -210,10 +236,27 @@ export default function BemVinda() {
         })
         .eq('id', session.user.id);
 
-      if (profileError) {
-        console.error('[Onboarding] Erro ao atualizar onboarding_completed:', profileError);
+      if (error) {
+        console.error('[Onboarding] Erro ao liberar app:', error);
+        // Retry once after 2s
+        await new Promise(r => setTimeout(r, 2000));
+        const retry = await supabase
+          .from('profiles')
+          .update({
+            onboarding_completed: true,
+            onboarding_completed_at: new Date().toISOString(),
+          })
+          .eq('id', session.user.id);
+
+        if (retry.error) {
+          console.error('[Onboarding] Retry falhou:', retry.error);
+        }
       }
 
+      // Enable button only after update confirmed
+      setAppReady(true);
+
+      // 2. Fire-and-forget: trigger WhatsApp onboarding
       try {
         const { data: onb } = await supabase
           .from('onboarding')
@@ -222,17 +265,17 @@ export default function BemVinda() {
           .eq('flow', 'whatsapp')
           .maybeSingle();
 
-        if (onb?.status !== 'pending') return;
-
-        await supabase.functions.invoke('trigger-onboarding', {
-          headers: { Authorization: `Bearer ${session.access_token}` },
-        });
+        if (onb?.status === 'pending') {
+          supabase.functions.invoke('trigger-onboarding', {
+            headers: { Authorization: `Bearer ${session.access_token}` },
+          }); // No await — fire and forget
+        }
       } catch (err) {
         console.error('[Onboarding] trigger failed:', err);
       }
     };
 
-    trigger();
+    setupAndRelease();
   }, [step, session]);
 
   // Loading
@@ -244,7 +287,12 @@ export default function BemVinda() {
     );
   }
 
-  const canContinueStep2 = nickname.trim().length >= 2 && termsAccepted && privacyAccepted;
+  const canContinueStep2 =
+    firstName.trim().length >= 2 &&
+    lastName.trim().length >= 2 &&
+    nickname.trim().length >= 2 &&
+    termsAccepted &&
+    privacyAccepted;
 
   return (
     <div className="min-h-screen bg-secondary flex items-center justify-center px-4">
@@ -256,11 +304,12 @@ export default function BemVinda() {
         {step === 1 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
             <h1 className="text-3xl font-light tracking-tight text-foreground">
-              Bem-vinda à Monna 💛
+              Prontinho! 💛
             </h1>
             <p className="text-foreground/80 leading-relaxed">
-              Faça login para começar sua jornada.
+              Sua assinatura está confirmada. Agora vamos preparar tudo pra você.
             </p>
+
             <Button
               onClick={handleGoogleLogin}
               disabled={signingIn}
@@ -274,23 +323,105 @@ export default function BemVinda() {
               )}
               Entrar com Google
             </Button>
+
+            {/* Separator */}
+            <div className="flex items-center gap-3">
+              <div className="flex-1 border-t border-border" />
+              <span className="text-sm text-muted-foreground">ou</span>
+              <div className="flex-1 border-t border-border" />
+            </div>
+
+            {!showMagicLink ? (
+              <button
+                onClick={() => setShowMagicLink(true)}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Prefiro usar outro email
+              </button>
+            ) : magicLinkSent ? (
+              <div className="space-y-2 animate-in fade-in duration-200">
+                <div className="flex items-center justify-center gap-2 text-primary">
+                  <EnvelopeSimple weight="thin" className="w-5 h-5" />
+                  <span className="text-sm font-medium">Link enviado!</span>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Enviamos um link para <strong className="text-foreground">{magicEmail}</strong>. Verifique sua caixa de entrada.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3 animate-in fade-in duration-200">
+                <Input
+                  type="email"
+                  value={magicEmail}
+                  onChange={(e) => setMagicEmail(e.target.value)}
+                  placeholder="seu@email.com"
+                  className="text-center"
+                  autoFocus
+                />
+                <Button
+                  onClick={handleMagicLink}
+                  disabled={!magicEmail.includes('@') || sendingMagicLink}
+                  variant="outline"
+                  className="w-full gap-2"
+                >
+                  {sendingMagicLink ? (
+                    <Spinner className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <EnvelopeSimple weight="thin" className="w-4 h-4" />
+                  )}
+                  Enviar link de acesso
+                </Button>
+              </div>
+            )}
           </div>
         )}
 
-        {/* Step 2 — Nickname + LGPD */}
+        {/* Step 2 — Personal data + LGPD */}
         {step === 2 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
             <h1 className="text-2xl font-light tracking-tight text-foreground">
-              Como quer ser chamada?
+              Vamos nos conhecer?
             </h1>
 
-            <Input
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-              placeholder="Seu apelido"
-              className="text-center text-lg"
-              autoFocus
-            />
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="firstName" className="text-sm text-foreground/80">Nome</Label>
+                <Input
+                  id="firstName"
+                  value={firstName}
+                  onChange={(e) => {
+                    setFirstName(e.target.value);
+                    // Auto-fill nickname if user hasn't manually changed it
+                    if (nickname === '' || nickname === firstName) {
+                      setNickname(e.target.value);
+                    }
+                  }}
+                  placeholder="Seu nome"
+                  autoFocus
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="lastName" className="text-sm text-foreground/80">Sobrenome</Label>
+                <Input
+                  id="lastName"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Seu sobrenome"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <Label htmlFor="nickname" className="text-sm text-foreground/80">Como quer ser chamada?</Label>
+                <Input
+                  id="nickname"
+                  value={nickname}
+                  onChange={(e) => setNickname(e.target.value)}
+                  placeholder="Seu apelido"
+                />
+                <p className="text-xs text-muted-foreground">É assim que a Monna vai te chamar 🤍</p>
+              </div>
+            </div>
 
             <div className="space-y-3 text-left">
               <div className="flex items-start gap-3">
@@ -345,40 +476,8 @@ export default function BemVinda() {
           </div>
         )}
 
-        {/* Step 3 — Google Calendar */}
+        {/* Step 3 — Done (CRITICAL: releases app access) */}
         {step === 3 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-            <h1 className="text-2xl font-light tracking-tight text-foreground">
-              Conectar sua agenda Google?
-            </h1>
-
-            <div className="space-y-3 text-left">
-              {[
-                { icon: CalendarBlank, text: 'Veja seus compromissos no app' },
-                { icon: ArrowsClockwise, text: 'Crie eventos via WhatsApp' },
-                { icon: Lock, text: 'Seus dados ficam seguros' },
-              ].map(({ icon: Icon, text }) => (
-                <div key={text} className="flex items-center gap-3 rounded-lg bg-card p-3">
-                  <Icon weight="thin" className="w-5 h-5 text-primary shrink-0" />
-                  <span className="text-sm text-foreground/80">{text}</span>
-                </div>
-              ))}
-            </div>
-
-            <Button onClick={handleConnectCalendar} className="w-full" size="lg">
-              Conectar Google Calendar
-            </Button>
-            <button
-              onClick={() => setStep(4)}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Farei depois
-            </button>
-          </div>
-        )}
-
-        {/* Step 4 — Done */}
-        {step === 4 && (
           <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
             <h1 className="text-3xl font-light tracking-tight text-foreground">
               Prontinho{displayNickname ? `, ${displayNickname}` : ''}! 💛
@@ -389,8 +488,18 @@ export default function BemVinda() {
             <p className="text-sm text-muted-foreground">
               Se a mensagem ainda não chegou, aguarde alguns segundinhos.
             </p>
-            <Button onClick={() => navigate('/home')} className="w-full" size="lg">
-              Ir para o aplicativo
+            <Button
+              onClick={() => navigate('/home')}
+              disabled={!appReady}
+              className="w-full"
+              size="lg"
+            >
+              {appReady ? 'Ir para o aplicativo' : (
+                <span className="flex items-center gap-2">
+                  <Spinner className="w-4 h-4 animate-spin" />
+                  Preparando...
+                </span>
+              )}
             </Button>
           </div>
         )}

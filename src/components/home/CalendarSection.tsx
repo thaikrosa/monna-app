@@ -22,7 +22,26 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
   const isConnected = connection?.status === 'connected';
   const [showAddDialog, setShowAddDialog] = useState(false);
 
-  // Estado: Desconectado
+  // Debug: log connection state para investigar edge case
+  console.log('[CalendarSection] connection:', connection, 'isConnected:', isConnected, 'isLoading:', isLoading);
+
+  // Estado: Loading — evitar flash de "conectar" ou "dia livre" enquanto carrega
+  if (isLoading) {
+    return (
+      <HomeSection
+        icon={<CalendarBlank weight="regular" className="h-4 w-4" />}
+        title="Agenda do dia"
+        onAdd={() => {}}
+        addDisabled
+      >
+        <div className="py-4 text-center">
+          <Spinner weight="regular" className="h-5 w-5 animate-spin text-muted-foreground mx-auto" />
+        </div>
+      </HomeSection>
+    );
+  }
+
+  // Estado: Desconectado (sem registro em google_oauth_tokens / calendar_connections)
   if (!isConnected) {
     return (
       <HomeSection

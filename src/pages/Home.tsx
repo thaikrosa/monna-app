@@ -20,7 +20,7 @@ export default function Home() {
   const { data: profile, isLoading: profileLoading, isError: profileError, refetch: refetchProfile } = useProfile();
   
   // Dados dinâmicos
-  const { data: calendarConnection } = useGoogleCalendarConnection();
+  const { data: calendarConnection, isLoading: calendarLoading } = useGoogleCalendarConnection();
   const { data: calendarEvents = [] } = useTodayCalendarEvents();
   const { data: pendingReminders = [] } = usePendingReminders();
   const { data: shoppingData } = usePrimaryShoppingItems();
@@ -50,7 +50,8 @@ export default function Home() {
       <div className="animate-slide-up stagger-1">
         <CalendarSection 
           connection={calendarConnection} 
-          events={calendarEvents} 
+          events={calendarEvents}
+          isLoading={calendarLoading}
         />
       </div>
 

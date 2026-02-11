@@ -236,24 +236,24 @@ export default function BemVinda() {
         })
         .eq('id', session.user.id);
 
+      // Enable button immediately — don't block on retry
       if (error) {
         console.error('[Onboarding] Erro ao liberar app:', error);
-        // Retry once after 2s
-        await new Promise(r => setTimeout(r, 2000));
-        const retry = await supabase
-          .from('profiles')
-          .update({
-            onboarding_completed: true,
-            onboarding_completed_at: new Date().toISOString(),
-          })
-          .eq('id', session.user.id);
-
-        if (retry.error) {
-          console.error('[Onboarding] Retry falhou:', retry.error);
-        }
+        // Retry in background, don't block UI
+        setTimeout(async () => {
+          const retry = await supabase
+            .from('profiles')
+            .update({
+              onboarding_completed: true,
+              onboarding_completed_at: new Date().toISOString(),
+            })
+            .eq('id', session.user.id);
+          if (retry.error) {
+            console.error('[Onboarding] Retry falhou:', retry.error);
+          }
+        }, 2000);
       }
 
-      // Enable button only after update confirmed
       setAppReady(true);
 
       // 2. Fire-and-forget: trigger WhatsApp onboarding

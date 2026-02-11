@@ -18,6 +18,20 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Redirecionar usuária logada para /home ou /bem-vinda
+  useEffect(() => {
+    if (loading || profileLoading) return;
+    if (!user) return;
+    // Não redirecionar se tem hash de OAuth (será tratado pelo useEffect abaixo)
+    if (location.hash.includes('access_token')) return;
+
+    if (profile?.onboarding_completed) {
+      navigate('/home', { replace: true });
+    } else {
+      navigate('/bem-vinda', { replace: true });
+    }
+  }, [user, loading, profile, profileLoading, navigate, location.hash]);
+
   // Abrir dialog de planos quando hash #planos estiver presente
   useEffect(() => {
     if (location.hash === '#planos') {

@@ -201,6 +201,19 @@ export default function BemVinda() {
     triggerRef.current = true;
 
     const trigger = async () => {
+      // Liberar acesso ao app
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          onboarding_completed: true,
+          onboarding_completed_at: new Date().toISOString(),
+        })
+        .eq('id', session.user.id);
+
+      if (profileError) {
+        console.error('[Onboarding] Erro ao atualizar onboarding_completed:', profileError);
+      }
+
       try {
         const { data: onb } = await supabase
           .from('onboarding')

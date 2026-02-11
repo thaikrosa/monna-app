@@ -376,6 +376,9 @@ export default function BemVinda() {
             <p className="text-sm text-muted-foreground">
               Se a mensagem ainda não chegou, aguarde alguns segundinhos.
             </p>
+            <Button onClick={() => navigate('/home')} className="w-full" size="lg">
+              Ir para o aplicativo
+            </Button>
           </div>
         )}
       </div>

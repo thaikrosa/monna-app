@@ -18,6 +18,14 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Abrir dialog de planos quando hash #planos estiver presente
+  useEffect(() => {
+    if (location.hash === '#planos') {
+      setDialogOpen(true);
+      window.history.replaceState(null, '', location.pathname);
+    }
+  }, [location.hash, location.pathname]);
+
   // Fallback: se tokens OAuth aterrissaram aqui, redirecionar
   useEffect(() => {
     const hasOAuthHash = location.hash.includes('access_token');

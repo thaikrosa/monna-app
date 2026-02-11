@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
@@ -166,8 +166,11 @@ function SubscriptionGate({ children }: { children: React.ReactNode }) {
     staleTime: 5 * 60 * 1000,
   });
 
+  const hasRedirected = useRef(false);
+
   useEffect(() => {
-    if (!subLoading && !subscription) {
+    if (!subLoading && !subscription && !hasRedirected.current) {
+      hasRedirected.current = true;
       toast.error('Você precisa de uma assinatura ativa para acessar o app.');
       navigate('/#planos', { replace: true });
     }

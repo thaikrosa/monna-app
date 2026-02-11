@@ -281,13 +281,13 @@ export default function Cookies() {
             <p>Ribeirão Preto, São Paulo, Brasil</p>
             <p className="mt-3">
               Este documento complementa nossa{' '}
-              <Link to="/privacidade" className="text-primary hover:underline">
+              <a href="/static/privacidade.html" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                 Política de Privacidade
-              </Link>{' '}
+              </a>{' '}
               e{' '}
-              <Link to="/termos" className="text-primary hover:underline">
+              <a href="/static/termos.html" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                 Termos de Uso
-              </Link>
+              </a>
               .
             </p>
           </div>

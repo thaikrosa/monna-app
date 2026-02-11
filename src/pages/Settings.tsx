@@ -468,23 +468,23 @@ export default function Settings() {
           </p>
 
           <div className="annia-glass p-4 rounded-lg border border-border/30 space-y-3">
-            <Link to="/termos" className="flex items-center justify-between group">
+            <a href="/static/termos.html" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between group">
               <div className="flex items-center gap-3">
                 <FileText weight="thin" className="h-5 w-5 text-primary" />
                 <span className="text-foreground text-sm font-medium">Termos de Uso</span>
               </div>
               <CaretRight weight="thin" className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors duration-150" />
-            </Link>
+            </a>
             
             <div className="border-t border-border/20" />
             
-            <Link to="/privacidade" className="flex items-center justify-between group">
+            <a href="/static/privacidade.html" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between group">
               <div className="flex items-center gap-3">
                 <ShieldCheck weight="thin" className="h-5 w-5 text-primary" />
                 <span className="text-foreground text-sm font-medium">Política de Privacidade</span>
               </div>
               <CaretRight weight="thin" className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors duration-150" />
-            </Link>
+            </a>
           </div>
         </section>
 

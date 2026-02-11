@@ -13,8 +13,8 @@ const footerLinks = {
     { label: "Contato", href: "/contato", isRoute: true },
   ],
   legal: [
-    { label: "Termos de uso", href: "/termos", isRoute: true },
-    { label: "Política de Privacidade", href: "/privacidade", isRoute: true },
+    { label: "Termos de uso", href: "/static/termos.html" },
+    { label: "Política de Privacidade", href: "/static/privacidade.html" },
     { label: "Cookies", href: "/cookies", isRoute: true },
   ],
   contato: [
@@ -80,9 +80,15 @@ export function LandingFooter() {
             <ul className="space-y-2">
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
-                  <Link to={link.href} className="text-sm text-primary-foreground/50 hover:text-primary-foreground transition-colors duration-150">
-                    {link.label}
-                  </Link>
+                  {link.isRoute ? (
+                    <Link to={link.href} className="text-sm text-primary-foreground/50 hover:text-primary-foreground transition-colors duration-150">
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a href={link.href} target="_blank" rel="noopener noreferrer" className="text-sm text-primary-foreground/50 hover:text-primary-foreground transition-colors duration-150">
+                      {link.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>

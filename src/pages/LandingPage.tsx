@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { LandingNavbar } from '@/components/landing/LandingNavbar';
 import { HeroSection } from '@/components/landing/HeroSection';
 import { TestimonialsSection } from '@/components/landing/TestimonialsSection';
@@ -18,18 +19,30 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Redirecionar usuária logada para /home ou /bem-vinda
+  // Redirecionar usuária logada para /home ou /bem-vinda — SOMENTE se tiver subscription ativa
   useEffect(() => {
     if (loading || profileLoading) return;
     if (!user) return;
-    // Não redirecionar se tem hash de OAuth (será tratado pelo useEffect abaixo)
     if (location.hash.includes('access_token')) return;
 
-    if (profile?.onboarding_completed) {
-      navigate('/home', { replace: true });
-    } else {
-      navigate('/bem-vinda', { replace: true });
-    }
+    const checkAndRedirect = async () => {
+      const { data: subscription } = await supabase
+        .from('subscriptions')
+        .select('status')
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .maybeSingle();
+
+      if (!subscription) return; // Stay on landing — user needs to subscribe
+
+      if (profile?.onboarding_completed) {
+        navigate('/home', { replace: true });
+      } else {
+        navigate('/bem-vinda', { replace: true });
+      }
+    };
+
+    checkAndRedirect();
   }, [user, loading, profile, profileLoading, navigate, location.hash]);
 
   // Abrir dialog de planos quando hash #planos estiver presente

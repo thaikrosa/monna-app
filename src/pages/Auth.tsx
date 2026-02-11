@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { GoogleLogo } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import logoMonna from '@/assets/logo-monna.png';
 
@@ -15,11 +16,29 @@ export default function Auth() {
     if (loading || !user) return;
     if (profileLoading) return;
 
-    if (profile?.onboarding_completed) {
-      navigate('/home', { replace: true });
-    } else {
-      navigate('/bem-vinda', { replace: true });
-    }
+    const checkAndRedirect = async () => {
+      // Checar subscription ativa antes de redirecionar
+      const { data: subscription } = await supabase
+        .from('subscriptions')
+        .select('status')
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .maybeSingle();
+
+      if (!subscription) {
+        toast.error('Você precisa de uma assinatura ativa para acessar o app.');
+        navigate('/#planos', { replace: true });
+        return;
+      }
+
+      if (profile?.onboarding_completed) {
+        navigate('/home', { replace: true });
+      } else {
+        navigate('/bem-vinda', { replace: true });
+      }
+    };
+
+    checkAndRedirect();
   }, [user, loading, profile, profileLoading, navigate]);
 
   const handleGoogleLogin = async () => {

@@ -1,16 +1,25 @@
 
 
-# Corrigir botao de voltar nas paginas legais
+# Adicionar botao "Ir para o aplicativo" no Step 4 do onboarding
 
-Atualizar o link do botao de voltar nos dois arquivos estaticos para apontar para a landing page estatica.
+## O que muda
 
-## Mudancas
+No arquivo `src/pages/BemVinda.tsx`, dentro do bloco do Step 4 (a tela final "Prontinho"), sera adicionado um `<Button>` com o texto **"Ir para o aplicativo"** logo apos o paragrafo "Se a mensagem ainda nao chegou, aguarde alguns segundinhos.".
 
-### 1. `public/static/privacidade.html`
-- Linha 197: trocar `href="/"` por `href="https://monna.ia.br/static/index.html"` no botao de voltar (seta)
+## Detalhes tecnicos
 
-### 2. `public/static/termos.html`
-- Linha 211: trocar `href="/"` por `href="https://monna.ia.br/static/index.html"` no botao de voltar (seta)
+**Arquivo**: `src/pages/BemVinda.tsx`
 
-Total: 2 trocas em 2 arquivos.
+- Apos a linha 270 (o `<p>` com "Se a mensagem ainda nao chegou..."), inserir:
+
+```tsx
+<Button onClick={() => navigate('/home')} className="w-full" size="lg">
+  Ir para o aplicativo
+</Button>
+```
+
+- O componente `Button` e o hook `navigate` ja estao importados e disponiveis no arquivo, entao nenhuma importacao adicional e necessaria.
+- O botao seguira o mesmo estilo visual (primary, full-width, tamanho `lg`) usado nos outros steps do wizard.
+
+**Total**: 1 insercao em 1 arquivo.
 

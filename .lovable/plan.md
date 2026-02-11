@@ -1,52 +1,88 @@
 
 
-# Redirecionar botoes da pagina estatica para a selecao de planos
+# Fix: Redirect Loop After Google Login
 
-## Problema atual
+## Root Cause
 
-Na pagina `public/static/index.html`:
+Three components form a redirect triangle:
 
-- **"Quero testar gratis"** (Hero, linha 615): aponta para `#cta-final` (ancora interna)
-- **"Comecar meu teste gratis"** (Features, linha 750): aponta para `#cta-final` (ancora interna)
-- **"Comecar meu teste gratis"** (CTA Final, linha 802): aponta para WhatsApp (`https://wa.me/...`)
+```text
+Auth.tsx (no subscription) ---> /#planos
+       ^                            |
+       |                            v
+ProtectedRoute <--- /home <--- LandingPage (sees logged user, redirects)
+(no subscription)
+  ---> /#planos
+```
 
-Nenhum deles leva a pagina de selecao de planos/assinatura.
+LandingPage blindly redirects all logged-in users to `/home`, even those without a subscription who were intentionally sent to `/#planos`.
 
-## Solucao
+## Fix (3 files)
 
-Como a selecao de planos vive no React (componente `PlanSelectionDialog` na landing page `/`), a abordagem sera:
+### 1. `src/pages/LandingPage.tsx` — Only redirect if user has active subscription
 
-1. **Adicionar deteccao de hash na React LandingPage**: Quando a URL tiver `#planos`, abrir automaticamente o `PlanSelectionDialog`.
-
-2. **Atualizar os 3 botoes na pagina estatica**: Todos apontarao para `https://monna.ia.br/#planos`, que carregara a landing React e abrira o dialog de planos automaticamente.
-
-## Arquivos modificados
-
-### 1. `src/pages/LandingPage.tsx`
-
-Adicionar um `useEffect` que detecta o hash `#planos` na URL e chama `setDialogOpen(true)`:
+The redirect `useEffect` must check subscription status before redirecting. If user has no subscription, they should stay on the landing page to view/purchase plans.
 
 ```ts
 useEffect(() => {
-  if (location.hash === '#planos') {
-    setDialogOpen(true);
-    window.history.replaceState(null, '', location.pathname);
-  }
-}, [location.hash]);
+  if (loading || profileLoading) return;
+  if (!user) return;
+  if (location.hash.includes('access_token')) return;
+
+  // Only redirect if user has completed onboarding AND has subscription
+  // Users without subscription should stay here to see plans
+  const checkAndRedirect = async () => {
+    const { data: subscription } = await supabase
+      .from('subscriptions')
+      .select('status')
+      .eq('user_id', user.id)
+      .eq('status', 'active')
+      .maybeSingle();
+
+    if (!subscription) return; // Stay on landing — user needs to subscribe
+
+    if (profile?.onboarding_completed) {
+      navigate('/home', { replace: true });
+    } else {
+      navigate('/bem-vinda', { replace: true });
+    }
+  };
+
+  checkAndRedirect();
+}, [user, loading, profile, profileLoading, navigate, location.hash]);
 ```
 
-### 2. `public/static/index.html`
+### 2. `src/pages/Auth.tsx` — No changes needed
 
-Alterar os `href` dos 3 botoes:
+The current logic is correct: wait for loading to finish, check subscription, redirect accordingly. The loop was caused by LandingPage, not Auth.tsx.
 
-- **Linha 615** (Hero): de `#cta-final` para `https://monna.ia.br/#planos`
-- **Linha 750** (Features): de `#cta-final` para `https://monna.ia.br/#planos`
-- **Linha 802** (CTA Final): de `https://wa.me/...` para `https://monna.ia.br/#planos`
+### 3. `src/components/ProtectedRoute.tsx` — Add guard against repeated toasts
 
-## Resumo
+The `SubscriptionGate` useEffect fires on every render causing repeated toasts. Add a `hasRedirected` ref to prevent multiple redirects/toasts:
 
-- 2 arquivos modificados
-- 1 useEffect adicionado no LandingPage
-- 3 links atualizados no HTML estatico
-- Nenhum componente novo criado
+```ts
+const hasRedirected = useRef(false);
+
+useEffect(() => {
+  if (!subLoading && !subscription && !hasRedirected.current) {
+    hasRedirected.current = true;
+    toast.error('Voce precisa de uma assinatura ativa para acessar o app.');
+    navigate('/#planos', { replace: true });
+  }
+}, [subLoading, subscription, navigate]);
+```
+
+## Summary
+
+| File | Change |
+|------|--------|
+| `LandingPage.tsx` | Check subscription before redirecting logged-in users. No subscription = stay on landing. |
+| `ProtectedRoute.tsx` | Add `hasRedirected` ref to prevent duplicate toast/redirect. |
+| `Auth.tsx` | No changes needed. |
+
+## Why this works
+
+- User without subscription lands on `/#planos` and STAYS there (LandingPage no longer kicks them out)
+- User WITH subscription who visits landing gets redirected to `/home` as expected
+- ProtectedRoute remains the final safety net but won't cause loops because LandingPage no longer bounces users back
 

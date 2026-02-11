@@ -1,59 +1,52 @@
 
 
-# Liberar acesso ao app no Step 4 do Wizard
+# Redirecionar botoes da pagina estatica para a selecao de planos
 
-## O que muda
+## Problema atual
 
-No arquivo `src/pages/BemVinda.tsx`, dentro do `useEffect` do Step 4 (linhas 198-223), adicionar a chamada para setar `onboarding_completed = true` no perfil da usuaria, em paralelo com o trigger de onboarding existente.
+Na pagina `public/static/index.html`:
 
-## Detalhes tecnicos
+- **"Quero testar gratis"** (Hero, linha 615): aponta para `#cta-final` (ancora interna)
+- **"Comecar meu teste gratis"** (Features, linha 750): aponta para `#cta-final` (ancora interna)
+- **"Comecar meu teste gratis"** (CTA Final, linha 802): aponta para WhatsApp (`https://wa.me/...`)
 
-**Arquivo**: `src/pages/BemVinda.tsx`
+Nenhum deles leva a pagina de selecao de planos/assinatura.
 
-**Trecho atual (linhas 198-223)**:
+## Solucao
+
+Como a selecao de planos vive no React (componente `PlanSelectionDialog` na landing page `/`), a abordagem sera:
+
+1. **Adicionar deteccao de hash na React LandingPage**: Quando a URL tiver `#planos`, abrir automaticamente o `PlanSelectionDialog`.
+
+2. **Atualizar os 3 botoes na pagina estatica**: Todos apontarao para `https://monna.ia.br/#planos`, que carregara a landing React e abrira o dialog de planos automaticamente.
+
+## Arquivos modificados
+
+### 1. `src/pages/LandingPage.tsx`
+
+Adicionar um `useEffect` que detecta o hash `#planos` na URL e chama `setDialogOpen(true)`:
+
 ```ts
-// Step 4 — Trigger onboarding
 useEffect(() => {
-  if (step !== 4 || triggerRef.current || !session) return;
-  triggerRef.current = true;
-
-  const trigger = async () => {
-    try {
-      const { data: onb } = await supabase
-        .from('onboarding')
-        .select('status')
-        ...
-    }
-  };
-  trigger();
-}, [step, session]);
+  if (location.hash === '#planos') {
+    setDialogOpen(true);
+    window.history.replaceState(null, '', location.pathname);
+  }
+}, [location.hash]);
 ```
 
-**Trecho novo**: Dentro da funcao `trigger`, antes do bloco try/catch existente, adicionar:
+### 2. `public/static/index.html`
 
-```ts
-// Liberar acesso ao app
-const { error: profileError } = await supabase
-  .from('profiles')
-  .update({
-    onboarding_completed: true,
-    onboarding_completed_at: new Date().toISOString(),
-  })
-  .eq('id', session.user.id);
+Alterar os `href` dos 3 botoes:
 
-if (profileError) {
-  console.error('[Onboarding] Erro ao atualizar onboarding_completed:', profileError);
-}
-```
-
-**Botao "Ir para o aplicativo"**: Ja existe no Step 4 (adicionado na ultima edicao) com `navigate('/home')`. Nenhuma alteracao necessaria.
-
-**ProtectedRoute**: Nenhuma alteracao. Ja checa `onboarding_completed` corretamente.
-
----
+- **Linha 615** (Hero): de `#cta-final` para `https://monna.ia.br/#planos`
+- **Linha 750** (Features): de `#cta-final` para `https://monna.ia.br/#planos`
+- **Linha 802** (CTA Final): de `https://wa.me/...` para `https://monna.ia.br/#planos`
 
 ## Resumo
 
-- 1 arquivo modificado: `src/pages/BemVinda.tsx`
-- 1 insercao: chamada de update no `profiles` dentro do useEffect do Step 4
-- 0 alteracoes em ProtectedRoute ou Edge Functions
+- 2 arquivos modificados
+- 1 useEffect adicionado no LandingPage
+- 3 links atualizados no HTML estatico
+- Nenhum componente novo criado
+

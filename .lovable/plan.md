@@ -1,78 +1,51 @@
 
 
-# Fix: SessionProvider -- Loading lento + Skeletons eternos
+## Adicionar Campo WhatsApp com Mascara no Step 2 do Wizard
 
-## Causa raiz unica
+### Resumo
+Adicionar um campo de WhatsApp com mascara visual no Step 2 da pagina `/bem-vinda`, entre o campo "nickname" e os checkboxes LGPD. O campo sera obrigatorio para habilitar o botao "Continuar" e o numero sera salvo no banco com prefixo `55`.
 
-O `SessionProvider` atual faz `getSession()` manual E registra `onAuthStateChange`. Dentro do callback do `onAuthStateChange`, as queries de profile/subscription sao `await`ed diretamente, causando deadlock no lock interno do Supabase SDK. Isso trava o estado em `LOADING` para usuarias autenticadas, e consequentemente os hooks de dados (`useShoppingList`, `useReminders`, etc.) nunca recebem `user`, mantendo `enabled: false` e skeletons eternos.
+### Arquivo alterado
+- `src/pages/BemVinda.tsx` (unico arquivo modificado)
 
-## Solucao
+### Detalhes tecnicos
 
-Alterar APENAS `src/contexts/SessionContext.tsx`:
+**1. Funcoes utilitarias (dentro do arquivo)**
 
-1. **Remover** a funcao `initialize()` e a chamada `getSession()` manual (linhas 97-130)
-2. **Usar** `onAuthStateChange` como fonte UNICA de sessao -- o evento `INITIAL_SESSION` do Supabase v2 ja fornece a sessao no mount
-3. **Envolver** as queries de profile/subscription em `setTimeout(fn, 0)` dentro do callback, para que executem APOS o lock interno do Supabase liberar
-4. **Remover** `fetchUserData` e `computeState` do array de dependencias do `useEffect` (usar `[]` vazio, pois o listener so precisa ser registrado uma vez)
+Adicionar 3 funcoes auxiliares no topo do componente (antes do `export default`):
 
-## Codigo final do useEffect
+- `formatWhatsApp(value)` — aplica mascara `(XX) XXXXX-XXXX` a partir dos digitos
+- `extractDigits(value)` — remove tudo que nao e digito
+- `isValidWhatsApp(digits)` — valida se tem 10 ou 11 digitos
 
-```typescript
-useEffect(() => {
-  let cancelled = false;
+**2. Novos estados no Step 2**
 
-  const { data: { subscription: authListener } } = supabase.auth.onAuthStateChange(
-    (event, currentSession) => {
-      if (cancelled) return;
+- `whatsappDisplay` (string) — valor formatado exibido no input
+- `whatsappDigits` (string) — apenas digitos, usado para validacao e save
 
-      if (!currentSession) {
-        setSession(null);
-        setUser(null);
-        setProfile(null);
-        setSubscription(null);
-        setUserState('ANONYMOUS');
-        return;
-      }
+**3. Pre-preenchimento**
 
-      setSession(currentSession);
-      setUser(currentSession.user);
+No `calculateStep`, ao inicializar o Step 2, verificar se o profile ja tem `whatsapp`. Se sim, extrair os digitos sem o prefixo `55` e pre-preencher os estados. A query do `calculateStep` sera atualizada para incluir o campo `whatsapp` no SELECT.
 
-      // setTimeout(0) libera o lock interno do Supabase antes de fazer queries
-      setTimeout(async () => {
-        if (cancelled) return;
-        try {
-          const [profileRes, subRes] = await Promise.all([
-            supabase.from('profiles').select('*').eq('id', currentSession.user.id).single(),
-            supabase.from('subscriptions').select('*').eq('user_id', currentSession.user.id).eq('status', 'active').maybeSingle(),
-          ]);
-          if (cancelled) return;
-          setProfile((profileRes.data as Profile) ?? null);
-          setSubscription((subRes.data as Subscription) ?? null);
-          setUserState(computeState(currentSession, profileRes.data ?? null, subRes.data ?? null));
-        } catch (error) {
-          console.error('[Session] fetch error:', error);
-          if (!cancelled) setUserState('ERROR');
-        }
-      }, 0);
-    }
-  );
+**4. Campo visual**
 
-  return () => {
-    cancelled = true;
-    authListener.unsubscribe();
-  };
-}, []);
-```
+Inserido apos o bloco do nickname (linha 403) e antes dos checkboxes LGPD (linha 406):
 
-## O que muda
+- Label: "WhatsApp"
+- Input tipo `tel`, placeholder `(00) 00000-0000`
+- Dica abaixo: "Informe com DDD. E por aqui que a Monna vai te ajudar (emoji)"
+- Mesmo estilo do campo nickname (`space-y-1`, mesmos componentes `Label` e `Input`)
 
-- Remover linhas 94-130 (funcao `initialize()` + chamada)
-- Substituir linhas 132-164 pelo novo bloco acima
-- O `fetchUserData` pode ser mantido como funcao auxiliar para o `refetch()`, mas NAO e mais usado no useEffect
-- Dependencias do useEffect mudam de `[fetchUserData, computeState]` para `[]`
+**5. Validacao**
 
-## O que NAO muda
+- `canContinueStep2` recebe condicao adicional: `isValidWhatsApp(whatsappDigits)`
+- Se o campo tiver sido tocado e for invalido, exibir mensagem em vermelho abaixo da dica
 
-- Nenhum outro arquivo
-- Tipos, interfaces, `refetch()`, `signOut()`, `signInWithGoogle()` permanecem identicos
-- Nenhum componente visual, hook de dados, ou rota
+**6. Save no banco**
+
+No `handleSaveProfile`, adicionar `whatsapp: '55' + whatsappDigits` ao objeto do UPDATE.
+
+### O que NAO muda
+
+- Step 1, Step 3, SessionContext, RequireState, rotas, hooks, edge functions
+- Nenhum outro arquivo alem de `BemVinda.tsx`

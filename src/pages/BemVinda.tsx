@@ -11,6 +11,21 @@ import logoMonna from '@/assets/logo-monna.png';
 
 type WizardStep = 1 | 2 | 3;
 
+function formatWhatsApp(digits: string): string {
+  if (digits.length === 0) return '';
+  if (digits.length <= 2) return `(${digits}`;
+  if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+}
+
+function extractDigits(value: string): string {
+  return value.replace(/\D/g, '');
+}
+
+function isValidWhatsApp(digits: string): boolean {
+  return digits.length === 10 || digits.length === 11;
+}
+
 function StepIndicator({ currentStep }: { currentStep: WizardStep }) {
   return (
     <div className="flex items-center justify-center gap-2 mb-8">
@@ -66,6 +81,11 @@ export default function BemVinda() {
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
 
+  // WhatsApp state
+  const [whatsappDisplay, setWhatsappDisplay] = useState('');
+  const [whatsappDigits, setWhatsappDigits] = useState('');
+  const [whatsappTouched, setWhatsappTouched] = useState(false);
+
   // Step 3 state
   const [displayNickname, setDisplayNickname] = useState('');
   const [appReady, setAppReady] = useState(false);
@@ -79,7 +99,7 @@ export default function BemVinda() {
   const calculateStep = useCallback(async (userId: string) => {
     const { data: profileData } = await supabase
       .from('profiles')
-      .select('nickname, terms_accepted_at, privacy_accepted_at, first_name, last_name, onboarding_completed')
+      .select('nickname, terms_accepted_at, privacy_accepted_at, first_name, last_name, onboarding_completed, whatsapp')
       .eq('id', userId)
       .maybeSingle();
 
@@ -98,6 +118,13 @@ export default function BemVinda() {
       setLastName(defaultLast);
       setNickname(defaultNick);
       setDisplayNickname(defaultNick);
+      if (profileData?.whatsapp) {
+        const withoutCountry = profileData.whatsapp.startsWith('55')
+          ? profileData.whatsapp.slice(2)
+          : profileData.whatsapp;
+        setWhatsappDigits(withoutCountry);
+        setWhatsappDisplay(formatWhatsApp(withoutCountry));
+      }
       return 2 as WizardStep;
     }
 
@@ -185,6 +212,7 @@ export default function BemVinda() {
           nickname,
           terms_accepted_at: new Date().toISOString(),
           privacy_accepted_at: new Date().toISOString(),
+          whatsapp: '55' + whatsappDigits,
           updated_at: new Date().toISOString(),
         })
         .eq('id', user.id);
@@ -271,6 +299,7 @@ export default function BemVinda() {
     firstName.trim().length >= 2 &&
     lastName.trim().length >= 2 &&
     nickname.trim().length >= 2 &&
+    isValidWhatsApp(whatsappDigits) &&
     termsAccepted &&
     privacyAccepted;
 
@@ -400,6 +429,27 @@ export default function BemVinda() {
                   placeholder="Seu apelido"
                 />
                 <p className="text-xs text-muted-foreground">É assim que a Monna vai te chamar 🤍</p>
+              </div>
+
+              <div className="space-y-1">
+                <Label htmlFor="whatsapp" className="text-sm text-foreground/80">WhatsApp</Label>
+                <Input
+                  id="whatsapp"
+                  type="tel"
+                  value={whatsappDisplay}
+                  onChange={(e) => {
+                    const digits = extractDigits(e.target.value).slice(0, 11);
+                    setWhatsappDigits(digits);
+                    setWhatsappDisplay(formatWhatsApp(digits));
+                    setWhatsappTouched(true);
+                  }}
+                  onBlur={() => setWhatsappTouched(true)}
+                  placeholder="(00) 00000-0000"
+                />
+                <p className="text-xs text-muted-foreground">Informe com DDD. É por aqui que a Monna vai te ajudar 💬</p>
+                {whatsappTouched && whatsappDigits.length > 0 && !isValidWhatsApp(whatsappDigits) && (
+                  <p className="text-xs text-destructive">Informe um número válido com DDD (10 ou 11 dígitos)</p>
+                )}
               </div>
             </div>
 

@@ -35,7 +35,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 import { useProfile, useUpdateProfile, useUploadAvatar } from '@/hooks/useProfile';
 import { useChildren, useUpdateChild, useAddChild } from '@/hooks/useChildren';
 import { useContacts } from '@/hooks/useContacts';
@@ -51,7 +51,7 @@ import {
 import { differenceInYears, differenceInMonths, parseISO, format } from 'date-fns';
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { user } = useSession();
   const { data: profile, isLoading: profileLoading } = useProfile();
   const { data: children = [], isLoading: childrenLoading } = useChildren();
   const { data: contacts = [], isLoading: contactsLoading } = useContacts();

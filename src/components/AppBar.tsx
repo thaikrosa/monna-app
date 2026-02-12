@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Sun, Moon, House } from '@phosphor-icons/react';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 import { UserMenu } from './UserMenu';
 import logoMonnaDark from '@/assets/logo-monna.png';
 
 export function AppBar() {
-  const { profile } = useAuth();
+  const { profile } = useSession();
 
   const getGreeting = () => {
     const hour = new Date().getHours();

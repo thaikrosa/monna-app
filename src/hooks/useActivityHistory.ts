@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 import { subDays } from 'date-fns';
 
 export interface ShoppingEvent {
@@ -26,7 +26,7 @@ export interface ReminderOccurrence {
 }
 
 export function useShoppingHistory(daysAgo: number = 7) {
-  const { user } = useAuth();
+  const { user } = useSession();
   const startDate = subDays(new Date(), daysAgo).toISOString();
 
   return useQuery({
@@ -47,7 +47,7 @@ export function useShoppingHistory(daysAgo: number = 7) {
 }
 
 export function useReminderHistory(daysAgo: number = 7) {
-  const { user } = useAuth();
+  const { user } = useSession();
   const startDate = subDays(new Date(), daysAgo).toISOString();
 
   return useQuery({

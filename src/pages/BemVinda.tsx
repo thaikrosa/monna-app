@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -45,8 +45,9 @@ function StepIndicator({ currentStep }: { currentStep: WizardStep }) {
 }
 
 export default function BemVinda() {
-  const { user, session, profile, loading: authLoading } = useAuth();
+  const { user, session, profile, isReady, refetch } = useSession();
   const navigate = useNavigate();
+  const authLoading = !isReady;
 
   const [step, setStep] = useState<WizardStep | null>(null);
   const [initializing, setInitializing] = useState(true);
@@ -74,12 +75,7 @@ export default function BemVinda() {
   // Track if user just logged in
   const prevUserRef = useRef<string | null | undefined>(undefined);
 
-  // Redirect to /home if onboarding already completed
-  useEffect(() => {
-    if (!authLoading && user && profile?.onboarding_completed) {
-      navigate('/home', { replace: true });
-    }
-  }, [authLoading, user, profile, navigate]);
+  // RequireState already handles redirect if not ONBOARDING
 
   const calculateStep = useCallback(async (userId: string) => {
     const { data: profileData } = await supabase
@@ -489,7 +485,10 @@ export default function BemVinda() {
               Se a mensagem ainda não chegou, aguarde alguns segundinhos.
             </p>
             <Button
-              onClick={() => navigate('/home')}
+              onClick={async () => {
+                await refetch();
+                setTimeout(() => { window.location.href = '/home'; }, 2000);
+              }}
               disabled={!appReady}
               className="w-full"
               size="lg"

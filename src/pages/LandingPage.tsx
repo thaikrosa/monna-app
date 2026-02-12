@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+import { useSession } from '@/contexts/SessionContext';
 import { LandingNavbar } from '@/components/landing/LandingNavbar';
 import { HeroSection } from '@/components/landing/HeroSection';
 import { TestimonialsSection } from '@/components/landing/TestimonialsSection';
@@ -15,37 +14,23 @@ import { PlanSelectionDialog } from '@/components/landing/PlanSelectionDialog';
 export default function LandingPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const openDialog = () => setDialogOpen(true);
-  const { user, loading, profile, profileLoading } = useAuth();
+  const { isReady, userState } = useSession();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Redirecionar usuária logada para /home ou /bem-vinda — SOMENTE se tiver subscription ativa
+  // Redirect logged-in subscriber
   useEffect(() => {
-    if (loading || profileLoading) return;
-    if (!user) return;
+    if (!isReady) return;
     if (location.hash.includes('access_token')) return;
 
-    const checkAndRedirect = async () => {
-      const { data: subscription } = await supabase
-        .from('subscriptions')
-        .select('status')
-        .eq('user_id', user.id)
-        .eq('status', 'active')
-        .maybeSingle();
+    if (userState === 'READY') {
+      navigate('/home', { replace: true });
+    } else if (userState === 'ONBOARDING') {
+      navigate('/bem-vinda', { replace: true });
+    }
+  }, [isReady, userState, navigate, location.hash]);
 
-      if (!subscription) return; // Stay on landing — user needs to subscribe
-
-      if (profile?.onboarding_completed) {
-        navigate('/home', { replace: true });
-      } else {
-        navigate('/bem-vinda', { replace: true });
-      }
-    };
-
-    checkAndRedirect();
-  }, [user, loading, profile, profileLoading, navigate, location.hash]);
-
-  // Abrir dialog de planos quando hash #planos estiver presente
+  // Open plan dialog when hash #planos is present
   useEffect(() => {
     if (location.hash === '#planos') {
       setDialogOpen(true);
@@ -53,22 +38,20 @@ export default function LandingPage() {
     }
   }, [location.hash, location.pathname]);
 
-  // Fallback: se tokens OAuth aterrissaram aqui, redirecionar
+  // Fallback: if OAuth tokens landed here, redirect
   useEffect(() => {
     const hasOAuthHash = location.hash.includes('access_token');
     if (!hasOAuthHash) return;
-    if (loading) return;
-    if (!user) return;
-    if (profileLoading) return;
+    if (!isReady) return;
 
     window.history.replaceState(null, '', location.pathname);
 
-    if (profile?.onboarding_completed) {
+    if (userState === 'READY') {
       navigate('/home', { replace: true });
-    } else {
+    } else if (userState === 'ONBOARDING') {
       navigate('/bem-vinda', { replace: true });
     }
-  }, [user, loading, profile, profileLoading, location.hash, navigate, location.pathname]);
+  }, [isReady, userState, location.hash, navigate, location.pathname]);
 
   return (
     <div className="min-h-screen bg-secondary">

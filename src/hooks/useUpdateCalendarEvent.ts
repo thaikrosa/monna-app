@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 
 export interface UpdateEventPayload {
   event_id: string;
@@ -15,7 +15,7 @@ export interface UpdateEventPayload {
 }
 
 export function useUpdateCalendarEvent() {
-  const { user } = useAuth();
+  const { user } = useSession();
   const queryClient = useQueryClient();
 
   return useMutation({

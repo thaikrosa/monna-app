@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import { User, House } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 import logoMonnaDark from '@/assets/logo-monna.png';
 
 export function LandingNavbar() {
-  const { user, loading } = useAuth();
+  const { user, isReady } = useSession();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-primary border-b border-border">
@@ -17,7 +17,7 @@ export function LandingNavbar() {
 
         {/* Actions */}
         <div className="flex items-center">
-          {!loading && user ? (
+          {isReady && user ? (
             <Button variant="ghost" size="sm" asChild className="text-primary-foreground gap-1.5 hover:bg-transparent">
               <Link to="/home">
                 <House weight="regular" className="h-4 w-4" />

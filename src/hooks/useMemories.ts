@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 
 export interface Memory {
   id: string;
@@ -21,7 +21,7 @@ export interface MemoriesData {
 }
 
 export function useMemories(options?: { limit?: number; category?: string; search?: string }) {
-  const { user } = useAuth();
+  const { user } = useSession();
   const { limit, category, search } = options || {};
 
   return useQuery({

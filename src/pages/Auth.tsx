@@ -2,44 +2,26 @@ import { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { GoogleLogo } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+import { useSession } from '@/contexts/SessionContext';
 import { toast } from 'sonner';
 import logoMonna from '@/assets/logo-monna.png';
 
 export default function Auth() {
-  const { user, loading, profile, profileLoading, signInWithGoogle } = useAuth();
+  const { user, isReady, userState, signInWithGoogle } = useSession();
   const navigate = useNavigate();
 
-  // Redireciona se já estiver logado (espera profile carregar para decidir destino)
   useEffect(() => {
-    if (loading || !user) return;
-    if (profileLoading) return;
+    if (!isReady) return;
 
-    const checkAndRedirect = async () => {
-      // Checar subscription ativa antes de redirecionar
-      const { data: subscription } = await supabase
-        .from('subscriptions')
-        .select('status')
-        .eq('user_id', user.id)
-        .eq('status', 'active')
-        .maybeSingle();
-
-      if (!subscription) {
-        toast.error('Você precisa de uma assinatura ativa para acessar o app.');
-        navigate('/#planos', { replace: true });
-        return;
-      }
-
-      if (profile?.onboarding_completed) {
-        navigate('/home', { replace: true });
-      } else {
-        navigate('/bem-vinda', { replace: true });
-      }
-    };
-
-    checkAndRedirect();
-  }, [user, loading, profile, profileLoading, navigate]);
+    if (userState === 'READY') {
+      navigate('/home', { replace: true });
+    } else if (userState === 'ONBOARDING') {
+      navigate('/bem-vinda', { replace: true });
+    } else if (userState === 'NO_SUBSCRIPTION') {
+      toast.error('Você precisa de uma assinatura ativa para acessar o app.');
+      navigate('/#planos', { replace: true });
+    }
+  }, [isReady, userState, navigate]);
 
   const handleGoogleLogin = async () => {
     try {
@@ -64,13 +46,13 @@ export default function Auth() {
           </p>
         </div>
 
-        {/* Login Button - sempre visível */}
+        {/* Login Button */}
         <Button
           onClick={handleGoogleLogin}
           variant="outline"
           size="lg"
           className="w-full flex items-center justify-center gap-3 h-12 text-base"
-          disabled={loading && user !== null}
+          disabled={!isReady && user !== null}
         >
           <GoogleLogo weight="regular" className="w-5 h-5" />
           Continuar com Google
@@ -93,8 +75,8 @@ export default function Auth() {
           </a>
         </p>
 
-        {/* Indicador sutil de loading (não bloqueia interação) */}
-        {loading && (
+        {/* Loading indicator */}
+        {!isReady && (
           <p className="text-xs text-muted-foreground/60 animate-pulse">
             Verificando sessão...
           </p>

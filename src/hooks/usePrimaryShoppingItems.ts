@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 import type { ShoppingItem, ShoppingTag } from '@/hooks/useShoppingList';
 
 export interface PrimaryShoppingData {
@@ -9,7 +9,7 @@ export interface PrimaryShoppingData {
 }
 
 export function usePrimaryShoppingItems() {
-  const { user } = useAuth();
+  const { user } = useSession();
   
   return useQuery({
     queryKey: ['shopping-items', 'primary'],

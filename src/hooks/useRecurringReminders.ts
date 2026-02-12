@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 import type { Reminder } from '@/types/reminders';
 
 /**
@@ -8,7 +8,7 @@ import type { Reminder } from '@/types/reminders';
  * Exclui lembretes do tipo 'once' (não recorrentes)
  */
 export function useRecurringReminders() {
-  const { user } = useAuth();
+  const { user } = useSession();
   
   return useQuery({
     queryKey: ['reminders', 'recurring', user?.id],

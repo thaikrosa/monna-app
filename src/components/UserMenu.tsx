@@ -8,11 +8,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 import { toast } from 'sonner';
 
 export function UserMenu() {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, signOut } = useSession();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {

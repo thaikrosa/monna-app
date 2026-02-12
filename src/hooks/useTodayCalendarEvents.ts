@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 import { startOfDay, endOfDay } from 'date-fns';
 import { useEffect, useRef } from 'react';
 
@@ -24,7 +24,7 @@ export interface AgendaEvent {
 
 // Hook auxiliar para sync silencioso em background
 function useCalendarSync() {
-  const { user } = useAuth();
+  const { user } = useSession();
   const queryClient = useQueryClient();
   const hasSyncedRef = useRef(false);
 
@@ -68,7 +68,7 @@ function useCalendarSync() {
 }
 
 export function useTodayCalendarEvents() {
-  const { user } = useAuth();
+  const { user } = useSession();
   
   useCalendarSync();
   

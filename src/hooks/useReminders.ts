@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 import type {
   Reminder,
   ReminderInsert,
@@ -16,7 +16,7 @@ import type {
  * Busca lembretes de hoje via view `today_reminders`
  */
 export function useTodayReminders() {
-  const { user } = useAuth();
+  const { user } = useSession();
   
   return useQuery({
     queryKey: ['reminders', 'today'],
@@ -36,7 +36,7 @@ export function useTodayReminders() {
  * Busca próximos lembretes via view `upcoming_reminders`
  */
 export function useUpcomingReminders() {
-  const { user } = useAuth();
+  const { user } = useSession();
   
   return useQuery({
     queryKey: ['reminders', 'upcoming'],
@@ -57,7 +57,7 @@ export function useUpcomingReminders() {
  * Se includeOverdue=true (para "hoje"), também traz atrasados.
  */
 export function useRemindersByDate(date: Date, includeOverdue: boolean = false) {
-  const { user } = useAuth();
+  const { user } = useSession();
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
@@ -265,7 +265,7 @@ export function useSnoozeOccurrence() {
 // ===== CONTADOR PARA DASHBOARD =====
 
 export function useTodayRemindersCount() {
-  const { user } = useAuth();
+  const { user } = useSession();
   
   return useQuery({
     queryKey: ['reminders', 'today-count'],

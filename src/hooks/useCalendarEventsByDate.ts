@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
+import { useSession } from '@/contexts/SessionContext';
 import { format, startOfDay, endOfDay } from "date-fns";
 import type { AgendaEvent } from "./useTodayCalendarEvents";
 
 export function useCalendarEventsByDate(date: Date) {
-  const { user } = useAuth();
+  const { user } = useSession();
 
   return useQuery({
     queryKey: ['calendar-events', format(date, 'yyyy-MM-dd')],

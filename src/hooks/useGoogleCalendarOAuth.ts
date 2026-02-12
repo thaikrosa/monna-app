@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useSession } from '@/contexts/SessionContext';
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -8,7 +8,7 @@ const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const CALENDAR_SCOPES = ["https://www.googleapis.com/auth/calendar.events", "openid", "email", "profile"];
 
 export function useGoogleCalendarOAuth() {
-  const { user } = useAuth();
+  const { user } = useSession();
   const queryClient = useQueryClient();
   const [isConnecting, setIsConnecting] = useState(false);
 

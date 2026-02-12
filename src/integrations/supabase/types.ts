@@ -987,6 +987,7 @@ export type Database = {
         Row: {
           call_guarantee: boolean | null
           category: Database["public"]["Enums"]["reminder_category"] | null
+          correlation_id: string | null
           created_at: string
           datetime: string
           description: string | null
@@ -1010,6 +1011,7 @@ export type Database = {
         Insert: {
           call_guarantee?: boolean | null
           category?: Database["public"]["Enums"]["reminder_category"] | null
+          correlation_id?: string | null
           created_at?: string
           datetime: string
           description?: string | null
@@ -1033,6 +1035,7 @@ export type Database = {
         Update: {
           call_guarantee?: boolean | null
           category?: Database["public"]["Enums"]["reminder_category"] | null
+          correlation_id?: string | null
           created_at?: string
           datetime?: string
           description?: string | null
@@ -2227,6 +2230,7 @@ export type Database = {
     Enums: {
       occurrence_status:
         | "pending"
+        | "processing"
         | "sending"
         | "notified"
         | "acknowledged"
@@ -2390,6 +2394,7 @@ export const Constants = {
     Enums: {
       occurrence_status: [
         "pending",
+        "processing",
         "sending",
         "notified",
         "acknowledged",

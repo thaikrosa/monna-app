@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 
 export interface ChildInsight {
   id: string;
@@ -15,7 +15,7 @@ export interface ChildInsight {
 }
 
 export function useChildrenInsights() {
-  const { user } = useAuth();
+  const { user } = useSession();
   
   return useQuery({
     queryKey: ['children-insights'],

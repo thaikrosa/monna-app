@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 
 export interface AiSuggestion {
   id: string;
@@ -15,7 +15,7 @@ export interface AiSuggestion {
 }
 
 export function useAiSuggestions() {
-  const { user } = useAuth();
+  const { user } = useSession();
   
   return useQuery({
     queryKey: ['ai-suggestions', 'pending'],

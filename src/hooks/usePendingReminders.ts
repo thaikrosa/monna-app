@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 import type { TodayReminder } from '@/types/reminders';
 
 export interface PendingReminder extends TodayReminder {
@@ -8,7 +8,7 @@ export interface PendingReminder extends TodayReminder {
 }
 
 export function usePendingReminders() {
-  const { user } = useAuth();
+  const { user } = useSession();
   
   return useQuery({
     queryKey: ['reminders', 'pending-home'],

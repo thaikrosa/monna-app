@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ListChecks, UsersThree, Baby, Bell, CaretRight } from '@phosphor-icons/react';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useTodayRemindersCount } from '@/hooks/useReminders';
 
 export default function Dashboard() {
-  const { profile } = useAuth();
+  const { profile } = useSession();
   const displayName = profile?.nickname || profile?.first_name || 'você';
 
   // Fetch pending items count

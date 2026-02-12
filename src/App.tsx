@@ -3,8 +3,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { SessionProvider } from "@/contexts/SessionContext";
+import { RequireState } from "@/components/RequireState";
 import { AppLayout } from "@/layouts/AppLayout";
 import LandingPage from "./pages/LandingPage";
 import Auth from "./pages/Auth";
@@ -40,7 +40,7 @@ const queryClient = new QueryClient({
 // Monna App
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
+    <SessionProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -56,9 +56,20 @@ const App = () => (
             <Route path="/sobre" element={<About />} />
             <Route path="/contato" element={<Contact />} />
             <Route path="/cookies" element={<Cookies />} />
-            <Route path="/bem-vinda" element={<BemVinda />} />
-            {/* Protected routes */}
-            <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+
+            {/* Onboarding — only ONBOARDING state */}
+            <Route path="/bem-vinda" element={
+              <RequireState allowed={['ONBOARDING']}>
+                <BemVinda />
+              </RequireState>
+            } />
+
+            {/* Protected routes — only READY state */}
+            <Route element={
+              <RequireState allowed={['READY']}>
+                <AppLayout />
+              </RequireState>
+            }>
               <Route path="/home" element={<Home />} />
               <Route path="/agenda" element={<Agenda />} />
               <Route path="/lista" element={<ShoppingList />} />
@@ -76,7 +87,7 @@ const App = () => (
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
-    </AuthProvider>
+    </SessionProvider>
   </QueryClientProvider>
 );
 

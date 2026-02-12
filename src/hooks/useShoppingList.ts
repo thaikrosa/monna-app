@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 import { toast } from 'sonner';
 
 export interface ShoppingItem {
@@ -20,7 +20,7 @@ export interface ShoppingTag {
 }
 
 export function useShoppingItems() {
-  const { user } = useAuth();
+  const { user } = useSession();
   
   return useQuery({
     queryKey: ['shopping-items'],
@@ -42,7 +42,7 @@ export function useShoppingItems() {
 }
 
 export function useShoppingTags() {
-  const { user } = useAuth();
+  const { user } = useSession();
   
   return useQuery({
     queryKey: ['shopping-tags'],

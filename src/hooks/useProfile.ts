@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from '@/contexts/SessionContext';
 import { toast } from 'sonner';
 
 export interface Profile {
@@ -28,7 +28,7 @@ export interface Profile {
 export type ProfileUpdate = Partial<Omit<Profile, 'id' | 'created_at' | 'updated_at'>>;
 
 export function useProfile() {
-  const { user } = useAuth();
+  const { user } = useSession();
 
   return useQuery({
     queryKey: ['profile', user?.id],
@@ -50,7 +50,7 @@ export function useProfile() {
 
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const { user } = useSession();
 
   return useMutation({
     mutationFn: async (updates: ProfileUpdate) => {
@@ -79,7 +79,7 @@ export function useUpdateProfile() {
 
 export function useUploadAvatar() {
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const { user } = useSession();
 
   return useMutation({
     mutationFn: async (file: File) => {

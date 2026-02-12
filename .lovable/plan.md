@@ -1,88 +1,78 @@
 
 
-# Fix: Redirect Loop After Google Login
+# Fix: SessionProvider -- Loading lento + Skeletons eternos
 
-## Root Cause
+## Causa raiz unica
 
-Three components form a redirect triangle:
+O `SessionProvider` atual faz `getSession()` manual E registra `onAuthStateChange`. Dentro do callback do `onAuthStateChange`, as queries de profile/subscription sao `await`ed diretamente, causando deadlock no lock interno do Supabase SDK. Isso trava o estado em `LOADING` para usuarias autenticadas, e consequentemente os hooks de dados (`useShoppingList`, `useReminders`, etc.) nunca recebem `user`, mantendo `enabled: false` e skeletons eternos.
 
-```text
-Auth.tsx (no subscription) ---> /#planos
-       ^                            |
-       |                            v
-ProtectedRoute <--- /home <--- LandingPage (sees logged user, redirects)
-(no subscription)
-  ---> /#planos
-```
+## Solucao
 
-LandingPage blindly redirects all logged-in users to `/home`, even those without a subscription who were intentionally sent to `/#planos`.
+Alterar APENAS `src/contexts/SessionContext.tsx`:
 
-## Fix (3 files)
+1. **Remover** a funcao `initialize()` e a chamada `getSession()` manual (linhas 97-130)
+2. **Usar** `onAuthStateChange` como fonte UNICA de sessao -- o evento `INITIAL_SESSION` do Supabase v2 ja fornece a sessao no mount
+3. **Envolver** as queries de profile/subscription em `setTimeout(fn, 0)` dentro do callback, para que executem APOS o lock interno do Supabase liberar
+4. **Remover** `fetchUserData` e `computeState` do array de dependencias do `useEffect` (usar `[]` vazio, pois o listener so precisa ser registrado uma vez)
 
-### 1. `src/pages/LandingPage.tsx` — Only redirect if user has active subscription
+## Codigo final do useEffect
 
-The redirect `useEffect` must check subscription status before redirecting. If user has no subscription, they should stay on the landing page to view/purchase plans.
-
-```ts
+```typescript
 useEffect(() => {
-  if (loading || profileLoading) return;
-  if (!user) return;
-  if (location.hash.includes('access_token')) return;
+  let cancelled = false;
 
-  // Only redirect if user has completed onboarding AND has subscription
-  // Users without subscription should stay here to see plans
-  const checkAndRedirect = async () => {
-    const { data: subscription } = await supabase
-      .from('subscriptions')
-      .select('status')
-      .eq('user_id', user.id)
-      .eq('status', 'active')
-      .maybeSingle();
+  const { data: { subscription: authListener } } = supabase.auth.onAuthStateChange(
+    (event, currentSession) => {
+      if (cancelled) return;
 
-    if (!subscription) return; // Stay on landing — user needs to subscribe
+      if (!currentSession) {
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+        setSubscription(null);
+        setUserState('ANONYMOUS');
+        return;
+      }
 
-    if (profile?.onboarding_completed) {
-      navigate('/home', { replace: true });
-    } else {
-      navigate('/bem-vinda', { replace: true });
+      setSession(currentSession);
+      setUser(currentSession.user);
+
+      // setTimeout(0) libera o lock interno do Supabase antes de fazer queries
+      setTimeout(async () => {
+        if (cancelled) return;
+        try {
+          const [profileRes, subRes] = await Promise.all([
+            supabase.from('profiles').select('*').eq('id', currentSession.user.id).single(),
+            supabase.from('subscriptions').select('*').eq('user_id', currentSession.user.id).eq('status', 'active').maybeSingle(),
+          ]);
+          if (cancelled) return;
+          setProfile((profileRes.data as Profile) ?? null);
+          setSubscription((subRes.data as Subscription) ?? null);
+          setUserState(computeState(currentSession, profileRes.data ?? null, subRes.data ?? null));
+        } catch (error) {
+          console.error('[Session] fetch error:', error);
+          if (!cancelled) setUserState('ERROR');
+        }
+      }, 0);
     }
+  );
+
+  return () => {
+    cancelled = true;
+    authListener.unsubscribe();
   };
-
-  checkAndRedirect();
-}, [user, loading, profile, profileLoading, navigate, location.hash]);
+}, []);
 ```
 
-### 2. `src/pages/Auth.tsx` — No changes needed
+## O que muda
 
-The current logic is correct: wait for loading to finish, check subscription, redirect accordingly. The loop was caused by LandingPage, not Auth.tsx.
+- Remover linhas 94-130 (funcao `initialize()` + chamada)
+- Substituir linhas 132-164 pelo novo bloco acima
+- O `fetchUserData` pode ser mantido como funcao auxiliar para o `refetch()`, mas NAO e mais usado no useEffect
+- Dependencias do useEffect mudam de `[fetchUserData, computeState]` para `[]`
 
-### 3. `src/components/ProtectedRoute.tsx` — Add guard against repeated toasts
+## O que NAO muda
 
-The `SubscriptionGate` useEffect fires on every render causing repeated toasts. Add a `hasRedirected` ref to prevent multiple redirects/toasts:
-
-```ts
-const hasRedirected = useRef(false);
-
-useEffect(() => {
-  if (!subLoading && !subscription && !hasRedirected.current) {
-    hasRedirected.current = true;
-    toast.error('Voce precisa de uma assinatura ativa para acessar o app.');
-    navigate('/#planos', { replace: true });
-  }
-}, [subLoading, subscription, navigate]);
-```
-
-## Summary
-
-| File | Change |
-|------|--------|
-| `LandingPage.tsx` | Check subscription before redirecting logged-in users. No subscription = stay on landing. |
-| `ProtectedRoute.tsx` | Add `hasRedirected` ref to prevent duplicate toast/redirect. |
-| `Auth.tsx` | No changes needed. |
-
-## Why this works
-
-- User without subscription lands on `/#planos` and STAYS there (LandingPage no longer kicks them out)
-- User WITH subscription who visits landing gets redirected to `/home` as expected
-- ProtectedRoute remains the final safety net but won't cause loops because LandingPage no longer bounces users back
-
+- Nenhum outro arquivo
+- Tipos, interfaces, `refetch()`, `signOut()`, `signInWithGoogle()` permanecem identicos
+- Nenhum componente visual, hook de dados, ou rota

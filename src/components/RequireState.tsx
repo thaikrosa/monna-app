@@ -23,6 +23,14 @@ interface RequireStateProps {
 }
 
 export function RequireState({ allowed, children }: RequireStateProps) {
-  // TEMPORARY: bypass guard for preview testing (remove when done)
+  const { userState, isReady } = useSession();
+
+  if (!isReady) return <FullScreenLoader />;
+  if (userState === 'ERROR') return <ErrorScreen onRetry={() => window.location.reload()} />;
+
+  if (!allowed.includes(userState)) {
+    return <Navigate to={routeForState(userState)} replace />;
+  }
+
   return <>{children}</>;
 }

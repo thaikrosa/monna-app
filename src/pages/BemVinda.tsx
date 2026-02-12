@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import { useSession } from '@/contexts/SessionContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -46,8 +46,7 @@ function StepIndicator({ currentStep }: { currentStep: WizardStep }) {
 
 export default function BemVinda() {
   const { user, session, profile, isReady, refetch } = useSession();
-  const navigate = useNavigate();
-  const authLoading = !isReady;
+  
 
   const [step, setStep] = useState<WizardStep | null>(null);
   const [initializing, setInitializing] = useState(true);
@@ -106,20 +105,29 @@ export default function BemVinda() {
     return 3 as WizardStep;
   }, []);
 
-  // Initialize step based on auth + data
+  // Initialize step + auto-advance when user logs in
   useEffect(() => {
-    if (authLoading) return;
+    if (!isReady) return;
 
     const init = async () => {
       if (!user) {
         setStep(1);
         setInitializing(false);
+        prevUserRef.current = null;
         return;
       }
 
+      // Auto-advance detection: user just logged in
+      const justLoggedIn = prevUserRef.current === null && user.id;
+      if (justLoggedIn) {
+        setInitializing(true);
+      }
+      prevUserRef.current = user.id;
+
       const computed = await calculateStep(user.id);
       if (computed === null) {
-        navigate('/home', { replace: true });
+        // onboarding_completed = true — RequireState will redirect to /home
+        console.log('[BemVinda] calculateStep returned null — user is READY, RequireState will redirect');
         return;
       }
       setStep(computed);
@@ -127,30 +135,7 @@ export default function BemVinda() {
     };
 
     init();
-  }, [authLoading, user, calculateStep, navigate]);
-
-  // Auto-advance from Step 1 when user logs in
-  useEffect(() => {
-    if (prevUserRef.current === undefined) {
-      prevUserRef.current = user?.id ?? null;
-      return;
-    }
-
-    if (prevUserRef.current === null && user?.id) {
-      prevUserRef.current = user.id;
-      setInitializing(true);
-      calculateStep(user.id).then((computed) => {
-        if (computed === null) {
-          navigate('/home', { replace: true });
-          return;
-        }
-        setStep(computed);
-        setInitializing(false);
-      });
-    } else {
-      prevUserRef.current = user?.id ?? null;
-    }
-  }, [user, calculateStep, navigate]);
+  }, [isReady, user, calculateStep]);
 
   // Step 1 — Google Login (inline, redirects to /bem-vinda)
   const handleGoogleLogin = async () => {
@@ -275,7 +260,7 @@ export default function BemVinda() {
   }, [step, session]);
 
   // Loading
-  if (authLoading || initializing || step === null) {
+  if (!isReady || initializing || step === null) {
     return (
       <div className="min-h-screen bg-secondary flex items-center justify-center">
         <Spinner className="w-8 h-8 text-primary animate-spin" />

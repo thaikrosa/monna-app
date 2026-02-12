@@ -127,7 +127,6 @@ export default function BemVinda() {
       const computed = await calculateStep(user.id);
       if (computed === null) {
         // onboarding_completed = true — RequireState will redirect to /home
-        console.log('[BemVinda] calculateStep returned null — user is READY, RequireState will redirect');
         return;
       }
       setStep(computed);

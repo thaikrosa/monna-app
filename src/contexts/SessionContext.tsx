@@ -121,14 +121,8 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
 
             if (cancelled) return;
 
-            console.log('[Session] event:', event);
-            console.log('[Session] userId:', currentSession.user.id);
-            console.log('[Session] profileRes:', { data: profileRes.data, error: profileRes.error });
-            console.log('[Session] subRes:', { data: subRes.data, error: subRes.error });
-
             // CRITICAL: Se a query de profile errou, NÃO calcular estado — ir pra ERROR
             if (profileRes.error) {
-              console.error('[Session] profile query FAILED:', profileRes.error.message);
               if (!cancelled) setUserState('ERROR');
               return;
             }
@@ -137,12 +131,6 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
             const sub = (subRes.data as Subscription) ?? null;
 
             const computed = computeState(currentSession, prof, sub);
-            console.log('[Session] computeState:', {
-              hasSession: true,
-              subStatus: sub?.status ?? 'null',
-              onboardingCompleted: prof?.onboarding_completed ?? 'null',
-              result: computed,
-            });
 
             setProfile(prof);
             setSubscription(sub);

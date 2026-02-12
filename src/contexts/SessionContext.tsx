@@ -118,10 +118,35 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
               supabase.from('profiles').select('*').eq('id', currentSession.user.id).single(),
               supabase.from('subscriptions').select('*').eq('user_id', currentSession.user.id).eq('status', 'active').maybeSingle(),
             ]);
+
             if (cancelled) return;
-            setProfile((profileRes.data as Profile) ?? null);
-            setSubscription((subRes.data as Subscription) ?? null);
-            setUserState(computeState(currentSession, profileRes.data ?? null, subRes.data ?? null));
+
+            console.log('[Session] event:', event);
+            console.log('[Session] userId:', currentSession.user.id);
+            console.log('[Session] profileRes:', { data: profileRes.data, error: profileRes.error });
+            console.log('[Session] subRes:', { data: subRes.data, error: subRes.error });
+
+            // CRITICAL: Se a query de profile errou, NÃO calcular estado — ir pra ERROR
+            if (profileRes.error) {
+              console.error('[Session] profile query FAILED:', profileRes.error.message);
+              if (!cancelled) setUserState('ERROR');
+              return;
+            }
+
+            const prof = (profileRes.data as Profile) ?? null;
+            const sub = (subRes.data as Subscription) ?? null;
+
+            const computed = computeState(currentSession, prof, sub);
+            console.log('[Session] computeState:', {
+              hasSession: true,
+              subStatus: sub?.status ?? 'null',
+              onboardingCompleted: prof?.onboarding_completed ?? 'null',
+              result: computed,
+            });
+
+            setProfile(prof);
+            setSubscription(sub);
+            setUserState(computed);
           } catch (error) {
             console.error('[Session] fetch error:', error);
             if (!cancelled) setUserState('ERROR');

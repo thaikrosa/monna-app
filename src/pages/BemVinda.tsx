@@ -441,7 +441,6 @@ export default function BemVinda() {
                     const digits = extractDigits(e.target.value).slice(0, 11);
                     setWhatsappDigits(digits);
                     setWhatsappDisplay(formatWhatsApp(digits));
-                    setWhatsappTouched(true);
                   }}
                   onBlur={() => setWhatsappTouched(true)}
                   placeholder="(00) 00000-0000"

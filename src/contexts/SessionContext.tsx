@@ -94,10 +94,8 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let cancelled = false;
 
-    async function initialize() {
-      try {
-        const { data: { session: currentSession } } = await supabase.auth.getSession();
-
+    const { data: { subscription: authListener } } = supabase.auth.onAuthStateChange(
+      (event, currentSession) => {
         if (cancelled) return;
 
         if (!currentSession) {
@@ -112,48 +110,23 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
         setSession(currentSession);
         setUser(currentSession.user);
 
-        const { profile: prof, subscription: sub } = await fetchUserData(currentSession.user.id);
-
-        if (cancelled) return;
-
-        setProfile(prof);
-        setSubscription(sub);
-        setUserState(computeState(currentSession, prof, sub));
-      } catch (error) {
-        console.error('[Session] Initialization error:', error);
-        if (!cancelled) {
-          setUserState('ERROR');
-        }
-      }
-    }
-
-    initialize();
-
-    const { data: { subscription: authListener } } = supabase.auth.onAuthStateChange(
-      async (event, newSession) => {
-        if (cancelled) return;
-
-        if (!newSession) {
-          setSession(null);
-          setUser(null);
-          setProfile(null);
-          setSubscription(null);
-          setUserState('ANONYMOUS');
-          return;
-        }
-
-        setSession(newSession);
-        setUser(newSession.user);
-
-        try {
-          const { profile: prof, subscription: sub } = await fetchUserData(newSession.user.id);
+        // setTimeout(0) libera o lock interno do Supabase antes de fazer queries
+        setTimeout(async () => {
           if (cancelled) return;
-          setProfile(prof);
-          setSubscription(sub);
-          setUserState(computeState(newSession, prof, sub));
-        } catch (error) {
-          console.error('[Session] Auth change error:', error);
-        }
+          try {
+            const [profileRes, subRes] = await Promise.all([
+              supabase.from('profiles').select('*').eq('id', currentSession.user.id).single(),
+              supabase.from('subscriptions').select('*').eq('user_id', currentSession.user.id).eq('status', 'active').maybeSingle(),
+            ]);
+            if (cancelled) return;
+            setProfile((profileRes.data as Profile) ?? null);
+            setSubscription((subRes.data as Subscription) ?? null);
+            setUserState(computeState(currentSession, profileRes.data ?? null, subRes.data ?? null));
+          } catch (error) {
+            console.error('[Session] fetch error:', error);
+            if (!cancelled) setUserState('ERROR');
+          }
+        }, 0);
       }
     );
 
@@ -161,7 +134,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       cancelled = true;
       authListener.unsubscribe();
     };
-  }, [fetchUserData, computeState]);
+  }, []);
 
   const refetch = useCallback(async () => {
     if (!session?.user?.id) return;

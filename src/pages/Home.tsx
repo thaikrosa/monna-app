@@ -29,7 +29,7 @@ export default function Home() {
   // Loading state
   if (profileLoading) {
     return (
-      <div className="max-w-2xl mx-auto pb-20 px-4">
+      <div className="max-w-2xl mx-auto pb-20 px-4" aria-busy="true" aria-live="polite">
         <HomeSkeleton />
       </div>
     );

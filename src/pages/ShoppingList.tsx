@@ -149,7 +149,7 @@ export default function ShoppingList() {
 
       {/* Estados de carregamento e erro */}
       {isLoading ? (
-        <div className="space-y-3">
+        <div className="space-y-3" aria-busy="true">
           {[1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="flex items-center gap-3 py-3">
               <Skeleton className="h-5 w-5 rounded" />

@@ -112,7 +112,7 @@ export function ChatAnimation() {
             key={`${currentConv}-${index}`}
             className={`max-w-[88%] p-2 px-3 text-xs leading-relaxed rounded-lg shadow-sm animate-fade-in ${
               msg.type === 'user'
-                ? 'self-end bg-[#D4EAD4] rounded-br-sm'
+                ? 'self-end bg-accent rounded-br-sm'
                 : 'self-start bg-card rounded-bl-sm'
             }`}
           >

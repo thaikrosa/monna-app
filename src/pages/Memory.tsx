@@ -34,7 +34,7 @@ function MemoryCard({ memory }: { memory: {
   created_at: string | null;
 }}) {
   return (
-    <div className="bg-background border border-border/50 rounded-lg p-4 break-inside-avoid mb-4 shadow-sm hover:shadow-elevated transition-shadow duration-200">
+    <div className="bg-card border border-border rounded-lg p-4 break-inside-avoid mb-4 shadow-elevated hover:shadow-md transition-shadow duration-200">
       {/* Content */}
       <p className="text-sm text-foreground leading-relaxed mb-3">
         {memory.content}
@@ -97,17 +97,17 @@ export default function Memory() {
   const categories = data?.categories || [];
 
   return (
-    <div className="max-w-2xl mx-auto pb-24 px-4">
+    <div className="max-w-2xl mx-auto pb-24 space-y-6">
       {/* Header */}
-      <div className="pt-6 pb-4">
-        <h1 className="text-2xl font-semibold text-foreground mb-1">Memória</h1>
-        <p className="text-sm text-muted-foreground">
+      <header className="animate-slide-up stagger-1">
+        <h1 className="sr-only">Memória</h1>
+        <p className="text-sm text-primary/80">
           Tudo que você me contou, guardado com carinho
         </p>
-      </div>
+      </header>
 
       {/* Spotlight Search */}
-      <div className="relative mb-4">
+      <div className="animate-slide-up stagger-2 relative">
         <MagnifyingGlass
           weight="regular"
           className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground"
@@ -132,7 +132,7 @@ export default function Memory() {
       </div>
 
       {/* Category Filters */}
-      <div className="flex gap-2 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
+      <div className="animate-slide-up stagger-3 flex gap-2 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
         <Button
           variant="ghost"
           size="sm"
@@ -165,12 +165,13 @@ export default function Memory() {
       </div>
 
       {/* Content */}
+      <div className="animate-slide-up stagger-4">
       {isLoading ? (
         <div className="columns-1 sm:columns-2 gap-4">
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="bg-background border border-border/50 rounded-lg p-4 mb-4 animate-pulse"
+              className="bg-card border border-border rounded-lg p-4 mb-4 animate-pulse"
             >
               <div className="h-4 bg-muted rounded w-full mb-2" />
               <div className="h-4 bg-muted rounded w-3/4 mb-2" />
@@ -201,6 +202,7 @@ export default function Memory() {
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 }

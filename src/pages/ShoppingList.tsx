@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { CaretLeft, Plus, CaretDown, ShoppingCart, PencilSimple } from '@phosphor-icons/react';
+import { Plus, CaretDown, ShoppingCart, PencilSimple } from '@phosphor-icons/react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -84,25 +83,15 @@ export default function ShoppingList() {
   const totalCount = pendingItems.length + completedItems.length;
 
   return (
-    <div className="max-w-lg mx-auto pb-24">
-      {/* Header com botão voltar */}
-      <header className="mb-6">
-        <div className="flex items-center gap-3">
-          <Link
-            to="/"
-            className="p-2 rounded-lg text-primary/70 hover:text-primary hover:bg-primary/10 transition-all duration-150"
-          >
-            <CaretLeft weight="regular" className="h-5 w-5" />
-          </Link>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Lista de Compras</h1>
-          </div>
-        </div>
+    <div className="max-w-2xl mx-auto pb-24 space-y-6">
+      {/* Header */}
+      <header className="animate-slide-up stagger-1">
+        <h1 className="sr-only">Lista de Compras</h1>
       </header>
 
       {/* Tabs por tag - Ordenados: Mercado primeiro, depois alfabético, Todos por último */}
       {tags.length > 0 && (
-        <div className="mb-6">
+        <div className="animate-slide-up stagger-2">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="w-full h-auto flex-wrap justify-start gap-1 bg-transparent p-0">
               {/* Tags ordenadas primeiro */}
@@ -148,6 +137,7 @@ export default function ShoppingList() {
       )}
 
       {/* Estados de carregamento e erro */}
+      <section className="animate-slide-up stagger-3">
       {isLoading ? (
         <div className="space-y-3" aria-busy="true">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -229,8 +219,9 @@ export default function ShoppingList() {
           )}
         </>
       )}
+      </section>
 
-      {/* FAB flutuante com microinterações premium */}
+      {/* FAB flutuante */}
       <button
         onClick={() => setAddSheetOpen(true)}
         aria-label="Adicionar item"

@@ -77,30 +77,26 @@ export default function Reminders() {
   const pendingCount = selectedDateReminders.filter((r) => r.occurrence_status === 'pending' || r.occurrence_status === 'snoozed').length;
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-3xl mx-auto px-5 py-6 space-y-6 pb-24">
-        {/* Header */}
-        <header className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-medium text-foreground">
-              Lembretes
-            </h1>
-            <p className="text-sm text-muted-foreground/70 mt-0.5">
-              {format(selectedDate, "EEEE, d 'de' MMMM", { locale: ptBR })}
-            </p>
-          </div>
-        </header>
-
-        {/* Day Selector (3 days) */}
+    <div className="max-w-2xl mx-auto pb-24 space-y-6">
+      {/* Header — DaySelector (espelho da StripCalendar da Agenda) */}
+      <header className="animate-slide-up stagger-1">
+        <h1 className="sr-only">Lembretes</h1>
         <div className="bg-card p-3 rounded-lg border border-border shadow-elevated">
           <DaySelector
             selectedDate={selectedDate}
             onSelectDate={setSelectedDate}
           />
         </div>
+      </header>
 
-        {/* Reminders List */}
-        <section aria-label="Lista de lembretes" className="space-y-3">
+      <div className="animate-slide-up stagger-2">
+        <p className="text-sm text-primary/80 capitalize">
+          {format(selectedDate, "EEEE, d 'de' MMMM", { locale: ptBR })}
+        </p>
+      </div>
+
+      {/* Reminders List */}
+      <section aria-label="Lista de lembretes" className="animate-slide-up stagger-3 space-y-3">
           {isLoading ? (
             <div className="space-y-3" aria-busy="true">
               {[1, 2, 3].map((i) => (
@@ -160,7 +156,6 @@ export default function Reminders() {
           onEdit={handleEditRecurring}
           onDelete={handleDelete}
         />
-      </div>
 
       {/* FAB flutuante */}
       <button

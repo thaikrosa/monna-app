@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { motion, useMotionValue, useTransform, useAnimation, PanInfo } from 'framer-motion';
+import { useState } from 'react';
+import { motion, useMotionValue, useTransform, useAnimation, useReducedMotion, PanInfo } from 'framer-motion';
 import { PencilSimple, Clock, Check } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import type { UpcomingReminder } from '@/types/reminders';
@@ -21,6 +21,7 @@ export function SwipeableReminderCard({ reminder, onComplete, onSnooze, onEdit, 
   const [completing, setCompleting] = useState(false);
   const x = useMotionValue(0);
   const controls = useAnimation();
+  const prefersReducedMotion = useReducedMotion();
   const isCompleted = reminder.occurrence_status === 'acknowledged';
 
   // Right swipe: green check background
@@ -55,16 +56,31 @@ export function SwipeableReminderCard({ reminder, onComplete, onSnooze, onEdit, 
       <motion.div
         initial={{ height: 'auto', opacity: 0 }}
         animate={{ height: 0, marginBottom: 0 }}
-        transition={{ duration: 0.15, delay: 0.05 }}
+        transition={{ duration: prefersReducedMotion ? 0 : 0.15, delay: prefersReducedMotion ? 0 : 0.05 }}
         className="overflow-hidden"
       />
+    );
+  }
+
+  // For users who prefer reduced motion, render without swipe gestures
+  if (prefersReducedMotion) {
+    return (
+      <div className="relative rounded-lg">
+        <ReminderCard
+          reminder={reminder}
+          onComplete={onComplete}
+          onSnooze={onSnooze}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
+      </div>
     );
   }
 
   return (
     <div className="relative overflow-hidden rounded-lg">
       {/* Right swipe background (complete) */}
-      <motion.div 
+      <motion.div
         className="absolute inset-0 bg-primary/20 rounded-lg flex items-center pl-4"
         style={{ opacity: rightBgOpacity }}
       >

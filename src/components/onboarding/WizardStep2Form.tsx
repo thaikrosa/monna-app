@@ -59,7 +59,7 @@ interface WizardStep2FormProps {
     lastName: string;
     nickname: string;
     whatsappDigits: string;
-  }) => void;
+  }) => Promise<{ error?: string } | void>;
 }
 
 // ── Component ─────────────────────────────────────────────────
@@ -94,14 +94,20 @@ export function WizardStep2Form({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstName]);
 
-  const onSubmit = handleSubmit((data) => {
+  const onSubmit = handleSubmit(async (data) => {
     const digits = data.whatsapp; // Already transformed by zod (digits only)
-    onSaveProfile({
+    const result = await onSaveProfile({
       firstName: data.firstName,
       lastName: data.lastName,
       nickname: data.nickname,
       whatsappDigits: digits,
     });
+    if (result?.error === 'duplicate_whatsapp') {
+      form.setError('whatsapp', {
+        type: 'manual',
+        message: 'Este número já está cadastrado. Utilize outro número.',
+      });
+    }
   });
 
   return (

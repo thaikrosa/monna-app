@@ -272,7 +272,7 @@ export function useOnboardingWizard() {
     lastName: string;
     nickname: string;
     whatsappDigits: string;
-  }) => {
+  }): Promise<{ error?: string } | void> => {
     if (!user) return;
     dispatch({ type: 'SET_SAVING_PROFILE', payload: true });
     const formValues = data || state.formData;
@@ -290,7 +290,14 @@ export function useOnboardingWizard() {
         })
         .eq('id', user.id);
 
-      if (error) return;
+      if (error) {
+        const msg = error.message?.toLowerCase() ?? '';
+        const code = error.code ?? '';
+        if (code === '23505' || msg.includes('duplicate') || msg.includes('unique')) {
+          return { error: 'duplicate_whatsapp' };
+        }
+        return { error: 'unknown' };
+      }
 
       dispatch({ type: 'SET_DISPLAY_NICKNAME', payload: formValues.nickname });
       dispatch({ type: 'SET_STEP', payload: 3 });

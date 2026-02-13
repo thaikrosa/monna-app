@@ -222,20 +222,12 @@ export function useOnboardingWizard() {
       dispatch({ type: 'SET_APP_READY', payload: true });
 
       try {
-        const { data: onb } = await supabase
-          .from('onboarding')
-          .select('status')
-          .eq('user_id', session.user.id)
-          .eq('flow', 'whatsapp')
-          .maybeSingle();
-
-        if (onb?.status === 'pending') {
-          supabase.functions.invoke('trigger-onboarding', {
-            headers: { Authorization: `Bearer ${session.access_token}` },
-          });
-        }
+        await supabase.functions.invoke('trigger-onboarding', {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+          body: { user_id: session.user.id },
+        });
       } catch {
-        // Silently fail
+        // Silently fail — WhatsApp trigger is best-effort
       }
     };
 

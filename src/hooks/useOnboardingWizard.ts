@@ -127,7 +127,7 @@ export function extractDigits(value: string): string {
 }
 
 export function isValidWhatsApp(digits: string): boolean {
-  return digits.length === 10 || digits.length === 11;
+  return digits.length === 11 && /^[1-9][1-9]9\d{8}$/.test(digits);
 }
 
 export function useOnboardingWizard() {
@@ -275,26 +275,32 @@ export function useOnboardingWizard() {
     dispatch({ type: 'SET_SENDING_MAGIC_LINK', payload: false });
   }, [state.magicEmail]);
 
-  const handleSaveProfile = useCallback(async () => {
+  const handleSaveProfile = useCallback(async (data?: {
+    firstName: string;
+    lastName: string;
+    nickname: string;
+    whatsappDigits: string;
+  }) => {
     if (!user) return;
     dispatch({ type: 'SET_SAVING_PROFILE', payload: true });
+    const formValues = data || state.formData;
     try {
       const { error } = await supabase
         .from('profiles')
         .update({
-          first_name: state.formData.firstName,
-          last_name: state.formData.lastName,
-          nickname: state.formData.nickname,
+          first_name: formValues.firstName,
+          last_name: formValues.lastName,
+          nickname: formValues.nickname,
           terms_accepted_at: new Date().toISOString(),
           privacy_accepted_at: new Date().toISOString(),
-          whatsapp: '55' + state.formData.whatsappDigits,
+          whatsapp: `55${formValues.whatsappDigits}`,
           updated_at: new Date().toISOString(),
         })
         .eq('id', user.id);
 
       if (error) return;
 
-      dispatch({ type: 'SET_DISPLAY_NICKNAME', payload: state.formData.nickname });
+      dispatch({ type: 'SET_DISPLAY_NICKNAME', payload: formValues.nickname });
       dispatch({ type: 'SET_STEP', payload: 3 });
     } finally {
       dispatch({ type: 'SET_SAVING_PROFILE', payload: false });

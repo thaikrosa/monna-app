@@ -19,17 +19,13 @@ export default function BemVinda() {
     magicLinkSent,
     sendingMagicLink,
     savingProfile,
-    whatsappTouched,
-    canContinueStep2,
     isReady,
     handleGoogleLogin,
     handleMagicLink,
     handleSaveProfile,
     handleGoToApp,
-    updateFormField,
     setMagicEmail,
     setShowMagicLink,
-    setWhatsappTouched,
   } = useOnboardingWizard();
 
   if (!isReady || initializing || step === null) {
@@ -62,12 +58,13 @@ export default function BemVinda() {
 
         {step === 2 && (
           <WizardStep2Form
-            formData={formData}
-            whatsappTouched={whatsappTouched}
+            defaultValues={{
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+              nickname: formData.nickname,
+              whatsappDigits: formData.whatsappDigits,
+            }}
             savingProfile={savingProfile}
-            canContinue={canContinueStep2}
-            onUpdateField={updateFormField}
-            onSetWhatsappTouched={setWhatsappTouched}
             onSaveProfile={handleSaveProfile}
           />
         )}

@@ -345,8 +345,8 @@ export default function Profile() {
                   {getInitials()}
                 </AvatarFallback>
               </Avatar>
-              <label className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-primary flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors">
-                <Camera weight="thin" className="h-3 w-3 text-primary-foreground" />
+              <label className="absolute -bottom-1 -right-1 h-11 w-11 rounded-full bg-primary flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors">
+                <Camera weight="thin" className="h-5 w-5 text-primary-foreground" />
                 <input
                   type="file"
                   accept="image/*"

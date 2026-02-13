@@ -83,7 +83,7 @@ export function MemorySection() {
           <li key={memory.id} className="list-none">
           <button
             onClick={() => navigate('/memoria')}
-            className="w-full text-left bg-muted/30 hover:bg-muted/50 rounded-lg p-3 transition-colors duration-150"
+            className="w-full text-left bg-muted/30 hover:bg-muted/50 active:bg-muted/60 active:scale-[0.98] rounded-lg p-3 transition-all duration-150"
           >
             <p className="text-sm text-foreground line-clamp-2 mb-2">
               {memory.content}

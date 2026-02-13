@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Plus, CheckCircle } from '@phosphor-icons/react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ErrorState } from '@/components/ui/error-state';
 import { DaySelector } from '@/components/reminders/DaySelector';
 import { SwipeableReminderCard } from '@/components/reminders/SwipeableReminderCard';
 import { AddReminderDialog } from '@/components/reminders/AddReminderDialog';
@@ -33,7 +34,7 @@ export default function Reminders() {
   }, []);
 
   const isToday = isSameDay(selectedDate, today);
-  const { data: selectedDateReminders = [], isLoading } = useRemindersByDate(selectedDate, isToday);
+  const { data: selectedDateReminders = [], isLoading, isError, refetch } = useRemindersByDate(selectedDate, isToday);
 
   const acknowledgeOccurrence = useAcknowledgeOccurrence();
   const snoozeOccurrence = useSnoozeOccurrence();
@@ -106,6 +107,11 @@ export default function Reminders() {
                 <Skeleton key={i} className="h-16 rounded-lg" />
               ))}
             </div>
+          ) : isError ? (
+            <ErrorState
+              message="Erro ao carregar lembretes"
+              onRetry={() => refetch()}
+            />
           ) : selectedDateReminders.length === 0 || (selectedDateReminders.every(r => r.occurrence_status === 'acknowledged') && !justCleared) ? (
             <div className="py-16 text-center">
               <p className="text-muted-foreground/60 text-sm">

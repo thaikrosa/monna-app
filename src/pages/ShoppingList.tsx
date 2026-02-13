@@ -4,6 +4,7 @@ import { CaretLeft, Plus, CaretDown, ShoppingCart, PencilSimple } from '@phospho
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ErrorState } from '@/components/ui/error-state';
 import { ShoppingItemCard } from '@/components/shopping/ShoppingItemCard';
 import { AddItemSheet } from '@/components/shopping/AddItemSheet';
 import { EditItemSheet } from '@/components/shopping/EditItemSheet';
@@ -23,7 +24,7 @@ export default function ShoppingList() {
   const [completedOpen, setCompletedOpen] = useState(false);
   const [editingTag, setEditingTag] = useState<{ id: string; name: string } | null>(null);
 
-  const { data: items = [], isLoading } = useShoppingItems();
+  const { data: items = [], isLoading, isError, refetch } = useShoppingItems();
   const { data: tags = [] } = useShoppingTags();
   const toggleChecked = useToggleChecked();
   const deleteItem = useDeleteItem();
@@ -146,7 +147,7 @@ export default function ShoppingList() {
         </div>
       )}
 
-      {/* Estados de carregamento */}
+      {/* Estados de carregamento e erro */}
       {isLoading ? (
         <div className="space-y-3">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -160,6 +161,11 @@ export default function ShoppingList() {
             </div>
           ))}
         </div>
+      ) : isError ? (
+        <ErrorState
+          message="Erro ao carregar a lista de compras"
+          onRetry={() => refetch()}
+        />
       ) : totalCount === 0 ? (
         /* Empty state */
         <div className="py-16 text-center bg-card border border-border shadow-elevated rounded-lg">

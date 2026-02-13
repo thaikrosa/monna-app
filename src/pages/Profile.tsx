@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { CaretLeft } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ErrorState } from '@/components/ui/error-state';
 import { useSession } from '@/contexts/SessionContext';
 import { useProfile } from '@/hooks/useProfile';
 import { PersonalDataSection } from '@/components/profile/PersonalDataSection';
@@ -11,7 +12,7 @@ import { AnniaQuestionsSection } from '@/components/profile/AnniaQuestionsSectio
 
 export default function Profile() {
   const { user } = useSession();
-  const { data: profile, isLoading: profileLoading } = useProfile();
+  const { data: profile, isLoading: profileLoading, isError, refetch } = useProfile();
 
   if (profileLoading) {
     return (
@@ -20,6 +21,19 @@ export default function Profile() {
           <Skeleton className="h-8 w-48" />
           <Skeleton className="h-32 w-full" />
           <Skeleton className="h-24 w-full" />
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="max-w-2xl mx-auto px-4 py-6">
+          <ErrorState
+            message="Erro ao carregar perfil"
+            onRetry={() => refetch()}
+          />
         </div>
       </div>
     );

@@ -10,6 +10,7 @@ import { EditEventDialog } from '@/components/agenda/EditEventDialog';
 import { useCalendarEventsByDate } from '@/hooks/useCalendarEventsByDate';
 import { useGoogleCalendarConnection } from '@/hooks/useCalendarConnections';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ErrorState } from '@/components/ui/error-state';
 import type { AgendaEvent } from '@/hooks/useTodayCalendarEvents';
 
 export default function Agenda() {
@@ -17,7 +18,7 @@ export default function Agenda() {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<AgendaEvent | null>(null);
   
-  const { data: events = [], isLoading } = useCalendarEventsByDate(selectedDate);
+  const { data: events = [], isLoading, isError, refetch } = useCalendarEventsByDate(selectedDate);
   const { isConnected } = useGoogleCalendarConnection();
 
   const formatEventTime = (startsAt: string, isAllDay: boolean) => {
@@ -49,6 +50,11 @@ export default function Agenda() {
             <Skeleton className="h-20 w-full rounded-xl" />
             <Skeleton className="h-20 w-full rounded-xl" />
           </>
+        ) : isError ? (
+          <ErrorState
+            message="Erro ao carregar eventos"
+            onRetry={() => refetch()}
+          />
         ) : events.length === 0 ? (
           <AgendaEmptyState />
         ) : (

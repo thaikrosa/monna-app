@@ -31,10 +31,7 @@ export function useShoppingItems() {
         .order('is_checked', { ascending: true })
         .order('created_at', { ascending: false });
 
-      if (error) {
-        console.log('[Annia Debug] fetchItems error:', error.message, error);
-        throw error;
-      }
+      if (error) throw error;
       return data as ShoppingItem[];
     },
     enabled: !!user,
@@ -52,10 +49,7 @@ export function useShoppingTags() {
         .select('id, name')
         .order('sort_order', { ascending: true });
 
-      if (error) {
-        console.log('[Annia Debug] fetchTags error:', error.message, error);
-        throw error;
-      }
+      if (error) throw error;
       return data as ShoppingTag[];
     },
     enabled: !!user,
@@ -71,11 +65,7 @@ export function useAddItem() {
         p_name: name.trim(),
         p_tag_name: tagName?.trim() || null,
       });
-      if (error) {
-        console.log('[Annia Debug] addItem error:', error.message, error);
-        throw error;
-      }
-      console.log('[Annia Debug] addItem success:', data);
+      if (error) throw error;
       return data;
     },
     onSuccess: () => {
@@ -83,8 +73,7 @@ export function useAddItem() {
       queryClient.invalidateQueries({ queryKey: ['shopping-tags'] });
       queryClient.invalidateQueries({ queryKey: ['shopping-pending-count'] });
     },
-    onError: (error: Error) => {
-      console.log('[Annia Debug] addItem onError:', error);
+    onError: () => {
       toast.error('Erro ao adicionar item');
     },
   });
@@ -99,18 +88,13 @@ export function useToggleChecked() {
         p_item_id: id,
         p_checked: checked,
       });
-      if (error) {
-        console.log('[Annia Debug] toggleChecked error:', error.message, error);
-        throw error;
-      }
-      console.log('[Annia Debug] toggleChecked success:', id, checked);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shopping-items'] });
       queryClient.invalidateQueries({ queryKey: ['shopping-pending-count'] });
     },
-    onError: (error: Error) => {
-      console.log('[Annia Debug] toggleChecked onError:', error);
+    onError: () => {
       toast.error('Erro ao atualizar item');
     },
   });
@@ -124,18 +108,13 @@ export function useDeleteItem() {
       const { error } = await supabase.rpc('shopping_delete_item', {
         p_item_id: id,
       });
-      if (error) {
-        console.log('[Annia Debug] deleteItem error:', error.message, error);
-        throw error;
-      }
-      console.log('[Annia Debug] deleteItem success:', id);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shopping-items'] });
       queryClient.invalidateQueries({ queryKey: ['shopping-pending-count'] });
     },
-    onError: (error: Error) => {
-      console.log('[Annia Debug] deleteItem onError:', error);
+    onError: () => {
       toast.error('Erro ao remover item');
     },
   });
@@ -149,11 +128,7 @@ export function useClearChecked() {
       const { data, error } = await supabase.rpc('shopping_clear_checked_items', {
         p_days_ago: 0,
       });
-      if (error) {
-        console.log('[Annia Debug] clearChecked error:', error.message, error);
-        throw error;
-      }
-      console.log('[Annia Debug] clearChecked success:', data);
+      if (error) throw error;
       return data;
     },
     onSuccess: (count) => {
@@ -163,8 +138,7 @@ export function useClearChecked() {
         toast.success(`${count} item${count > 1 ? 's' : ''} removido${count > 1 ? 's' : ''}`);
       }
     },
-    onError: (error: Error) => {
-      console.log('[Annia Debug] clearChecked onError:', error);
+    onError: () => {
       toast.error('Erro ao limpar itens');
     },
   });
@@ -194,18 +168,13 @@ export function useUpdateItem() {
         })
         .eq('id', id);
 
-      if (error) {
-        console.log('[Annia Debug] updateItem error:', error.message, error);
-        throw error;
-      }
-      console.log('[Annia Debug] updateItem success:', id);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shopping-items'] });
       queryClient.invalidateQueries({ queryKey: ['shopping-tags'] });
     },
-    onError: (error: Error) => {
-      console.log('[Annia Debug] updateItem onError:', error);
+    onError: () => {
       toast.error('Erro ao atualizar item');
     },
   });
@@ -221,19 +190,14 @@ export function useUpdateTag() {
         .update({ name: name.trim() })
         .eq('id', id);
 
-      if (error) {
-        console.log('[Annia Debug] updateTag error:', error.message, error);
-        throw error;
-      }
-      console.log('[Annia Debug] updateTag success:', id, name);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shopping-tags'] });
       queryClient.invalidateQueries({ queryKey: ['shopping-items'] });
       toast.success('Lista renomeada');
     },
-    onError: (error: Error) => {
-      console.log('[Annia Debug] updateTag onError:', error);
+    onError: () => {
       toast.error('Erro ao renomear lista');
     },
   });
@@ -249,19 +213,14 @@ export function useDeleteTag() {
         .delete()
         .eq('id', id);
 
-      if (error) {
-        console.log('[Annia Debug] deleteTag error:', error.message, error);
-        throw error;
-      }
-      console.log('[Annia Debug] deleteTag success:', id);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shopping-tags'] });
       queryClient.invalidateQueries({ queryKey: ['shopping-items'] });
       toast.success('Lista excluída');
     },
-    onError: (error: Error) => {
-      console.log('[Annia Debug] deleteTag onError:', error);
+    onError: () => {
       toast.error('Erro ao excluir lista');
     },
   });

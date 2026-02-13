@@ -94,8 +94,7 @@ export function AddEventDialog({ open, onOpenChange, defaultDate }: AddEventDial
       toast.success('Evento criado no Google Calendar');
       resetForm();
       onOpenChange(false);
-    } catch (error) {
-      console.error('[AddEventDialog] Error creating event:', error);
+    } catch {
       toast.error('Erro ao criar evento. Tente novamente.');
     }
   };

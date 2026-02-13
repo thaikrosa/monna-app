@@ -154,8 +154,7 @@ export function AddReminderDialog({ open, onOpenChange }: AddReminderDialogProps
       toast.success('Lembrete criado');
       resetForm();
       onOpenChange(false);
-    } catch (error) {
-      console.error('[DEBUG] Error creating reminder:', error);
+    } catch {
       toast.error('Erro ao criar lembrete');
     }
   };

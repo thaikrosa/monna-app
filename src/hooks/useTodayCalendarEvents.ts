@@ -41,25 +41,17 @@ function useCalendarSync() {
           .eq('status', 'connected')
           .maybeSingle();
 
-        if (!connection) {
-          console.log('[CalendarSync] Nenhuma conexão ativa, pulando sync');
-          return;
-        }
+        if (!connection) return;
 
-        console.log('[CalendarSync] Sincronizando eventos...');
         const { error } = await supabase.functions.invoke('sync-google-calendar', {
           body: { user_id: user.id }
         });
 
-        if (error) {
-          console.warn('[CalendarSync] Erro no sync (não crítico):', error.message);
-          return;
+        if (!error) {
+          queryClient.invalidateQueries({ queryKey: ['calendar-events'] });
         }
-
-        console.log('[CalendarSync] Sync concluído, invalidando queries');
-        queryClient.invalidateQueries({ queryKey: ['calendar-events'] });
-      } catch (err) {
-        console.warn('[CalendarSync] Erro inesperado (não crítico):', err);
+      } catch {
+        // Silently fail — sync is not critical
       }
     };
 

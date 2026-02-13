@@ -41,9 +41,6 @@ export function usePendingReminders() {
         .order('scheduled_at', { ascending: true })
         .limit(50); // Busca todos os pendentes do dia
       
-      // Debug temporário
-      console.log('[usePendingReminders] Data:', data, 'Error:', error);
-      
       if (error) throw error;
       
       // Filtra apenas lembretes ativos no JavaScript (evita erro de filtro relacionado)

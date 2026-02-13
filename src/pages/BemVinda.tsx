@@ -191,9 +191,7 @@ export default function BemVinda() {
         emailRedirectTo: `${window.location.origin}/bem-vinda`,
       },
     });
-    if (error) {
-      console.error('[BemVinda] Magic link error:', error);
-    } else {
+    if (!error) {
       setMagicLinkSent(true);
     }
     setSendingMagicLink(false);
@@ -217,10 +215,7 @@ export default function BemVinda() {
         })
         .eq('id', user.id);
 
-      if (error) {
-        console.error('[BemVinda] Profile save error:', error);
-        return;
-      }
+      if (error) return;
 
       setDisplayNickname(nickname);
       setStep(3);
@@ -246,19 +241,15 @@ export default function BemVinda() {
 
       // Enable button immediately — don't block on retry
       if (error) {
-        console.error('[Onboarding] Erro ao liberar app:', error);
         // Retry in background, don't block UI
         setTimeout(async () => {
-          const retry = await supabase
+          await supabase
             .from('profiles')
             .update({
               onboarding_completed: true,
               onboarding_completed_at: new Date().toISOString(),
             })
             .eq('id', session.user.id);
-          if (retry.error) {
-            console.error('[Onboarding] Retry falhou:', retry.error);
-          }
         }, 2000);
       }
 
@@ -278,8 +269,8 @@ export default function BemVinda() {
             headers: { Authorization: `Bearer ${session.access_token}` },
           }); // No await — fire and forget
         }
-      } catch (err) {
-        console.error('[Onboarding] trigger failed:', err);
+      } catch {
+        // Silently fail — WhatsApp trigger is not critical
       }
     };
 

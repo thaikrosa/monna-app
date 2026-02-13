@@ -56,8 +56,7 @@ export function useAddContact() {
       queryClient.invalidateQueries({ queryKey: ['contacts-count'] });
       toast.success('Contato adicionado');
     },
-    onError: (error) => {
-      console.error('[Annia Debug] addContact error:', error);
+    onError: () => {
       toast.error('Erro ao adicionar contato');
     },
   });
@@ -82,8 +81,7 @@ export function useUpdateContact() {
       queryClient.invalidateQueries({ queryKey: ['contacts'] });
       toast.success('Contato atualizado');
     },
-    onError: (error) => {
-      console.error('[Annia Debug] updateContact error:', error);
+    onError: () => {
       toast.error('Erro ao atualizar contato');
     },
   });
@@ -106,8 +104,7 @@ export function useDeleteContact() {
       queryClient.invalidateQueries({ queryKey: ['contacts-count'] });
       toast.success('Contato removido');
     },
-    onError: (error) => {
-      console.error('[Annia Debug] deleteContact error:', error);
+    onError: () => {
       toast.error('Erro ao remover contato');
     },
   });

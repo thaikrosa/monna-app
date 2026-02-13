@@ -32,10 +32,7 @@ export default function OAuthCallback() {
   useEffect(() => {
     const processCallback = async () => {
       // Evita duplo processamento
-      if (hasProcessed.current) {
-        console.log("[OAuthCallback] Já processado, ignorando...");
-        return;
-      }
+      if (hasProcessed.current) return;
       hasProcessed.current = true;
 
       const code = searchParams.get("code");
@@ -43,14 +40,8 @@ export default function OAuthCallback() {
       const error = searchParams.get("error");
       const errorDescription = searchParams.get("error_description");
 
-      console.log("[OAuthCallback] Iniciando processamento...");
-      console.log("[OAuthCallback] code:", code ? `${code.substring(0, 20)}...` : "null");
-      console.log("[OAuthCallback] state:", state);
-      console.log("[OAuthCallback] error:", error);
-
       // Handle OAuth errors
       if (error) {
-        console.error("[OAuthCallback] Erro OAuth:", error, errorDescription);
         setStatus("error");
         setErrorMessage(errorDescription || "Autorização cancelada ou negada");
         setTimeout(() => navigate("/configuracoes"), 3000);
@@ -58,7 +49,6 @@ export default function OAuthCallback() {
       }
 
       if (!code) {
-        console.error("[OAuthCallback] Código não encontrado na URL");
         setStatus("error");
         setErrorMessage("Código de autorização não encontrado");
         setTimeout(() => navigate("/configuracoes"), 3000);
@@ -67,11 +57,7 @@ export default function OAuthCallback() {
 
       try {
         setProcessingStep("exchanging");
-        console.log("[OAuthCallback] Chamando handleOAuthCallback...");
-        
         const result = await handleOAuthCallback(code, state || "");
-
-        console.log("[OAuthCallback] Resultado:", result);
 
         if (result?.success) {
           setStatus("success");
@@ -80,7 +66,6 @@ export default function OAuthCallback() {
           setErrorMessage(result?.error || "Erro ao conectar calendário");
         }
       } catch (err: any) {
-        console.error("[OAuthCallback] Erro inesperado:", err);
         setStatus("error");
         setErrorMessage(err.message || "Erro inesperado");
       }

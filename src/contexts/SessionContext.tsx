@@ -135,8 +135,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
             setProfile(prof);
             setSubscription(sub);
             setUserState(computed);
-          } catch (error) {
-            console.error('[Session] fetch error:', error);
+          } catch {
             if (!cancelled) setUserState('ERROR');
           }
         }, 0);
@@ -156,8 +155,8 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       setProfile(prof);
       setSubscription(sub);
       setUserState(computeState(session, prof, sub));
-    } catch (error) {
-      console.error('[Session] Refetch error:', error);
+    } catch {
+      // Silently fail on refetch
     }
   }, [session, fetchUserData, computeState]);
 

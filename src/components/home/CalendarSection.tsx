@@ -22,9 +22,6 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
   const isConnected = connection?.status === 'connected';
   const [showAddDialog, setShowAddDialog] = useState(false);
 
-  // Debug: log connection state para investigar edge case
-  console.log('[CalendarSection] connection:', connection, 'isConnected:', isConnected, 'isLoading:', isLoading);
-
   // Estado: Loading — evitar flash de "conectar" ou "dia livre" enquanto carrega
   if (isLoading) {
     return (

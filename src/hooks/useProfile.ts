@@ -70,8 +70,7 @@ export function useUpdateProfile() {
       queryClient.invalidateQueries({ queryKey: ['profile'] });
       toast.success('Preferências salvas');
     },
-    onError: (error) => {
-      console.error('[Annia Debug] updateProfile error:', error);
+    onError: () => {
       toast.error('Erro ao salvar');
     },
   });
@@ -114,8 +113,7 @@ export function useUploadAvatar() {
       queryClient.invalidateQueries({ queryKey: ['profile'] });
       toast.success('Avatar atualizado');
     },
-    onError: (error) => {
-      console.error('[Annia Debug] uploadAvatar error:', error);
+    onError: () => {
       toast.error('Erro ao atualizar avatar');
     },
   });

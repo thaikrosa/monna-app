@@ -1,74 +1,27 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  CaretLeft, 
-  CaretRight,
-  Sun, 
-  Moon, 
-  Lightbulb,
-  Package,
-  Baby,
-  GoogleLogo,
-  Check,
-  Warning,
-  ShoppingCart,
-  Bell,
-  ChatCircle,
-  Heart,
-  Target,
-  Smiley,
-  Spinner,
-  FileText,
-  ShieldCheck
-} from '@phosphor-icons/react';
+import { CaretLeft } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useProfile, useUpdateProfile } from '@/hooks/useProfile';
-import { useChildren, useUpdateChild } from '@/hooks/useChildren';
-import { useGoogleCalendarConnection } from '@/hooks/useCalendarConnections';
-import { useGoogleCalendarOAuth } from '@/hooks/useGoogleCalendarOAuth';
-import { useActivitySummary } from '@/hooks/useActivityHistory';
-import { format, formatDistanceToNow, parseISO } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
-
-const MORNING_OPTIONS = ['07:00', '08:00', '09:00'];
-const EVENING_OPTIONS = ['19:00', '20:00', '21:00'];
+import {
+  CheckinSettings,
+  CommunicationStyle,
+  SuggestionsSettings,
+  IntegrationsSection,
+  ActivityHistorySection,
+  AboutSection,
+  type SettingsState,
+  defaultSettings,
+  normalizeTime,
+  formatTimeForDb,
+} from '@/components/settings';
 
 export default function Settings() {
   const { data: profile, isLoading: profileLoading } = useProfile();
-  const { data: children = [], isLoading: childrenLoading } = useChildren();
-  const { data: googleConnection, isConnected } = useGoogleCalendarConnection();
-  const { initiateCalendarOAuth, isConnecting } = useGoogleCalendarOAuth();
   const updateProfile = useUpdateProfile();
-  const updateChild = useUpdateChild();
-  
-  const [historyDays, setHistoryDays] = useState<7 | 30>(7);
-  const activitySummary = useActivitySummary(historyDays);
 
-  // Local state for settings
-  const [settings, setSettings] = useState({
-    checkin_morning_enabled: false,
-    checkin_morning_time: '08:00',
-    checkin_evening_enabled: false,
-    checkin_evening_time: '21:00',
-    proactive_suggestions_enabled: false,
-    inventory_alerts_enabled: false,
-    communication_style: 'caring',
-  });
-
-  // Helper to normalize time format (remove seconds if present)
-  const normalizeTime = (time: string | null | undefined, defaultValue: string): string => {
-    if (!time) return defaultValue;
-    // Handle "HH:mm:ss" format from Supabase - extract just "HH:mm"
-    const parts = time.split(':');
-    if (parts.length >= 2) {
-      return `${parts[0]}:${parts[1]}`;
-    }
-    return defaultValue;
-  };
+  const [settings, setSettings] = useState<SettingsState>(defaultSettings);
 
   // Sync with profile data
   useEffect(() => {
@@ -85,35 +38,24 @@ export default function Settings() {
     }
   }, [profile]);
 
-  const handleSave = () => {
-    // Format times with seconds for PostgreSQL time type
-    const dataToSave = {
-      ...settings,
-      checkin_morning_time: settings.checkin_morning_time.includes(':') 
-        ? (settings.checkin_morning_time.split(':').length === 2 
-            ? `${settings.checkin_morning_time}:00` 
-            : settings.checkin_morning_time)
-        : `${settings.checkin_morning_time}:00`,
-      checkin_evening_time: settings.checkin_evening_time.includes(':') 
-        ? (settings.checkin_evening_time.split(':').length === 2 
-            ? `${settings.checkin_evening_time}:00` 
-            : settings.checkin_evening_time)
-        : `${settings.checkin_evening_time}:00`,
-      communication_style: settings.communication_style,
-    };
-    updateProfile.mutate(dataToSave);
-  };
-
-  const handleToggle = (key: keyof typeof settings, value: boolean) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+  const handleToggle = (key: keyof SettingsState, value: boolean) => {
+    setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleTimeChange = (key: 'checkin_morning_time' | 'checkin_evening_time', value: string) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+    setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleChildMilestonesToggle = (childId: string, value: boolean) => {
-    updateChild.mutate({ id: childId, show_standard_milestones: value });
+  const handleStyleChange = (style: string) => {
+    setSettings((prev) => ({ ...prev, communication_style: style }));
+  };
+
+  const handleSave = () => {
+    updateProfile.mutate({
+      ...settings,
+      checkin_morning_time: formatTimeForDb(settings.checkin_morning_time),
+      checkin_evening_time: formatTimeForDb(settings.checkin_evening_time),
+    });
   };
 
   if (profileLoading) {
@@ -150,345 +92,29 @@ export default function Settings() {
 
       {/* Content */}
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
-        
-        {/* Check-ins Diários */}
-        <section>
-          <h2 className="text-base font-medium text-foreground mb-1">
-            Quando quer se conectar comigo?
-          </h2>
-          <p className="text-sm text-muted-foreground mb-3">
-            Configure quando receber mensagens da Monna
-          </p>
+        <CheckinSettings
+          settings={settings}
+          onToggle={handleToggle}
+          onTimeChange={handleTimeChange}
+        />
 
-          <div className="annia-glass p-4 rounded-lg border border-border/30 space-y-4">
-            {/* Bom Dia */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Sun weight="thin" className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="text-foreground text-sm font-medium">Mensagem matinal</p>
-                  <p className="text-xs text-muted-foreground">Comece o dia organizada</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="flex gap-1">
-                  {MORNING_OPTIONS.map((time) => (
-                    <Button
-                      key={time}
-                      size="sm"
-                      variant={settings.checkin_morning_time === time ? 'default' : 'secondary'}
-                      className="text-xs px-2"
-                      onClick={() => handleTimeChange('checkin_morning_time', time)}
-                      disabled={!settings.checkin_morning_enabled}
-                    >
-                      {time}
-                    </Button>
-                  ))}
-                </div>
-                <Switch
-                  checked={settings.checkin_morning_enabled}
-                  onCheckedChange={(v) => handleToggle('checkin_morning_enabled', v)}
-                />
-              </div>
-            </div>
+        <CommunicationStyle
+          style={settings.communication_style}
+          onChange={handleStyleChange}
+        />
 
-            {/* Boa Noite */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Moon weight="thin" className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="text-foreground text-sm font-medium">Mensagem noturna</p>
-                  <p className="text-xs text-muted-foreground">Revise o dia e planeje o amanhã</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="flex gap-1">
-                  {EVENING_OPTIONS.map((time) => (
-                    <Button
-                      key={time}
-                      size="sm"
-                      variant={settings.checkin_evening_time === time ? 'default' : 'secondary'}
-                      className="text-xs px-2"
-                      onClick={() => handleTimeChange('checkin_evening_time', time)}
-                      disabled={!settings.checkin_evening_enabled}
-                    >
-                      {time}
-                    </Button>
-                  ))}
-                </div>
-                <Switch
-                  checked={settings.checkin_evening_enabled}
-                  onCheckedChange={(v) => handleToggle('checkin_evening_enabled', v)}
-                />
-              </div>
-            </div>
-          </div>
-        </section>
+        <SuggestionsSettings
+          settings={settings}
+          onToggle={handleToggle}
+        />
 
-        {/* Estilo de Comunicação */}
-        <section>
-          <h2 className="text-base font-medium text-foreground mb-1">
-            Qual o nosso tom?
-          </h2>
-          <p className="text-sm text-muted-foreground mb-3">
-            Escolha como prefere nossa comunicação
-          </p>
+        <IntegrationsSection />
 
-          <div className="annia-glass p-4 rounded-lg border border-border/30">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <ChatCircle weight="thin" className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="text-foreground text-sm font-medium">Tom da Monna</p>
-                  <p className="text-xs text-muted-foreground">
-                    {settings.communication_style === 'caring' && 'Próxima e empática'}
-                    {settings.communication_style === 'direct' && 'Objetiva e direta'}
-                    {settings.communication_style === 'playful' && 'Leve e espontânea'}
-                  </p>
-                </div>
-              </div>
-              <Select
-                value={settings.communication_style}
-                onValueChange={(v) => setSettings(prev => ({ ...prev, communication_style: v }))}
-              >
-                <SelectTrigger className="w-36 h-8 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="caring">
-                    <span className="flex items-center gap-2">
-                      <Heart weight="bold" className="h-4 w-4" />
-                      Acolhedora
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="direct">
-                    <span className="flex items-center gap-2">
-                      <Target weight="bold" className="h-4 w-4" />
-                      Direta
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="playful">
-                    <span className="flex items-center gap-2">
-                      <Smiley weight="bold" className="h-4 w-4" />
-                      Descontraída
-                    </span>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </section>
+        <ActivityHistorySection />
 
-        {/* Inteligência Proativa */}
-        <section>
-          <h2 className="text-base font-medium text-foreground mb-1">
-            O que posso antecipar para você?
-          </h2>
-          <p className="text-sm text-muted-foreground mb-3">
-            Deixe a Monna te ajudar antes que você precise pedir
-          </p>
+        <AboutSection />
 
-          <div className="annia-glass p-4 rounded-lg border border-border/30 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Lightbulb weight="thin" className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="text-foreground text-sm font-medium">Sugestões antecipadas</p>
-                  <p className="text-xs text-muted-foreground">Pausas, ajustes de rotina</p>
-                </div>
-              </div>
-              <Switch
-                checked={settings.proactive_suggestions_enabled}
-                onCheckedChange={(v) => handleToggle('proactive_suggestions_enabled', v)}
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Package weight="thin" className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="text-foreground text-sm font-medium">Alertas de estoque</p>
-                  <p className="text-xs text-muted-foreground">Fraldas, leite, itens recorrentes</p>
-                </div>
-              </div>
-              <Switch
-                checked={settings.inventory_alerts_enabled}
-                onCheckedChange={(v) => handleToggle('inventory_alerts_enabled', v)}
-              />
-            </div>
-          </div>
-
-          {/* Filtro por filho */}
-          {!childrenLoading && children.length > 0 && (
-            <div className="mt-3 space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Personalização por filho
-              </p>
-              {children.map((child) => (
-                <div
-                  key={child.id}
-                  className="annia-glass p-3 rounded-lg border border-border/30"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Baby weight="thin" className="h-4 w-4 text-primary" />
-                      <span className="text-foreground text-sm">
-                        {child.nickname || child.name}
-                      </span>
-                      {child.is_neurodivergent && (
-                        <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">
-                          Neurodivergente
-                        </span>
-                      )}
-                    </div>
-                    <Switch
-                      checked={child.show_standard_milestones ?? true}
-                      onCheckedChange={(v) => handleChildMilestonesToggle(child.id, v)}
-                    />
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1 ml-6">
-                    {child.show_standard_milestones !== false
-                      ? 'Mostrando marcos de desenvolvimento padrão'
-                      : `Acompanhando o ritmo único de ${child.nickname || child.name}`}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* Integrações */}
-        <section>
-          <h2 className="text-base font-medium text-foreground mb-1">
-            Conexões
-          </h2>
-          <p className="text-sm text-muted-foreground mb-3">
-            Integrações para facilitar sua rotina
-          </p>
-
-          <div className="annia-glass p-4 rounded-lg border border-border/30">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <GoogleLogo weight="thin" className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="text-foreground text-sm font-medium">Google Calendar</p>
-                  {isConnected && googleConnection?.last_synced_at && (
-                    <p className="text-xs text-muted-foreground">
-                      Sincronizado {formatDistanceToNow(parseISO(googleConnection.last_synced_at), { 
-                        addSuffix: true, 
-                        locale: ptBR 
-                      })}
-                    </p>
-                  )}
-                </div>
-              </div>
-              {isConnected ? (
-                <div className="flex items-center gap-1 text-primary">
-                  <Check weight="thin" className="h-4 w-4" />
-                  <span className="text-xs">Conectado</span>
-                </div>
-              ) : (
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  onClick={initiateCalendarOAuth}
-                  disabled={isConnecting}
-                >
-                  {isConnecting ? (
-                    <>
-                      <Spinner className="h-4 w-4 mr-1 animate-spin" />
-                      Conectando...
-                    </>
-                  ) : (
-                    'Conectar'
-                  )}
-                </Button>
-              )}
-            </div>
-            {googleConnection?.last_error && (
-              <div className="mt-2 flex items-center gap-1 text-destructive text-xs">
-                <Warning weight="thin" className="h-3 w-3" />
-                <span>Erro na última sincronização</span>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* Histórico */}
-        <section>
-          <h2 className="text-base font-medium text-foreground mb-1">
-            Seus dados, seu controle
-          </h2>
-          <p className="text-sm text-muted-foreground mb-3">
-            Resumo das suas atividades recentes
-          </p>
-
-          <div className="annia-glass p-4 rounded-lg border border-border/30">
-            <div className="flex gap-2 mb-4">
-              <Button
-                size="sm"
-                variant={historyDays === 7 ? 'default' : 'outline'}
-                onClick={() => setHistoryDays(7)}
-              >
-                7 dias
-              </Button>
-              <Button
-                size="sm"
-                variant={historyDays === 30 ? 'default' : 'outline'}
-                onClick={() => setHistoryDays(30)}
-              >
-                30 dias
-              </Button>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <ShoppingCart weight="thin" className="h-4 w-4 text-primary" />
-                <span className="text-foreground text-sm">
-                  {activitySummary.shoppingCount} itens comprados
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Bell weight="thin" className="h-4 w-4 text-primary" />
-                <span className="text-foreground text-sm">
-                  {activitySummary.remindersCompleted} lembretes concluídos
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Sobre */}
-        <section>
-          <h2 className="text-base font-medium text-foreground mb-1">
-            Sobre a Monna
-          </h2>
-          <p className="text-sm text-muted-foreground mb-3">
-            Informações legais e institucionais
-          </p>
-
-          <div className="annia-glass p-4 rounded-lg border border-border/30 space-y-3">
-            <a href="/static/termos.html" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between group">
-              <div className="flex items-center gap-3">
-                <FileText weight="thin" className="h-5 w-5 text-primary" />
-                <span className="text-foreground text-sm font-medium">Termos de Uso</span>
-              </div>
-              <CaretRight weight="thin" className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors duration-150" />
-            </a>
-            
-            <div className="border-t border-border/20" />
-            
-            <a href="/static/privacidade.html" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between group">
-              <div className="flex items-center gap-3">
-                <ShieldCheck weight="thin" className="h-5 w-5 text-primary" />
-                <span className="text-foreground text-sm font-medium">Política de Privacidade</span>
-              </div>
-              <CaretRight weight="thin" className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors duration-150" />
-            </a>
-          </div>
-        </section>
-
-        {/* Botão Salvar */}
+        {/* Save Button */}
         <div className="pt-4 pb-8">
           <Button
             className="w-full"

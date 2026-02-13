@@ -94,6 +94,34 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let cancelled = false;
 
+    const fetchAndSetUserData = async (currentSession: Session) => {
+      try {
+        const [profileRes, subRes] = await Promise.all([
+          supabase.from('profiles').select('*').eq('id', currentSession.user.id).single(),
+          supabase.from('subscriptions').select('*').eq('user_id', currentSession.user.id).eq('status', 'active').maybeSingle(),
+        ]);
+
+        if (cancelled) return;
+
+        // CRITICAL: Se a query de profile errou, NÃO calcular estado — ir pra ERROR
+        if (profileRes.error) {
+          if (!cancelled) setUserState('ERROR');
+          return;
+        }
+
+        const prof = (profileRes.data as Profile) ?? null;
+        const sub = (subRes.data as Subscription) ?? null;
+
+        const computed = computeState(currentSession, prof, sub);
+
+        setProfile(prof);
+        setSubscription(sub);
+        setUserState(computed);
+      } catch {
+        if (!cancelled) setUserState('ERROR');
+      }
+    };
+
     const { data: { subscription: authListener } } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
         if (cancelled) return;
@@ -110,35 +138,13 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
         setSession(currentSession);
         setUser(currentSession.user);
 
-        // setTimeout(0) libera o lock interno do Supabase antes de fazer queries
-        setTimeout(async () => {
-          if (cancelled) return;
-          try {
-            const [profileRes, subRes] = await Promise.all([
-              supabase.from('profiles').select('*').eq('id', currentSession.user.id).single(),
-              supabase.from('subscriptions').select('*').eq('user_id', currentSession.user.id).eq('status', 'active').maybeSingle(),
-            ]);
-
-            if (cancelled) return;
-
-            // CRITICAL: Se a query de profile errou, NÃO calcular estado — ir pra ERROR
-            if (profileRes.error) {
-              if (!cancelled) setUserState('ERROR');
-              return;
-            }
-
-            const prof = (profileRes.data as Profile) ?? null;
-            const sub = (subRes.data as Subscription) ?? null;
-
-            const computed = computeState(currentSession, prof, sub);
-
-            setProfile(prof);
-            setSubscription(sub);
-            setUserState(computed);
-          } catch {
-            if (!cancelled) setUserState('ERROR');
+        // Use queueMicrotask to defer data fetching after auth callback completes
+        // This prevents potential deadlocks with Supabase's internal auth state
+        queueMicrotask(() => {
+          if (!cancelled) {
+            fetchAndSetUserData(currentSession);
           }
-        }, 0);
+        });
       }
     );
 

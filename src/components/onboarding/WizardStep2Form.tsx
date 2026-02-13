@@ -47,7 +47,7 @@ export function WizardStep2Form({
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
       <h1 className="text-2xl font-light tracking-tight text-foreground">
-        Vamos nos conhecer?
+        Como quer ser chamada?
       </h1>
 
       <div className="space-y-4">

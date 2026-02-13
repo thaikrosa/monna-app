@@ -119,15 +119,11 @@ export default function Reminders() {
               </p>
             </div>
           ) : justCleared ? (
-            <motion.div 
-              className="py-16 text-center flex flex-col items-center gap-3"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <CheckCircle weight="thin" className="h-12 w-12 text-primary/60 animate-scale-in" />
+            // Simple CSS animation - no need for framer-motion here
+            <div className="py-16 text-center flex flex-col items-center gap-3 animate-in fade-in zoom-in-95 duration-300">
+              <CheckCircle weight="thin" className="h-12 w-12 text-primary/60" />
               <p className="text-muted-foreground/60 text-sm">Tudo em dia</p>
-            </motion.div>
+            </div>
           ) : (
             <>
               {pendingCount > 0 && (

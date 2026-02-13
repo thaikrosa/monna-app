@@ -147,7 +147,8 @@ export function useHomeDashboard() {
       const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
       const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1).toISOString();
 
-      const [remindersResult, shoppingResult, childrenResult, calendarResult] = await Promise.all([
+      // Use Promise.allSettled so one failing query doesn't break others
+      const results = await Promise.allSettled([
         supabase.from('today_reminders').select('*').limit(5),
         supabase.from('v_shopping_items_with_frequency').select('*').eq('is_checked', false),
         supabase.from('children').select('*').limit(2),
@@ -160,6 +161,12 @@ export function useHomeDashboard() {
           .order('starts_at', { ascending: true })
           .limit(10)
       ]);
+
+      // Extract data from settled results, defaulting to empty on failure
+      const remindersResult = results[0].status === 'fulfilled' ? results[0].value : { data: [] };
+      const shoppingResult = results[1].status === 'fulfilled' ? results[1].value : { data: [] };
+      const childrenResult = results[2].status === 'fulfilled' ? results[2].value : { data: [] };
+      const calendarResult = results[3].status === 'fulfilled' ? results[3].value : { data: [] };
 
       // 6. Montar resposta com dados reais
       const greetingData = getGreetingByTime();

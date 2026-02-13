@@ -30,14 +30,14 @@ export default function BemVinda() {
 
   if (!isReady || initializing || step === null) {
     return (
-      <div className="min-h-screen bg-secondary flex items-center justify-center">
+      <div className="min-h-screen bg-secondary flex items-center justify-center pb-[env(safe-area-inset-bottom)]">
         <Spinner className="w-8 h-8 text-primary animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-secondary flex items-center justify-center px-4">
+    <div className="min-h-screen bg-secondary flex items-start justify-center px-4 py-8 pb-[env(safe-area-inset-bottom)] sm:items-center sm:py-4">
       <div className="max-w-md w-full text-center">
         <img src={logoMonna} alt="Monna" className="h-10 mx-auto mb-6" />
         <StepIndicator currentStep={step} />

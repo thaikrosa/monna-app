@@ -58,7 +58,7 @@ export function WizardStep1Login({
       {!showMagicLink ? (
         <button
           onClick={() => onSetShowMagicLink(true)}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[44px] px-4"
         >
           Prefiro usar outro email
         </button>

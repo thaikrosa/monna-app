@@ -26,7 +26,7 @@ export function WizardStep3Complete({
       <Button
         onClick={onGoToApp}
         disabled={!appReady}
-        className="w-full"
+        className="w-full disabled:opacity-50"
         size="lg"
       >
         {appReady ? 'Ir para o aplicativo' : (

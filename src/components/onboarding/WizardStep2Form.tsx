@@ -187,12 +187,12 @@ export function WizardStep2Form({
               control={form.control}
               name="termsAccepted"
               render={({ field }) => (
-                <FormItem className="flex items-start gap-3 space-y-0">
+                <FormItem className="flex items-start gap-3 space-y-0 min-h-[44px]">
                   <FormControl>
                     <Checkbox
                       checked={field.value === true}
                       onCheckedChange={(c) => field.onChange(c === true)}
-                      className="mt-0.5"
+                      className="mt-0.5 h-5 w-5"
                     />
                   </FormControl>
                   <FormLabel className="text-sm leading-snug text-foreground/80 cursor-pointer font-normal">
@@ -214,12 +214,12 @@ export function WizardStep2Form({
               control={form.control}
               name="privacyAccepted"
               render={({ field }) => (
-                <FormItem className="flex items-start gap-3 space-y-0">
+                <FormItem className="flex items-start gap-3 space-y-0 min-h-[44px]">
                   <FormControl>
                     <Checkbox
                       checked={field.value === true}
                       onCheckedChange={(c) => field.onChange(c === true)}
-                      className="mt-0.5"
+                      className="mt-0.5 h-5 w-5"
                     />
                   </FormControl>
                   <FormLabel className="text-sm leading-snug text-foreground/80 cursor-pointer font-normal">

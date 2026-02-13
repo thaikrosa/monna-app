@@ -1,0 +1,19 @@
+{
+  "name": "Monna - Sua parceira na maternidade",
+  "short_name": "Monna",
+  "description": "Organize sua rotina, acompanhe o desenvolvimento dos filhos e tenha uma rede de apoio ao seu lado.",
+  "start_url": "/home",
+  "display": "standalone",
+  "background_color": "#D9C5B4",
+  "theme_color": "#3D1A20",
+  "orientation": "portrait",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/monna-favicon.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

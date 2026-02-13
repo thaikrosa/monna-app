@@ -7,19 +7,9 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { useUpdateChild, Child } from '@/hooks/useChildren';
 import { Info } from '@phosphor-icons/react';
+import { ChildFormFields, type ChildFormData, emptyChildFormData } from '@/components/shared/ChildFormFields';
 
 interface EditChildSheetProps {
   open: boolean;
@@ -27,57 +17,40 @@ interface EditChildSheetProps {
   child: Child | null;
 }
 
-const BLOOD_TYPES = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-const GENDERS = [
-  { value: 'feminino', label: 'Feminino' },
-  { value: 'masculino', label: 'Masculino' },
-  { value: 'outro', label: 'Outro' },
-];
+function childToFormData(child: Child): ChildFormData {
+  return {
+    name: child.name,
+    nickname: child.nickname || '',
+    birth_date: child.birth_date,
+    gender: child.gender || '',
+    is_neurodivergent: child.is_neurodivergent ?? false,
+    special_needs_notes: child.special_needs_notes || '',
+    allergies: child.allergies || '',
+    blood_type: child.blood_type || '',
+    medical_notes: child.medical_notes || '',
+    personality_traits: child.personality_traits || '',
+    soothing_methods: child.soothing_methods || '',
+    show_standard_milestones: child.show_standard_milestones ?? true,
+    vaccination_reminders_enabled: child.vaccination_reminders_enabled ?? true,
+  };
+}
 
 export function EditChildSheet({ open, onOpenChange, child }: EditChildSheetProps) {
-  // Identity
-  const [name, setName] = useState('');
-  const [nickname, setNickname] = useState('');
-  const [birthDate, setBirthDate] = useState('');
-  const [gender, setGender] = useState('');
-  
-  // Sensitivity
-  const [showMilestones, setShowMilestones] = useState(true);
-  const [isNeurodivergent, setIsNeurodivergent] = useState(false);
-  const [specialNeedsNotes, setSpecialNeedsNotes] = useState('');
-  
-  // Health
-  const [bloodType, setBloodType] = useState('');
-  const [allergies, setAllergies] = useState('');
-  const [medicalNotes, setMedicalNotes] = useState('');
-  const [vaccinationReminders, setVaccinationReminders] = useState(true);
-  
-  // Child's Manual
-  const [soothingMethods, setSoothingMethods] = useState('');
-  const [personalityTraits, setPersonalityTraits] = useState('');
-
+  const [formData, setFormData] = useState<ChildFormData>(emptyChildFormData);
   const updateChild = useUpdateChild();
 
   // Populate form when child changes
   useEffect(() => {
     if (child) {
-      setName(child.name);
-      setNickname(child.nickname || '');
-      setBirthDate(child.birth_date);
-      setGender(child.gender || '');
-      setShowMilestones(child.show_standard_milestones ?? true);
-      setIsNeurodivergent(child.is_neurodivergent ?? false);
-      setSpecialNeedsNotes(child.special_needs_notes || '');
-      setBloodType(child.blood_type || '');
-      setAllergies(child.allergies || '');
-      setMedicalNotes(child.medical_notes || '');
-      setVaccinationReminders(child.vaccination_reminders_enabled ?? true);
-      setSoothingMethods(child.soothing_methods || '');
-      setPersonalityTraits(child.personality_traits || '');
+      setFormData(childToFormData(child));
     }
   }, [child]);
 
-  const canSubmit = name.trim() && birthDate;
+  const updateField = <K extends keyof ChildFormData>(field: K, value: ChildFormData[K]) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const canSubmit = formData.name.trim() && formData.birth_date;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,19 +59,19 @@ export function EditChildSheet({ open, onOpenChange, child }: EditChildSheetProp
     updateChild.mutate(
       {
         id: child.id,
-        name: name.trim(),
-        nickname: nickname.trim() || null,
-        birth_date: birthDate,
-        gender: gender || null,
-        show_standard_milestones: showMilestones,
-        is_neurodivergent: isNeurodivergent,
-        special_needs_notes: specialNeedsNotes.trim() || null,
-        blood_type: bloodType || null,
-        allergies: allergies.trim() || null,
-        medical_notes: medicalNotes.trim() || null,
-        vaccination_reminders_enabled: vaccinationReminders,
-        soothing_methods: soothingMethods.trim() || null,
-        personality_traits: personalityTraits.trim() || null,
+        name: formData.name.trim(),
+        nickname: formData.nickname.trim() || null,
+        birth_date: formData.birth_date,
+        gender: formData.gender || null,
+        show_standard_milestones: formData.show_standard_milestones,
+        is_neurodivergent: formData.is_neurodivergent,
+        special_needs_notes: formData.special_needs_notes.trim() || null,
+        blood_type: formData.blood_type || null,
+        allergies: formData.allergies.trim() || null,
+        medical_notes: formData.medical_notes.trim() || null,
+        vaccination_reminders_enabled: formData.vaccination_reminders_enabled,
+        soothing_methods: formData.soothing_methods.trim() || null,
+        personality_traits: formData.personality_traits.trim() || null,
       },
       {
         onSuccess: () => {
@@ -129,210 +102,12 @@ export function EditChildSheet({ open, onOpenChange, child }: EditChildSheetProp
             </div>
           </div>
 
-          {/* Identity Section */}
-          <div className="space-y-4">
-            <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Identidade
-            </h4>
-            
-            <div className="space-y-2">
-              <Label htmlFor="edit-name" className="text-xs text-muted-foreground">
-                Nome *
-              </Label>
-              <Input
-                id="edit-name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Nome completo"
-                className="bg-background/50"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="edit-nickname" className="text-xs text-muted-foreground">
-                Apelido
-              </Label>
-              <Input
-                id="edit-nickname"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-                placeholder="Como você chama"
-                className="bg-background/50"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="edit-birthDate" className="text-xs text-muted-foreground">
-                Data de Nascimento *
-              </Label>
-              <Input
-                id="edit-birthDate"
-                type="date"
-                value={birthDate}
-                onChange={(e) => setBirthDate(e.target.value)}
-                className="bg-background/50"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">Gênero</Label>
-              <Select value={gender} onValueChange={setGender}>
-                <SelectTrigger className="bg-background/50">
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  {GENDERS.map((g) => (
-                    <SelectItem key={g.value} value={g.value}>
-                      {g.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Sensitivity Section */}
-          <div className="space-y-4">
-            <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Sensibilidade
-            </h4>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label className="text-sm">Mostrar marcos de desenvolvimento</Label>
-                <p className="text-xs text-muted-foreground">
-                  Exibir marcos padrão por idade
-                </p>
-              </div>
-              <Switch
-                checked={showMilestones}
-                onCheckedChange={setShowMilestones}
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label className="text-sm">É neurodivergente</Label>
-                <p className="text-xs text-muted-foreground">
-                  TEA, TDAH, ou outras condições
-                </p>
-              </div>
-              <Switch
-                checked={isNeurodivergent}
-                onCheckedChange={setIsNeurodivergent}
-              />
-            </div>
-
-            {isNeurodivergent && (
-              <div className="space-y-2">
-                <Label htmlFor="edit-specialNeeds" className="text-xs text-muted-foreground">
-                  Notas de necessidades especiais
-                </Label>
-                <Textarea
-                  id="edit-specialNeeds"
-                  value={specialNeedsNotes}
-                  onChange={(e) => setSpecialNeedsNotes(e.target.value)}
-                  placeholder="Informações relevantes sobre necessidades especiais"
-                  className="bg-background/50 min-h-[80px]"
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Health Section */}
-          <div className="space-y-4">
-            <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Saúde
-            </h4>
-
-            <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">Tipo Sanguíneo</Label>
-              <Select value={bloodType} onValueChange={setBloodType}>
-                <SelectTrigger className="bg-background/50">
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  {BLOOD_TYPES.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="edit-allergies" className="text-xs text-muted-foreground">
-                Alergias
-              </Label>
-              <Input
-                id="edit-allergies"
-                value={allergies}
-                onChange={(e) => setAllergies(e.target.value)}
-                placeholder="Ex: Amendoim, Lactose"
-                className="bg-background/50"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="edit-medicalNotes" className="text-xs text-muted-foreground">
-                Notas Médicas
-              </Label>
-              <Textarea
-                id="edit-medicalNotes"
-                value={medicalNotes}
-                onChange={(e) => setMedicalNotes(e.target.value)}
-                placeholder="Informações médicas importantes"
-                className="bg-background/50 min-h-[80px]"
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label className="text-sm">Lembrar vacinas previstas</Label>
-                <p className="text-xs text-muted-foreground">
-                  Notificações de vacinação
-                </p>
-              </div>
-              <Switch
-                checked={vaccinationReminders}
-                onCheckedChange={setVaccinationReminders}
-              />
-            </div>
-          </div>
-
-          {/* Child's Manual Section */}
-          <div className="space-y-4">
-            <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Manual do Filho
-            </h4>
-
-            <div className="space-y-2">
-              <Label htmlFor="edit-soothing" className="text-xs text-muted-foreground">
-                O que o acalma?
-              </Label>
-              <Textarea
-                id="edit-soothing"
-                value={soothingMethods}
-                onChange={(e) => setSoothingMethods(e.target.value)}
-                placeholder="Métodos para acalmar quando necessário"
-                className="bg-background/50 min-h-[80px]"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="edit-personality" className="text-xs text-muted-foreground">
-                Traços de personalidade
-              </Label>
-              <Textarea
-                id="edit-personality"
-                value={personalityTraits}
-                onChange={(e) => setPersonalityTraits(e.target.value)}
-                placeholder="Características marcantes da personalidade"
-                className="bg-background/50 min-h-[80px]"
-              />
-            </div>
-          </div>
+          <ChildFormFields
+            data={formData}
+            onChange={updateField}
+            showRequired
+            variant="full"
+          />
 
           {/* Submit */}
           <Button

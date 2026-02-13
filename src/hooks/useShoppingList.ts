@@ -90,12 +90,33 @@ export function useToggleChecked() {
       });
       if (error) throw error;
     },
-    onSuccess: () => {
+    // Optimistic update for instant feedback
+    onMutate: async ({ id, checked }) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['shopping-items'] });
+
+      // Snapshot previous value
+      const previousItems = queryClient.getQueryData<ShoppingItem[]>(['shopping-items']);
+
+      // Optimistically update
+      queryClient.setQueryData<ShoppingItem[]>(['shopping-items'], (old) =>
+        old?.map((item) => (item.id === id ? { ...item, is_checked: checked } : item))
+      );
+
+      // Return context for rollback
+      return { previousItems };
+    },
+    onError: (_err, _variables, context) => {
+      // Rollback on error
+      if (context?.previousItems) {
+        queryClient.setQueryData(['shopping-items'], context.previousItems);
+      }
+      toast.error('Erro ao atualizar item');
+    },
+    onSettled: () => {
+      // Always refetch to ensure consistency
       queryClient.invalidateQueries({ queryKey: ['shopping-items'] });
       queryClient.invalidateQueries({ queryKey: ['shopping-pending-count'] });
-    },
-    onError: () => {
-      toast.error('Erro ao atualizar item');
     },
   });
 }
@@ -110,12 +131,27 @@ export function useDeleteItem() {
       });
       if (error) throw error;
     },
-    onSuccess: () => {
+    // Optimistic update for instant feedback
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ['shopping-items'] });
+
+      const previousItems = queryClient.getQueryData<ShoppingItem[]>(['shopping-items']);
+
+      queryClient.setQueryData<ShoppingItem[]>(['shopping-items'], (old) =>
+        old?.filter((item) => item.id !== id)
+      );
+
+      return { previousItems };
+    },
+    onError: (_err, _id, context) => {
+      if (context?.previousItems) {
+        queryClient.setQueryData(['shopping-items'], context.previousItems);
+      }
+      toast.error('Erro ao remover item');
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['shopping-items'] });
       queryClient.invalidateQueries({ queryKey: ['shopping-pending-count'] });
-    },
-    onError: () => {
-      toast.error('Erro ao remover item');
     },
   });
 }

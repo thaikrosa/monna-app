@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { AppBar } from '@/components/AppBar';
 import { BottomBar } from '@/components/home/BottomBar';
+import { OfflineBanner } from '@/components/OfflineBanner';
 
 export function AppLayout() {
   return (
@@ -11,6 +12,7 @@ export function AppLayout() {
       >
         Pular para o conteúdo principal
       </a>
+      <OfflineBanner />
       <AppBar />
       <main id="main-content" className="flex-1 px-4 pt-6 pb-24">
         <Outlet />

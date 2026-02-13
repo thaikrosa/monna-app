@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { CaretDown } from '@phosphor-icons/react';
 import { Input } from '@/components/ui/input';
 import {
@@ -38,6 +38,8 @@ export function PhoneInput({
 }: PhoneInputProps) {
   const [open, setOpen] = useState(false);
   const country = countries.find((c) => c.code === countryCode) || countries[0];
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
@@ -57,9 +59,9 @@ export function PhoneInput({
     const digits = getDigitsOnly(value);
     const masked = applyMask(digits, country.mask);
     if (masked !== value) {
-      onChange(masked);
+      onChangeRef.current(masked);
     }
-  }, [countryCode]);
+  }, [countryCode, value, country.mask]);
 
   return (
     <div className={cn('flex gap-2', className)}>

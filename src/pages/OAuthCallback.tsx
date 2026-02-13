@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGoogleCalendarOAuth } from "@/hooks/useGoogleCalendarOAuth";
 import { Spinner } from "@phosphor-icons/react";
@@ -29,57 +29,57 @@ export default function OAuthCallback() {
     }
   };
 
+  const processCallback = useCallback(async () => {
+    // Evita duplo processamento
+    if (hasProcessed.current) return;
+    hasProcessed.current = true;
+
+    const code = searchParams.get("code");
+    const state = searchParams.get("state");
+    const error = searchParams.get("error");
+    const errorDescription = searchParams.get("error_description");
+
+    // Handle OAuth errors
+    if (error) {
+      setStatus("error");
+      setErrorMessage(errorDescription || "Autorização cancelada ou negada");
+      setTimeout(() => navigate("/configuracoes"), 3000);
+      return;
+    }
+
+    if (!code) {
+      setStatus("error");
+      setErrorMessage("Código de autorização não encontrado");
+      setTimeout(() => navigate("/configuracoes"), 3000);
+      return;
+    }
+
+    try {
+      setProcessingStep("exchanging");
+      const result = await handleOAuthCallback(code, state || "");
+
+      if (result?.success) {
+        setStatus("success");
+      } else {
+        setStatus("error");
+        setErrorMessage(result?.error || "Erro ao conectar calendário");
+      }
+    } catch (err: unknown) {
+      setStatus("error");
+      setErrorMessage(err instanceof Error ? err.message : "Erro inesperado");
+    }
+
+    // Redirect after processing — back to wizard if onboarding
+    const redirectTarget = sessionStorage.getItem('onboarding_calendar_redirect')
+      ? '/bem-vinda'
+      : '/configuracoes';
+    sessionStorage.removeItem('onboarding_calendar_redirect');
+    setTimeout(() => navigate(redirectTarget), 2000);
+  }, [searchParams, navigate, handleOAuthCallback]);
+
   useEffect(() => {
-    const processCallback = async () => {
-      // Evita duplo processamento
-      if (hasProcessed.current) return;
-      hasProcessed.current = true;
-
-      const code = searchParams.get("code");
-      const state = searchParams.get("state");
-      const error = searchParams.get("error");
-      const errorDescription = searchParams.get("error_description");
-
-      // Handle OAuth errors
-      if (error) {
-        setStatus("error");
-        setErrorMessage(errorDescription || "Autorização cancelada ou negada");
-        setTimeout(() => navigate("/configuracoes"), 3000);
-        return;
-      }
-
-      if (!code) {
-        setStatus("error");
-        setErrorMessage("Código de autorização não encontrado");
-        setTimeout(() => navigate("/configuracoes"), 3000);
-        return;
-      }
-
-      try {
-        setProcessingStep("exchanging");
-        const result = await handleOAuthCallback(code, state || "");
-
-        if (result?.success) {
-          setStatus("success");
-        } else {
-          setStatus("error");
-          setErrorMessage(result?.error || "Erro ao conectar calendário");
-        }
-      } catch (err: any) {
-        setStatus("error");
-        setErrorMessage(err.message || "Erro inesperado");
-      }
-
-      // Redirect after processing — back to wizard if onboarding
-      const redirectTarget = sessionStorage.getItem('onboarding_calendar_redirect')
-        ? '/bem-vinda'
-        : '/configuracoes';
-      sessionStorage.removeItem('onboarding_calendar_redirect');
-      setTimeout(() => navigate(redirectTarget), 2000);
-    };
-
     processCallback();
-  }, []); // Dependências vazias - executa apenas uma vez no mount
+  }, [processCallback]);
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">

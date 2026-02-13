@@ -146,7 +146,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       cancelled = true;
       authListener.unsubscribe();
     };
-  }, []);
+  }, [computeState]);
 
   const refetch = useCallback(async () => {
     if (!session?.user?.id) return;

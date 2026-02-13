@@ -1,6 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import type { Database } from '@/integrations/supabase/types';
 import { HomeDashboard } from '@/types/home-dashboard';
+
+type AgendaViewRow = Database['public']['Views']['agenda_view']['Row'];
 
 function getGreetingByTime(): { title: string; insight: string; primaryLabel: string; primaryAction: "create_event" | "review_reminders"; secondaryLabel: string } {
   const hour = new Date().getHours();
@@ -181,8 +184,8 @@ export function useHomeDashboard() {
           secondaryCta: { label: greetingData.secondaryLabel, action: 'adjust' }
         },
         today: {
-          agenda: (calendarResult.data || []).map(event => ({
-            id: (event as any).instance_id || (event as any).event_id,
+          agenda: (calendarResult.data || []).map((event: AgendaViewRow) => ({
+            id: event.instance_id || event.event_id || '',
             start_time: event.is_all_day 
               ? 'Dia todo'
               : new Date(event.starts_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),

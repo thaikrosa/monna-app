@@ -26,7 +26,7 @@ export function SwipeableReminderCard({ reminder, onComplete, onSnooze, onEdit, 
   // Right swipe: green check background
   const rightBgOpacity = useTransform(x, [0, COMPLETE_THRESHOLD], [0, 1]);
   
-  const handleDragEnd = async (_: any, info: PanInfo) => {
+  const handleDragEnd = async (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const offset = info.offset.x;
 
     if (offset > COMPLETE_THRESHOLD && !isCompleted) {

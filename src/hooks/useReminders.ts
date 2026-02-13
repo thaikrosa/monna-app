@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useSession } from '@/contexts/SessionContext';
+import type { Database } from '@/integrations/supabase/types';
 import type {
   Reminder,
   ReminderInsert,
@@ -9,6 +10,9 @@ import type {
   TodayReminder,
   UpcomingReminder,
 } from '@/types/reminders';
+
+type DbReminderInsert = Database['public']['Tables']['reminders']['Insert'];
+type DbReminderUpdate = Database['public']['Tables']['reminders']['Update'];
 
 // ===== QUERIES =====
 
@@ -144,7 +148,7 @@ export function useAddReminder() {
     mutationFn: async (reminder: ReminderInsert) => {
       const { data, error } = await supabase
         .from('reminders')
-        .insert(reminder as any)
+        .insert(reminder as DbReminderInsert)
         .select()
         .single();
       if (error) throw error;
@@ -166,7 +170,7 @@ export function useUpdateReminder() {
     mutationFn: async ({ id, ...updates }: ReminderUpdate & { id: string }) => {
       const { data, error } = await supabase
         .from('reminders')
-        .update(updates as any)
+        .update(updates as DbReminderUpdate)
         .eq('id', id)
         .select()
         .single();

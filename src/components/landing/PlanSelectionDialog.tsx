@@ -40,7 +40,7 @@ export function PlanSelectionDialog({ open, onOpenChange }: PlanSelectionDialogP
       } else {
         throw new Error('URL de checkout não retornada');
       }
-    } catch (err: any) {
+    } catch {
       setError('Não foi possível iniciar o checkout. Tente novamente.');
       setLoading(false);
     }

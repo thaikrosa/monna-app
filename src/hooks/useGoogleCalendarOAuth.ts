@@ -105,9 +105,10 @@ export function useGoogleCalendarOAuth() {
         }
 
         return { success: true, data };
-      } catch (error: any) {
-        toast.error(error.message || "Erro ao conectar calendário");
-        return { success: false, error: error.message };
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Erro ao conectar calendário";
+        toast.error(message);
+        return { success: false, error: message };
       } finally {
         setIsConnecting(false);
       }

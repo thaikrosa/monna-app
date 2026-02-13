@@ -78,10 +78,10 @@ export function MemorySection() {
       viewAllLabel="Ver tudo"
       emptyState={emptyState}
     >
-      <div className="space-y-2">
+      <ul className="space-y-2">
         {memories.map((memory) => (
+          <li key={memory.id} className="list-none">
           <button
-            key={memory.id}
             onClick={() => navigate('/memoria')}
             className="w-full text-left bg-muted/30 hover:bg-muted/50 rounded-lg p-3 transition-colors duration-150"
           >
@@ -103,8 +103,9 @@ export function MemorySection() {
               </div>
             </div>
           </button>
+          </li>
         ))}
-      </div>
+      </ul>
     </HomeSection>
   );
 }

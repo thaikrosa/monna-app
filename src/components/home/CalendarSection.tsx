@@ -115,9 +115,9 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
         onViewAll={() => navigate('/agenda')}
         viewAllLabel="Ver agenda"
       >
-        <div className="space-y-2">
+        <ul className="space-y-2">
           {events.slice(0, 4).map((event) => (
-            <div 
+            <li
               key={event.instance_id}
               className="flex items-center gap-3 py-2.5 border-b border-border/30 last:border-0"
             >
@@ -127,9 +127,9 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
               <span className="text-sm text-foreground truncate flex-1">
                 {event.title || 'Evento sem título'}
               </span>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       </HomeSection>
 
       <AddEventDialog 

@@ -80,7 +80,7 @@ export default function Reminders() {
     <div className="min-h-screen bg-background">
       <div className="max-w-3xl mx-auto px-5 py-6 space-y-6 pb-24">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <header className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-medium text-foreground">
               Lembretes
@@ -89,7 +89,7 @@ export default function Reminders() {
               {format(selectedDate, "EEEE, d 'de' MMMM", { locale: ptBR })}
             </p>
           </div>
-        </div>
+        </header>
 
         {/* Day Selector (3 days) */}
         <div className="bg-card p-3 rounded-lg border border-border shadow-elevated">
@@ -100,9 +100,9 @@ export default function Reminders() {
         </div>
 
         {/* Reminders List */}
-        <div className="space-y-3">
+        <section aria-label="Lista de lembretes" className="space-y-3">
           {isLoading ? (
-            <div className="space-y-3">
+            <div className="space-y-3" aria-busy="true">
               {[1, 2, 3].map((i) => (
                 <Skeleton key={i} className="h-16 rounded-lg" />
               ))}
@@ -132,26 +132,28 @@ export default function Reminders() {
                 </p>
               )}
               <AnimatePresence>
-                {selectedDateReminders.map((reminder) => (
-                  <motion.div
-                    key={reminder.occurrence_id}
-                    layout
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.15 }}
-                  >
-                    <SwipeableReminderCard
-                      reminder={reminder}
-                      onComplete={handleComplete}
-                      onSnooze={handleSnooze}
-                      onEdit={handleEdit}
-                      onDelete={handleDelete}
-                    />
-                  </motion.div>
-                ))}
+                <ul className="space-y-3">
+                  {selectedDateReminders.map((reminder) => (
+                    <motion.li
+                      key={reminder.occurrence_id}
+                      layout
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      <SwipeableReminderCard
+                        reminder={reminder}
+                        onComplete={handleComplete}
+                        onSnooze={handleSnooze}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                      />
+                    </motion.li>
+                  ))}
+                </ul>
               </AnimatePresence>
             </>
           )}
-        </div>
+        </section>
 
         {/* Seção de Lembretes Recorrentes */}
         <RecurringRemindersSection

@@ -28,24 +28,24 @@ export function AnniaMomentSection({ suggestions }: AnniaMomentSectionProps) {
   }
 
   return (
-    <div className="space-y-3 animate-fade-in">
+    <section aria-label="Momento Monna" className="space-y-3 animate-fade-in">
       <div className="flex items-center gap-2 px-1">
         <Sparkle weight="regular" className="h-4 w-4 text-primary" />
-        <p className="text-sm font-medium text-foreground">Momento Monna</p>
+        <h2 className="text-sm font-medium text-foreground">Momento Monna</h2>
       </div>
 
-      <div className="space-y-3">
+      <ul className="space-y-3">
         {visibleSuggestions.map((suggestion) => (
-          <div
+          <li
             key={suggestion.id}
             className={`
               bg-card rounded-xl p-4 transition-all duration-200 border border-border shadow-elevated
               ${hiddenIds.has(suggestion.id) ? 'animate-fade-out' : 'animate-fade-in'}
             `}
           >
-            <h4 className="text-sm font-medium text-foreground mb-1">
+            <h3 className="text-sm font-medium text-foreground mb-1">
               {suggestion.title}
-            </h4>
+            </h3>
             
             {suggestion.description && (
               <p className="text-xs text-primary/80 mb-3">
@@ -75,9 +75,9 @@ export function AnniaMomentSection({ suggestions }: AnniaMomentSectionProps) {
                 Dispensar
               </Button>
             </div>
-          </div>
+          </li>
         ))}
-      </div>
-    </div>
+      </ul>
+    </section>
   );
 }

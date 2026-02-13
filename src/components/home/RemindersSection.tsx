@@ -56,17 +56,17 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
         onViewAll={() => navigate('/lembretes')}
         viewAllLabel="Ver todos"
       >
-        <div className="space-y-2">
+        <ul className="space-y-2">
           {reminders.map((reminder) => {
             const isAcknowledged = acknowledgedIds.has(reminder.occurrence_id || '');
-            
+
             return (
-              <div 
+              <li
                 key={reminder.occurrence_id || reminder.id}
                 className={`
                   flex items-center gap-3 py-2.5 px-3 rounded-md transition-colors duration-150
-                  ${reminder.isOverdue 
-                    ? 'bg-destructive/10 border border-destructive/20' 
+                  ${reminder.isOverdue
+                    ? 'bg-destructive/10 border border-destructive/20'
                     : 'bg-muted/50 border border-border/30'
                   }
                   ${isAcknowledged ? 'opacity-50' : ''}
@@ -112,10 +112,10 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
                     {reminder.priority === 'urgent' ? 'Urgente' : 'Importante'}
                   </Badge>
                 )}
-              </div>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </HomeSection>
       <AddReminderDialog open={isAddOpen} onOpenChange={setIsAddOpen} />
     </>

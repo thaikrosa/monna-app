@@ -183,17 +183,18 @@ export default function ShoppingList() {
         <>
           {/* Lista de itens pendentes */}
           {pendingItems.length > 0 && (
-            <div className="space-y-0">
+            <ul className="space-y-0">
               {pendingItems.map((item) => (
-                <ShoppingItemCard
-                  key={item.id}
-                  item={item}
-                  onToggle={(id, checked) => toggleChecked.mutate({ id, checked })}
-                  onDelete={(id) => deleteItem.mutate(id)}
-                  onEdit={(item) => setEditingItem(item)}
-                />
+                <li key={item.id}>
+                  <ShoppingItemCard
+                    item={item}
+                    onToggle={(id, checked) => toggleChecked.mutate({ id, checked })}
+                    onDelete={(id) => deleteItem.mutate(id)}
+                    onEdit={(item) => setEditingItem(item)}
+                  />
+                </li>
               ))}
-            </div>
+            </ul>
           )}
 
           {/* Seção de concluídos (colapsável) */}
@@ -211,17 +212,18 @@ export default function ShoppingList() {
                 <span>Concluídos ({completedItems.length})</span>
               </CollapsibleTrigger>
               <CollapsibleContent className="animate-slide-down">
-                <div className="space-y-0 mt-2 pt-2 border-t border-border">
+                <ul className="space-y-0 mt-2 pt-2 border-t border-border">
                   {completedItems.map((item) => (
-                    <ShoppingItemCard
-                      key={item.id}
-                      item={item}
-                      onToggle={(id, checked) => toggleChecked.mutate({ id, checked })}
-                      onDelete={(id) => deleteItem.mutate(id)}
-                      onEdit={(item) => setEditingItem(item)}
-                    />
+                    <li key={item.id}>
+                      <ShoppingItemCard
+                        item={item}
+                        onToggle={(id, checked) => toggleChecked.mutate({ id, checked })}
+                        onDelete={(id) => deleteItem.mutate(id)}
+                        onEdit={(item) => setEditingItem(item)}
+                      />
+                    </li>
                   ))}
-                </div>
+                </ul>
               </CollapsibleContent>
             </Collapsible>
           )}

@@ -44,9 +44,9 @@ export function ShoppingSection({ items, tagName }: ShoppingSectionProps) {
         onViewAll={() => navigate('/lista')}
         viewAllLabel="Ver lista"
       >
-        <div className="space-y-2">
+        <ul className="space-y-2">
           {displayItems.map((item) => (
-            <div 
+            <li
               key={item.id}
               className="flex items-center gap-3 py-2.5 px-3 rounded-md bg-muted/50 border border-border/30 transition-colors duration-150"
             >
@@ -68,15 +68,15 @@ export function ShoppingSection({ items, tagName }: ShoppingSectionProps) {
                   {item.quantity_text}
                 </span>
               )}
-            </div>
+            </li>
           ))}
-          
+
           {totalUnchecked > 3 && (
-            <p className="text-xs text-muted-foreground pt-1 pl-3">
+            <li className="text-xs text-muted-foreground pt-1 pl-3 list-none">
               +{totalUnchecked - 3} itens
-            </p>
+            </li>
           )}
-        </div>
+        </ul>
 
         {/* Gatilho inteligente */}
         {showSmartTrigger && (

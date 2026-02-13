@@ -33,9 +33,12 @@ export default function Agenda() {
 
   return (
     <div className="max-w-2xl mx-auto pb-24 space-y-6">
-      <div className="animate-slide-up stagger-1 bg-card border border-border shadow-elevated rounded-lg p-4">
-        <StripCalendar selectedDate={selectedDate} onDateSelect={setSelectedDate} />
-      </div>
+      <header className="animate-slide-up stagger-1">
+        <h1 className="sr-only">Agenda</h1>
+        <div className="bg-card border border-border shadow-elevated rounded-lg p-4">
+          <StripCalendar selectedDate={selectedDate} onDateSelect={setSelectedDate} />
+        </div>
+      </header>
 
       <div className="animate-slide-up stagger-2">
         <p className="text-sm text-primary/80 capitalize">
@@ -43,13 +46,13 @@ export default function Agenda() {
         </p>
       </div>
 
-      <div className="animate-slide-up stagger-3 space-y-3">
+      <section aria-label="Eventos do dia" className="animate-slide-up stagger-3 space-y-3">
         {isLoading ? (
-          <>
+          <div aria-busy="true">
             <Skeleton className="h-20 w-full rounded-xl" />
             <Skeleton className="h-20 w-full rounded-xl" />
             <Skeleton className="h-20 w-full rounded-xl" />
-          </>
+          </div>
         ) : isError ? (
           <ErrorState
             message="Erro ao carregar eventos"
@@ -58,18 +61,21 @@ export default function Agenda() {
         ) : events.length === 0 ? (
           <AgendaEmptyState />
         ) : (
-          events.map((event) => (
-            <EventCard
-              key={event.instance_id}
-              startTime={formatEventTime(event.starts_at, event.is_all_day)}
-              endTime={formatEndTime(event.ends_at, event.is_all_day)}
-              title={event.title || 'Evento sem título'}
-              isAllDay={event.is_all_day}
-              onClick={() => setSelectedEvent(event)}
-            />
-          ))
+          <ul className="space-y-3">
+            {events.map((event) => (
+              <li key={event.instance_id}>
+                <EventCard
+                  startTime={formatEventTime(event.starts_at, event.is_all_day)}
+                  endTime={formatEndTime(event.ends_at, event.is_all_day)}
+                  title={event.title || 'Evento sem título'}
+                  isAllDay={event.is_all_day}
+                  onClick={() => setSelectedEvent(event)}
+                />
+              </li>
+            ))}
+          </ul>
         )}
-      </div>
+      </section>
 
       <button
         onClick={() => setShowAddDialog(true)}

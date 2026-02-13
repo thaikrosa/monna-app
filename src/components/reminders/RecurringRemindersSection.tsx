@@ -39,16 +39,17 @@ export function RecurringRemindersSection({ onEdit, onDelete }: RecurringReminde
         </CollapsibleTrigger>
         
         <CollapsibleContent>
-          <div className="space-y-2 pt-2">
+          <ul className="space-y-2 pt-2">
             {reminders.map((reminder) => (
-              <RecurringReminderCard
-                key={reminder.id}
-                reminder={reminder}
-                onEdit={onEdit}
-                onDelete={onDelete}
-              />
+              <li key={reminder.id}>
+                <RecurringReminderCard
+                  reminder={reminder}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                />
+              </li>
             ))}
-          </div>
+          </ul>
         </CollapsibleContent>
       </Collapsible>
     </div>

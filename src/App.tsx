@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -47,6 +48,7 @@ const queryClient = new QueryClient({
 
 // Monna App
 const App = () => (
+  <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
   <QueryClientProvider client={queryClient}>
     <SessionProvider>
       <TooltipProvider>
@@ -99,6 +101,7 @@ const App = () => (
       </TooltipProvider>
     </SessionProvider>
   </QueryClientProvider>
+  </ThemeProvider>
 );
 
 export default App;

@@ -11,6 +11,7 @@ import {
   IntegrationsSection,
   ActivityHistorySection,
   AboutSection,
+  ThemeToggle,
   type SettingsState,
   defaultSettings,
   normalizeTime,
@@ -111,6 +112,8 @@ export default function Settings() {
         <IntegrationsSection />
 
         <ActivityHistorySection />
+
+        <ThemeToggle />
 
         <AboutSection />
 

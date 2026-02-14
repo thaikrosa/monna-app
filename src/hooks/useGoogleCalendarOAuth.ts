@@ -24,9 +24,10 @@ export function useGoogleCalendarOAuth() {
 
     if (isConnecting) return;
 
-    // Store user_id in sessionStorage for callback
+    // Store user_id and origin page in sessionStorage for callback
     sessionStorage.setItem("google_calendar_oauth_user_id", user.id);
     sessionStorage.setItem("google_calendar_oauth_redirect_uri", getRedirectUri());
+    sessionStorage.setItem("google_calendar_oauth_origin", window.location.pathname);
 
     const params = new URLSearchParams({
       client_id: GOOGLE_CLIENT_ID,

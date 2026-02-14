@@ -29,7 +29,23 @@ export function ShoppingSection({ items, tagName }: ShoppingSectionProps) {
   };
 
   if (totalUnchecked === 0 && checkedIds.size === 0) {
-    return null; // Não exibe se não há itens pendentes
+    return (
+      <>
+        <HomeSection
+          icon={<ShoppingCart weight="regular" className="h-4 w-4" />}
+          title={tagName || "Lista de compras"}
+          onAdd={() => setIsAddOpen(true)}
+          emptyState={
+            <p className="text-sm text-muted-foreground">
+              Sua lista está vazia. Adicione o que precisar.
+            </p>
+          }
+        >
+          <div />
+        </HomeSection>
+        <AddItemSheet open={isAddOpen} onOpenChange={setIsAddOpen} />
+      </>
+    );
   }
 
   const showSmartTrigger = totalUnchecked > 10;

@@ -34,6 +34,10 @@ export default function OAuthCallback() {
     if (hasProcessed.current) return;
     hasProcessed.current = true;
 
+    // Recuperar página de origem para redirect
+    const originPage = sessionStorage.getItem("google_calendar_oauth_origin") || "/home";
+    sessionStorage.removeItem("google_calendar_oauth_origin");
+
     const code = searchParams.get("code");
     const state = searchParams.get("state");
     const error = searchParams.get("error");
@@ -43,14 +47,14 @@ export default function OAuthCallback() {
     if (error) {
       setStatus("error");
       setErrorMessage(errorDescription || "Autorização cancelada ou negada");
-      setTimeout(() => navigate("/configuracoes"), 3000);
+      setTimeout(() => navigate(originPage, { replace: true }), 3000);
       return;
     }
 
     if (!code) {
       setStatus("error");
       setErrorMessage("Código de autorização não encontrado");
-      setTimeout(() => navigate("/configuracoes"), 3000);
+      setTimeout(() => navigate(originPage, { replace: true }), 3000);
       return;
     }
 
@@ -69,8 +73,8 @@ export default function OAuthCallback() {
       setErrorMessage(err instanceof Error ? err.message : "Erro inesperado");
     }
 
-    // Redirect after processing
-    setTimeout(() => navigate('/configuracoes'), 2000);
+    // Redirect back to origin page
+    setTimeout(() => navigate(originPage, { replace: true }), 2000);
   }, [searchParams, navigate, handleOAuthCallback]);
 
   useEffect(() => {

@@ -1,16 +1,10 @@
 import { useRef, useEffect, useState } from 'react';
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from '@/components/ui/sheet';
-import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -81,7 +75,7 @@ export function AddItemSheet({ open, onOpenChange, defaultTagName }: AddItemShee
         {
           onSuccess: () => {
             setNewItem('');
-            // Manter sheet aberto para adicionar mais itens rapidamente
+            // Manter dialog aberto para adicionar mais itens rapidamente
             inputRef.current?.focus();
           },
         }
@@ -107,14 +101,14 @@ export function AddItemSheet({ open, onOpenChange, defaultTagName }: AddItemShee
 
   return (
     <>
-      <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent side="bottom" className="pb-8 rounded-t-2xl px-5 py-6">
-          <SheetHeader>
-            <SheetTitle className="text-left text-lg font-medium">Novo Item</SheetTitle>
-            <SheetDescription className="text-left text-muted-foreground/70">
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="max-h-[85vh] overflow-y-auto max-w-md px-5 py-6 pb-10">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-medium">Novo Item</DialogTitle>
+            <DialogDescription className="text-muted-foreground/70">
               Adicione à sua lista de compras
-            </SheetDescription>
-          </SheetHeader>
+            </DialogDescription>
+          </DialogHeader>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-8">
             <div className="space-y-3">
@@ -168,8 +162,8 @@ export function AddItemSheet({ open, onOpenChange, defaultTagName }: AddItemShee
               Adicionar
             </Button>
           </form>
-        </SheetContent>
-      </Sheet>
+        </DialogContent>
+      </Dialog>
 
       {/* Dialog para criar nova categoria */}
       <Dialog open={createTagDialogOpen} onOpenChange={setCreateTagDialogOpen}>

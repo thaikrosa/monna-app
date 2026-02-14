@@ -21,7 +21,7 @@ export default function SupportNetwork() {
       <div className="sticky top-14 z-40 bg-background/95 backdrop-blur-sm border-b border-border/30">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/">
+            <Link to="/home">
               <Button
                 variant="ghost"
                 size="icon"

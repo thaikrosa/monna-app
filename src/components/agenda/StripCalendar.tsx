@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { format, addDays, startOfWeek, isSameDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-const DAY_LETTERS = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+const DAY_ABBREVS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
 interface StripCalendarProps {
   selectedDate: Date;
@@ -95,7 +95,7 @@ export function StripCalendar({ selectedDate, onDateSelect }: StripCalendarProps
               `}
             >
               <span className="text-[10px] font-medium">
-                {DAY_LETTERS[day.getDay()]}
+                {DAY_ABBREVS[day.getDay()]}
               </span>
               <span className={`text-lg ${isSelected ? 'font-semibold' : 'font-normal'}`}>
                 {format(day, 'd')}

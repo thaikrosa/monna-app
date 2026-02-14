@@ -5,6 +5,7 @@ import { EventCard } from '@/components/agenda/EventCard';
 import { AgendaEmptyState } from '@/components/agenda/AgendaEmptyState';
 import { AddEventDialog } from '@/components/agenda/AddEventDialog';
 import { EditEventDialog } from '@/components/agenda/EditEventDialog';
+import { DeleteEventAlert } from '@/components/agenda/DeleteEventAlert';
 import { useCalendarEventsByDate } from '@/hooks/useCalendarEventsByDate';
 import { useGoogleCalendarConnection } from '@/hooks/useCalendarConnections';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -15,7 +16,8 @@ export default function Agenda() {
   const [selectedDate, setSelectedDate] = useState(() => new Date());
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<AgendaEvent | null>(null);
-  
+  const [deletingEvent, setDeletingEvent] = useState<AgendaEvent | null>(null);
+
   const { data: events = [], isLoading, isError, refetch } = useCalendarEventsByDate(selectedDate);
   const { isConnected } = useGoogleCalendarConnection();
 
@@ -62,6 +64,8 @@ export default function Agenda() {
                   title={event.title || 'Evento sem título'}
                   isAllDay={event.is_all_day}
                   onClick={() => setSelectedEvent(event)}
+                  onEdit={() => setSelectedEvent(event)}
+                  onDelete={() => setDeletingEvent(event)}
                 />
               </li>
             ))}
@@ -91,6 +95,18 @@ export default function Agenda() {
         onOpenChange={(open) => { if (!open) setSelectedEvent(null); }}
         event={selectedEvent}
       />
+
+      {deletingEvent && (
+        <DeleteEventAlert
+          open={!!deletingEvent}
+          onOpenChange={(open) => { if (!open) setDeletingEvent(null); }}
+          eventId={deletingEvent.event_id}
+          instanceId={deletingEvent.instance_id}
+          isRecurring={deletingEvent.is_recurring}
+          title={deletingEvent.title || 'Evento sem título'}
+          onDeleted={() => setDeletingEvent(null)}
+        />
+      )}
     </div>
   );
 }

@@ -33,14 +33,7 @@ export default function SupportNetwork() {
             <h1 className="text-lg font-semibold text-foreground">Contatos Importantes</h1>
           </div>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsAddOpen(true)}
-            className="h-8 w-8 text-muted-foreground/60 hover:text-foreground active:text-foreground hover:bg-transparent"
-          >
-            <Plus weight="thin" className="h-5 w-5" />
-          </Button>
+          <div className="w-8" />
         </div>
       </div>
 
@@ -77,6 +70,13 @@ export default function SupportNetwork() {
               />
             ))
           )}
+          <Button
+            onClick={() => setIsAddOpen(true)}
+            className="w-full mt-4"
+          >
+            <Plus weight="regular" className="h-4 w-4 mr-2" />
+            Adicionar contato
+          </Button>
         </div>
       </div>
 

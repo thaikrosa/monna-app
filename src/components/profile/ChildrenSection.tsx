@@ -180,7 +180,7 @@ export function ChildrenSection() {
   return (
     <section>
       <h2 className="text-base font-medium text-foreground mb-3">
-        Quem cuidamos juntas
+        Filhos
       </h2>
 
       <Accordion

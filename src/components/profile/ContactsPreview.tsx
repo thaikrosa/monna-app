@@ -47,7 +47,7 @@ export function ContactsPreview() {
   return (
     <section>
       <h2 className="text-base font-medium text-foreground mb-3">
-        Sua rede de apoio
+        Contatos Importantes
       </h2>
 
       <div className="annia-glass p-4 rounded-lg border border-border/30">

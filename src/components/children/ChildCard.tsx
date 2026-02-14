@@ -34,15 +34,15 @@ export function ChildCard({ child, onEdit, onDelete }: ChildCardProps) {
       <div className="flex items-start justify-between gap-4">
         {/* Main content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <h3 className="font-medium text-foreground truncate">
-              {child.name}
-              {child.nickname && (
-                <span className="text-muted-foreground font-normal"> ({child.nickname})</span>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="font-medium text-foreground truncate">{child.name}</h3>
+              {child.vaccination_reminders_enabled && (
+                <Syringe weight="regular" className="h-4 w-4 text-primary/70 flex-shrink-0" />
               )}
-            </h3>
-            {child.vaccination_reminders_enabled && (
-              <Syringe weight="regular" className="h-4 w-4 text-primary/70 flex-shrink-0" />
+            </div>
+            {child.nickname && (
+              <p className="text-sm text-muted-foreground">{child.nickname}</p>
             )}
           </div>
           <p className="text-sm text-muted-foreground mt-0.5">{age}</p>

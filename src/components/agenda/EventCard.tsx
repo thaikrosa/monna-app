@@ -1,5 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { CalendarBlank, CaretRight } from '@phosphor-icons/react';
+import { Button } from '@/components/ui/button';
+import { CalendarBlank, PencilSimple, Trash } from '@phosphor-icons/react';
 
 interface EventCardProps {
   startTime: string;
@@ -7,9 +8,11 @@ interface EventCardProps {
   title: string;
   isAllDay?: boolean;
   onClick?: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
-export function EventCard({ startTime, endTime, title, isAllDay, onClick }: EventCardProps) {
+export function EventCard({ startTime, endTime, title, isAllDay, onClick, onEdit, onDelete }: EventCardProps) {
   return (
     <Card
       className={`border border-border shadow-elevated ${isAllDay ? 'bg-secondary' : 'bg-card'} ${onClick ? 'cursor-pointer active:scale-[0.98] transition-transform duration-100' : ''}`}
@@ -33,8 +36,35 @@ export function EventCard({ startTime, endTime, title, isAllDay, onClick }: Even
               )}
             </div>
           </div>
-          {onClick && (
-            <CaretRight weight="regular" className="w-4 h-4 text-muted-foreground/50 flex-shrink-0" />
+          {(onEdit || onDelete) && (
+            <div className="flex items-center gap-1 flex-shrink-0">
+              {onEdit && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onEdit();
+                  }}
+                  className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-150"
+                >
+                  <PencilSimple weight="regular" className="h-4 w-4" />
+                </Button>
+              )}
+              {onDelete && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete();
+                  }}
+                  className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-150"
+                >
+                  <Trash weight="regular" className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
           )}
         </div>
       </CardContent>

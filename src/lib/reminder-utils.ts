@@ -33,10 +33,12 @@ export function formatRecurrenceDescription(reminder: Reminder): string {
         const prefix = names.length > 1 ? 'Todas as' : 'Toda';
         return `${prefix} ${joined} às ${time}`;
       }
-      return `Semanalmente às ${time}`;
+      return `Toda semana às ${time}`;
     }
-    case 'monthly':
-      return `Todo mês às ${time}`;
+    case 'monthly': {
+      const dayOfMonth = new Date(reminder.datetime).getDate();
+      return `Todo dia ${dayOfMonth} às ${time}`;
+    }
     case 'yearly':
       return `Todo ano às ${time}`;
     case 'interval': {

@@ -70,7 +70,7 @@ export function ReminderCard({ reminder, onComplete, onSnooze, onEdit, onDelete 
         <div className="flex items-center gap-2 flex-1 min-w-0">
           <h3
             className={`
-              font-medium text-foreground truncate
+              text-sm font-medium text-foreground truncate
               ${isCompleted ? 'line-through decoration-muted-foreground/30' : ''}
             `}
           >

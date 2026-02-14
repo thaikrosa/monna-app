@@ -74,7 +74,19 @@ export default function Reminders() {
     toast.success('Lembrete excluído');
   };
 
-  const pendingCount = selectedDateReminders.filter((r) => r.occurrence_status === 'pending' || r.occurrence_status === 'snoozed').length;
+  const { todayList, overdueList } = useMemo(() => {
+    if (!isToday) return { todayList: selectedDateReminders, overdueList: [] as UpcomingReminder[] };
+
+    const dayStart = new Date(selectedDate);
+    dayStart.setHours(0, 0, 0, 0);
+
+    return {
+      todayList: selectedDateReminders.filter(r => new Date(r.scheduled_at) >= dayStart),
+      overdueList: selectedDateReminders.filter(r => new Date(r.scheduled_at) < dayStart),
+    };
+  }, [selectedDateReminders, isToday, selectedDate]);
+
+  const pendingCount = todayList.filter((r) => r.occurrence_status === 'pending' || r.occurrence_status === 'snoozed').length;
 
   return (
     <div className="max-w-2xl mx-auto pb-24 space-y-6">
@@ -129,7 +141,7 @@ export default function Reminders() {
               )}
               <AnimatePresence>
                 <ul className="space-y-3">
-                  {selectedDateReminders.map((reminder) => (
+                  {todayList.map((reminder) => (
                     <motion.li
                       key={reminder.occurrence_id}
                       layout
@@ -147,6 +159,34 @@ export default function Reminders() {
                   ))}
                 </ul>
               </AnimatePresence>
+
+              {overdueList.length > 0 && (
+                <>
+                  <p className="text-xs text-muted-foreground/50 uppercase tracking-wider pt-4 pb-2">
+                    Atrasados
+                  </p>
+                  <AnimatePresence>
+                    <ul className="space-y-3">
+                      {overdueList.map((reminder) => (
+                        <motion.li
+                          key={reminder.occurrence_id}
+                          layout
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.15 }}
+                        >
+                          <SwipeableReminderCard
+                            reminder={reminder}
+                            onComplete={handleComplete}
+                            onSnooze={handleSnooze}
+                            onEdit={handleEdit}
+                            onDelete={handleDelete}
+                          />
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </AnimatePresence>
+                </>
+              )}
             </>
           )}
         </section>

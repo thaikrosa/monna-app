@@ -23,7 +23,7 @@ export function RecurringReminderCard({ reminder, onEdit, onDelete }: RecurringR
         
         {/* Título + Descrição */}
         <div className="flex-1 min-w-0">
-          <h3 className="font-medium text-foreground truncate">
+          <h3 className="text-sm font-medium text-foreground truncate">
             {capitalizeFirst(reminder.title)}
           </h3>
           <p className="text-xs text-muted-foreground/70 mt-0.5">

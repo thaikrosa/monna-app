@@ -78,7 +78,7 @@ export function SwipeableReminderCard({ reminder, onComplete, onSnooze, onEdit, 
   }
 
   return (
-    <div className="relative overflow-hidden rounded-lg">
+    <div className="relative overflow-hidden rounded-lg" data-swipe-ignore>
       {/* Right swipe background (complete) */}
       <motion.div
         className="absolute inset-0 bg-primary/20 rounded-lg flex items-center pl-4"

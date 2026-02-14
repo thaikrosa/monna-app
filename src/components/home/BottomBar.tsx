@@ -16,6 +16,7 @@ export function BottomBar() {
   return (
     <nav
       aria-label="Navegação principal"
+      data-swipe-ignore
       className="fixed bottom-0 left-0 right-0 backdrop-blur-md bg-background/95 border-t border-border/50 px-4 py-2 z-50"
       style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}
     >

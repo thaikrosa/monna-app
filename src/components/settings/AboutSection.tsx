@@ -15,7 +15,7 @@ export function AboutSection() {
           href="/static/termos.html"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-between group"
+          className="flex items-center justify-between group min-h-[44px]"
         >
           <div className="flex items-center gap-3">
             <FileText weight="thin" className="h-5 w-5 text-primary" />
@@ -33,7 +33,7 @@ export function AboutSection() {
           href="/static/privacidade.html"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-between group"
+          className="flex items-center justify-between group min-h-[44px]"
         >
           <div className="flex items-center gap-3">
             <ShieldCheck weight="thin" className="h-5 w-5 text-primary" />

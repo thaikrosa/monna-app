@@ -105,7 +105,12 @@ export function WizardStep2Form({
     if (result?.error === 'duplicate_whatsapp') {
       form.setError('whatsapp', {
         type: 'manual',
-        message: 'Este número já está cadastrado. Utilize outro número.',
+        message: 'Este número de WhatsApp já está cadastrado. Use outro número.',
+      });
+    } else if (result?.error) {
+      form.setError('whatsapp', {
+        type: 'manual',
+        message: 'Erro ao salvar. Tente novamente.',
       });
     }
   });
@@ -179,6 +184,9 @@ export function WizardStep2Form({
                     onChange={(e) => {
                       const digits = e.target.value.replace(/\D/g, '').slice(0, 11);
                       field.onChange(formatWhatsApp(digits));
+                      if (form.formState.errors.whatsapp?.type === 'manual') {
+                        form.clearErrors('whatsapp');
+                      }
                     }}
                   />
                 </FormControl>

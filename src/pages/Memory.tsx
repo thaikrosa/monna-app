@@ -197,8 +197,16 @@ export default function Memory() {
       <button
         type="button"
         onClick={openNewNote}
-        className="fixed bottom-24 right-5 z-30 h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary-hover active:scale-95 transition-all duration-150 flex items-center justify-center"
         aria-label="Nova nota"
+        className="
+          fixed bottom-20 right-4 z-40
+          floating-button
+          shadow-lg
+          transition-transform duration-200
+          hover:scale-110
+          active:scale-95
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background
+        "
       >
         <Plus weight="regular" className="h-6 w-6" />
       </button>

@@ -104,10 +104,12 @@ export default function Settings() {
           onChange={handleStyleChange}
         />
 
+        {/* SuggestionsSettings hidden — feature not yet active
         <SuggestionsSettings
           settings={settings}
           onToggle={handleToggle}
         />
+        */}
 
         <IntegrationsSection />
 

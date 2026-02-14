@@ -22,6 +22,7 @@ export function ActivityHistorySection() {
             size="sm"
             variant={historyDays === 7 ? 'default' : 'outline'}
             onClick={() => setHistoryDays(7)}
+            className="min-h-[36px]"
           >
             7 dias
           </Button>
@@ -29,6 +30,7 @@ export function ActivityHistorySection() {
             size="sm"
             variant={historyDays === 30 ? 'default' : 'outline'}
             onClick={() => setHistoryDays(30)}
+            className="min-h-[36px]"
           >
             30 dias
           </Button>

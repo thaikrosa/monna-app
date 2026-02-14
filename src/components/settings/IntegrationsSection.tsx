@@ -19,7 +19,7 @@ export function IntegrationsSection() {
       </p>
 
       <div className="annia-glass p-4 rounded-lg border border-border/30">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between min-h-[44px]">
           <div className="flex items-center gap-3">
             <GoogleLogo weight="thin" className="h-5 w-5 text-primary" />
             <div>

@@ -29,16 +29,16 @@ export default function MyChildren() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="sticky top-14 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
+      <div className="sticky top-14 z-40 bg-background/95 backdrop-blur-sm border-b border-border/30">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to="/">
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-primary/70 hover:text-primary hover:bg-primary/10"
+                className="h-8 w-8 text-muted-foreground/60 hover:text-foreground active:text-foreground hover:bg-transparent"
               >
-                <CaretLeft weight="regular" className="h-5 w-5" />
+                <CaretLeft weight="thin" className="h-5 w-5" />
               </Button>
             </Link>
             <h1 className="text-lg font-semibold text-foreground">Meus Filhos</h1>
@@ -48,9 +48,9 @@ export default function MyChildren() {
             variant="ghost"
             size="icon"
             onClick={() => setAddSheetOpen(true)}
-            className="h-8 w-8 text-primary/70 hover:text-primary hover:bg-primary/10"
+            className="h-8 w-8 text-muted-foreground/60 hover:text-foreground active:text-foreground hover:bg-transparent"
           >
-            <Plus weight="regular" className="h-5 w-5" />
+            <Plus weight="thin" className="h-5 w-5" />
           </Button>
         </div>
       </div>

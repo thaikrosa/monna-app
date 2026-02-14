@@ -293,7 +293,8 @@ export function useOnboardingWizard() {
       if (error) {
         const msg = error.message?.toLowerCase() ?? '';
         const code = error.code ?? '';
-        if (code === '23505' || msg.includes('duplicate') || msg.includes('unique')) {
+        const status = (error as Record<string, unknown>).status;
+        if (code === '23505' || status === 409 || msg.includes('duplicate') || msg.includes('unique')) {
           return { error: 'duplicate_whatsapp' };
         }
         return { error: 'unknown' };

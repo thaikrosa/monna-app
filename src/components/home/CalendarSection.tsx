@@ -85,6 +85,7 @@ export function CalendarSection({ connection, events, isLoading }: CalendarSecti
         <HomeSection
           icon={<CalendarBlank weight="regular" className="h-4 w-4" />}
           title="Agenda do dia"
+          count={0}
           onAdd={() => setShowAddDialog(true)}
           emptyState={
             <p className="text-sm text-muted-foreground">

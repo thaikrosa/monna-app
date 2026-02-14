@@ -45,7 +45,7 @@ export function HomeSection({
           </div>
           <div className="flex items-center gap-2">
             <h2 id={headingId} className="text-sm font-medium text-foreground">{title}</h2>
-            {count !== undefined && count > 0 && (
+            {count !== undefined && (
               <span className="text-xs text-muted-foreground">({count})</span>
             )}
           </div>

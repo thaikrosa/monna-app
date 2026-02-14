@@ -169,14 +169,15 @@ export function AddReminderDialog({ open, onOpenChange }: AddReminderDialogProps
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto max-w-md px-5 py-6 sm:rounded-lg">
-        {/* Visually hidden for accessibility */}
-        <DialogHeader className="sr-only">
-          <DialogTitle>Novo Lembrete</DialogTitle>
-          <DialogDescription>Criar um novo lembrete</DialogDescription>
+      <DialogContent className="max-h-[85vh] overflow-y-auto max-w-md px-5 py-6 pb-10 sm:rounded-lg">
+        <DialogHeader>
+          <DialogTitle className="text-lg font-medium">Novo Lembrete</DialogTitle>
+          <DialogDescription className="text-muted-foreground/70">
+            Crie um lembrete com hora e recorrência
+          </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-8">
+        <div className="mt-6 space-y-8">
           {/* TITLE */}
           <div className="space-y-3">
             <Input
@@ -365,7 +366,7 @@ export function AddReminderDialog({ open, onOpenChange }: AddReminderDialogProps
           <Button
             onClick={handleSubmit}
             disabled={!isValid || addReminder.isPending}
-            className="w-full mt-4"
+            className="w-full"
           >
             {addReminder.isPending ? 'Salvando...' : 'Salvar'}
           </Button>

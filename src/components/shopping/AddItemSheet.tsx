@@ -4,6 +4,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetDescription,
 } from '@/components/ui/sheet';
 import {
   Dialog,
@@ -107,29 +108,34 @@ export function AddItemSheet({ open, onOpenChange, defaultTagName }: AddItemShee
   return (
     <>
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent side="bottom" className="pb-8 rounded-t-2xl">
+        <SheetContent side="bottom" className="pb-8 rounded-t-2xl px-5 py-6">
           <SheetHeader>
-            <SheetTitle className="text-left">Adicionar item</SheetTitle>
+            <SheetTitle className="text-left text-lg font-medium">Novo Item</SheetTitle>
+            <SheetDescription className="text-left text-muted-foreground/70">
+              Adicione à sua lista de compras
+            </SheetDescription>
           </SheetHeader>
 
-          <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-            <Input
-              ref={inputRef}
-              placeholder="Do que você precisa?"
-              value={newItem}
-              onChange={(e) => setNewItem(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (newItem.trim() && !addItem.isPending) {
-                    handleSubmit(e);
+          <form onSubmit={handleSubmit} className="mt-6 space-y-8">
+            <div className="space-y-3">
+              <Input
+                ref={inputRef}
+                placeholder="Do que você precisa?"
+                value={newItem}
+                onChange={(e) => setNewItem(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (newItem.trim() && !addItem.isPending) {
+                      handleSubmit(e);
+                    }
                   }
-                }
-              }}
-              className="text-base bg-transparent border-border focus:border-primary"
-              autoComplete="off"
-            />
+                }}
+                className="bg-transparent border-0 border-b border-border/30 rounded-none focus:border-primary/50 focus:ring-0 transition-colors duration-150 placeholder:text-muted-foreground/40"
+                autoComplete="off"
+              />
+            </div>
 
             <div className="flex items-center gap-3">
               <Tag weight="duotone" className="h-4 w-4 text-muted-foreground shrink-0" />
@@ -159,7 +165,6 @@ export function AddItemSheet({ open, onOpenChange, defaultTagName }: AddItemShee
               className="w-full"
               disabled={!newItem.trim() || !selectedTag || addItem.isPending}
             >
-              <Plus weight="bold" className="h-4 w-4 mr-2" />
               Adicionar
             </Button>
           </form>

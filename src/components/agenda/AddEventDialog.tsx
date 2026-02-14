@@ -105,7 +105,7 @@ export function AddEventDialog({ open, onOpenChange, defaultDate }: AddEventDial
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto max-w-md px-5 py-6">
+      <DialogContent className="max-h-[85vh] overflow-y-auto max-w-md px-5 py-6 pb-10">
         <DialogHeader>
           <DialogTitle className="text-lg font-medium">Novo Evento</DialogTitle>
           <DialogDescription className="text-muted-foreground/70">

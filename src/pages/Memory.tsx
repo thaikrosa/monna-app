@@ -1,208 +1,269 @@
-import { useState, useEffect } from 'react';
-import { MagnifyingGlass, Brain, WhatsappLogo, Desktop, X } from '@phosphor-icons/react';
-import { useMemories } from '@/hooks/useMemories';
-import { Input } from '@/components/ui/input';
+import { useState } from 'react';
+import { Plus, NotePencil, Trash, X, Check } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
-import { formatDistanceToNow } from 'date-fns';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useNotes, NOTE_COLORS, type Note, type NoteColor } from '@/hooks/useNotes';
+import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 
-const categoryLabels: Record<string, string> = {
-  saude: 'Saúde',
-  escola: 'Escola',
-  alimentacao: 'Alimentação',
-  rotina: 'Rotina',
-  familia: 'Família',
-  outros: 'Outros',
-  all: 'Todas',
+const colorMap: Record<NoteColor, string> = {
+  default: 'bg-card border-border',
+  rose: 'bg-[hsl(350,60%,92%)] border-[hsl(350,40%,85%)] dark:bg-[hsl(350,30%,20%)] dark:border-[hsl(350,20%,30%)]',
+  peach: 'bg-[hsl(25,70%,90%)] border-[hsl(25,50%,82%)] dark:bg-[hsl(25,30%,20%)] dark:border-[hsl(25,20%,30%)]',
+  sand: 'bg-[hsl(45,60%,90%)] border-[hsl(45,40%,82%)] dark:bg-[hsl(45,25%,20%)] dark:border-[hsl(45,15%,30%)]',
+  mint: 'bg-[hsl(155,45%,90%)] border-[hsl(155,30%,82%)] dark:bg-[hsl(155,25%,18%)] dark:border-[hsl(155,15%,28%)]',
+  sky: 'bg-[hsl(205,60%,92%)] border-[hsl(205,40%,84%)] dark:bg-[hsl(205,30%,18%)] dark:border-[hsl(205,20%,28%)]',
+  lavender: 'bg-[hsl(265,45%,92%)] border-[hsl(265,30%,84%)] dark:bg-[hsl(265,25%,20%)] dark:border-[hsl(265,15%,30%)]',
 };
 
-function SourceIcon({ source }: { source: string | null }) {
-  if (source === 'whatsapp') {
-    return <WhatsappLogo weight="regular" className="h-3 w-3" />;
-  }
-  return <Desktop weight="regular" className="h-3 w-3" />;
+const colorSwatchMap: Record<NoteColor, string> = {
+  default: 'bg-card border-border',
+  rose: 'bg-[hsl(350,60%,92%)] border-[hsl(350,40%,85%)] dark:bg-[hsl(350,30%,25%)] dark:border-[hsl(350,20%,35%)]',
+  peach: 'bg-[hsl(25,70%,90%)] border-[hsl(25,50%,82%)] dark:bg-[hsl(25,30%,25%)] dark:border-[hsl(25,20%,35%)]',
+  sand: 'bg-[hsl(45,60%,90%)] border-[hsl(45,40%,82%)] dark:bg-[hsl(45,25%,25%)] dark:border-[hsl(45,15%,35%)]',
+  mint: 'bg-[hsl(155,45%,90%)] border-[hsl(155,30%,82%)] dark:bg-[hsl(155,25%,23%)] dark:border-[hsl(155,15%,33%)]',
+  sky: 'bg-[hsl(205,60%,92%)] border-[hsl(205,40%,84%)] dark:bg-[hsl(205,30%,23%)] dark:border-[hsl(205,20%,33%)]',
+  lavender: 'bg-[hsl(265,45%,92%)] border-[hsl(265,30%,84%)] dark:bg-[hsl(265,25%,25%)] dark:border-[hsl(265,15%,35%)]',
+};
+
+function NoteCard({ note, onClick }: { note: Note; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        'w-full text-left rounded-lg border p-3 break-inside-avoid mb-3 transition-all duration-150',
+        'hover:shadow-md cursor-pointer',
+        colorMap[note.color as NoteColor] || colorMap.default
+      )}
+    >
+      {note.title && (
+        <h3 className="font-medium text-foreground text-sm mb-1 line-clamp-1">
+          {note.title}
+        </h3>
+      )}
+      {note.content && (
+        <p className="text-sm text-foreground/80 leading-relaxed line-clamp-6 whitespace-pre-wrap">
+          {note.content}
+        </p>
+      )}
+      <p className="text-[10px] text-muted-foreground mt-2">
+        {format(new Date(note.updated_at), "d 'de' MMM", { locale: ptBR })}
+      </p>
+    </button>
+  );
 }
 
-function MemoryCard({ memory }: { memory: {
-  id: string;
-  content: string;
-  category: string;
-  category_normalized: string;
-  keywords: string[] | null;
-  source: string | null;
-  created_at: string | null;
-}}) {
+function ColorPicker({
+  selected,
+  onChange,
+}: {
+  selected: string;
+  onChange: (color: NoteColor) => void;
+}) {
   return (
-    <div className="bg-card border border-border rounded-lg p-4 break-inside-avoid mb-4 shadow-elevated hover:shadow-md transition-shadow duration-200">
-      {/* Content */}
-      <p className="text-sm text-foreground leading-relaxed mb-3">
-        {memory.content}
-      </p>
-
-      {/* Keywords */}
-      {memory.keywords && memory.keywords.length > 0 && (
-        <div className="flex flex-wrap gap-1 mb-3">
-          {memory.keywords.slice(0, 4).map((keyword, idx) => (
-            <span
-              key={idx}
-              className="text-xs text-muted-foreground bg-muted/50 px-2 py-0.5 rounded"
-            >
-              {keyword}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {/* Footer */}
-      <div className="flex items-center justify-between text-xs text-muted-foreground">
-        <span className="font-medium text-primary/70">
-          {categoryLabels[memory.category_normalized] || memory.category}
-        </span>
-        <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1">
-            <SourceIcon source={memory.source} />
-          </span>
-        <span>
-          {memory.created_at ? formatDistanceToNow(new Date(memory.created_at), {
-            addSuffix: true,
-            locale: ptBR,
-          }) : ''}
-        </span>
-        </div>
-      </div>
+    <div className="flex items-center gap-2">
+      {NOTE_COLORS.map((color) => (
+        <button
+          key={color}
+          type="button"
+          onClick={() => onChange(color)}
+          className={cn(
+            'h-7 w-7 rounded-full border-2 transition-all duration-150 flex items-center justify-center',
+            colorSwatchMap[color],
+            selected === color
+              ? 'ring-2 ring-primary ring-offset-1 ring-offset-background scale-110'
+              : 'hover:scale-110'
+          )}
+          title={color}
+        >
+          {selected === color && (
+            <Check weight="bold" className="h-3 w-3 text-foreground/70" />
+          )}
+        </button>
+      ))}
     </div>
   );
 }
 
 export default function Memory() {
-  const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const { notes, isLoading, addNote, updateNote, deleteNote } = useNotes();
 
-  // Debounce search
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(search);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [search]);
+  // Sheet state
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [editingNote, setEditingNote] = useState<Note | null>(null);
+  const [formTitle, setFormTitle] = useState('');
+  const [formContent, setFormContent] = useState('');
+  const [formColor, setFormColor] = useState<NoteColor>('default');
 
-  const { data, isLoading } = useMemories({
-    category: selectedCategory,
-    search: debouncedSearch,
-  });
+  const openNewNote = () => {
+    setEditingNote(null);
+    setFormTitle('');
+    setFormContent('');
+    setFormColor('default');
+    setSheetOpen(true);
+  };
 
-  const memories = data?.memories || [];
-  const categories = data?.categories || [];
+  const openEditNote = (note: Note) => {
+    setEditingNote(note);
+    setFormTitle(note.title);
+    setFormContent(note.content);
+    setFormColor((note.color as NoteColor) || 'default');
+    setSheetOpen(true);
+  };
+
+  const handleSave = () => {
+    const trimmedTitle = formTitle.trim();
+    const trimmedContent = formContent.trim();
+
+    if (!trimmedTitle && !trimmedContent) return;
+
+    if (editingNote) {
+      updateNote(editingNote.id, {
+        title: trimmedTitle,
+        content: trimmedContent,
+        color: formColor,
+      });
+    } else {
+      addNote({
+        title: trimmedTitle,
+        content: trimmedContent,
+        color: formColor,
+      });
+    }
+    setSheetOpen(false);
+  };
+
+  const handleDelete = () => {
+    if (editingNote) {
+      deleteNote(editingNote.id);
+      setSheetOpen(false);
+    }
+  };
 
   return (
-    <div className="max-w-2xl mx-auto pb-24 space-y-6">
+    <div className="max-w-4xl mx-auto pb-24">
       {/* Header */}
-      <header className="animate-slide-up stagger-1">
-        <h1 className="sr-only">Memória</h1>
+      <header className="mb-6 animate-slide-up stagger-1">
+        <h1 className="sr-only">Notas</h1>
         <p className="text-sm text-primary/80">
-          Tudo que você me contou, guardado com carinho
+          Suas anotações pessoais
         </p>
       </header>
 
-      {/* Spotlight Search */}
-      <div className="animate-slide-up stagger-2 relative">
-        <MagnifyingGlass
-          weight="regular"
-          className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground"
-        />
-        <Input
-          type="text"
-          placeholder="Buscar nas memórias..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="pl-10 pr-10 h-12 bg-background border-border/50 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary/20"
-        />
-        {search && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground"
-            onClick={() => setSearch('')}
-          >
-            <X weight="regular" className="h-4 w-4" />
-          </Button>
+      {/* Content */}
+      <div className="animate-slide-up stagger-2">
+        {isLoading ? (
+          <div className="columns-2 sm:columns-2 md:columns-3 lg:columns-4 gap-3">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="bg-card border border-border rounded-lg p-3 mb-3 animate-pulse"
+              >
+                <div className="h-4 bg-muted rounded w-3/4 mb-2" />
+                <div className="h-3 bg-muted rounded w-full mb-1" />
+                <div className="h-3 bg-muted rounded w-2/3" />
+              </div>
+            ))}
+          </div>
+        ) : notes.length === 0 ? (
+          <div className="text-center py-16">
+            <NotePencil weight="thin" className="h-16 w-16 mx-auto text-muted-foreground/40 mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-2">
+              Nenhuma nota ainda
+            </h3>
+            <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+              Toque no botão + para criar sua primeira nota
+            </p>
+          </div>
+        ) : (
+          <div className="columns-2 sm:columns-2 md:columns-3 lg:columns-4 gap-3">
+            {notes.map((note) => (
+              <NoteCard key={note.id} note={note} onClick={() => openEditNote(note)} />
+            ))}
+          </div>
         )}
       </div>
 
-      {/* Category Filters */}
-      <div className="animate-slide-up stagger-3 flex gap-2 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
-        <Button
-          variant="ghost"
-          size="sm"
-          className={cn(
-            "flex-shrink-0 rounded-lg px-4 h-9 text-sm font-normal transition-colors duration-150",
-            selectedCategory === 'all'
-              ? "bg-primary/10 text-primary hover:bg-primary/15"
-              : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
-          )}
-          onClick={() => setSelectedCategory('all')}
-        >
-          Todas
-        </Button>
-        {categories.map((cat) => (
-          <Button
-            key={cat}
-            variant="ghost"
-            size="sm"
-            className={cn(
-              "flex-shrink-0 rounded-lg px-4 h-9 text-sm font-normal transition-colors duration-150",
-              selectedCategory === cat
-                ? "bg-primary/10 text-primary hover:bg-primary/15"
-                : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
-            )}
-            onClick={() => setSelectedCategory(cat)}
-          >
-            {categoryLabels[cat] || cat}
-          </Button>
-        ))}
-      </div>
+      {/* FAB */}
+      <button
+        type="button"
+        onClick={openNewNote}
+        className="fixed bottom-24 right-5 z-30 h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary-hover active:scale-95 transition-all duration-150 flex items-center justify-center"
+        aria-label="Nova nota"
+      >
+        <Plus weight="regular" className="h-6 w-6" />
+      </button>
 
-      {/* Content */}
-      <div className="animate-slide-up stagger-4">
-      {isLoading ? (
-        <div className="columns-1 sm:columns-2 gap-4">
-          {[1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className="bg-card border border-border rounded-lg p-4 mb-4 animate-pulse"
-            >
-              <div className="h-4 bg-muted rounded w-full mb-2" />
-              <div className="h-4 bg-muted rounded w-3/4 mb-2" />
-              <div className="h-3 bg-muted rounded w-1/2" />
+      {/* Note Sheet */}
+      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+        <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>{editingNote ? 'Editar nota' : 'Nova nota'}</SheetTitle>
+          </SheetHeader>
+
+          <div className="mt-6 space-y-4">
+            <Input
+              value={formTitle}
+              onChange={(e) => setFormTitle(e.target.value)}
+              placeholder="Titulo (opcional)"
+              className="bg-background/50 text-base font-medium border-none shadow-none focus-visible:ring-0 px-0 h-auto py-2"
+            />
+
+            <Textarea
+              value={formContent}
+              onChange={(e) => setFormContent(e.target.value)}
+              placeholder="Escreva sua nota..."
+              className="bg-background/50 min-h-[200px] resize-none border-none shadow-none focus-visible:ring-0 px-0"
+              rows={8}
+            />
+
+            {/* Color picker */}
+            <div className="space-y-2">
+              <label className="text-xs text-muted-foreground">Cor</label>
+              <ColorPicker selected={formColor} onChange={setFormColor} />
             </div>
-          ))}
-        </div>
-      ) : memories.length === 0 ? (
-        <div className="text-center py-16">
-          <Brain weight="thin" className="h-16 w-16 mx-auto text-muted-foreground/40 mb-4" />
-          <h3 className="text-lg font-medium text-foreground mb-2">
-            {search || selectedCategory !== 'all' 
-              ? 'Nenhuma memória encontrada'
-              : 'Sua memória está vazia'
-            }
-          </h3>
-          <p className="text-sm text-muted-foreground max-w-xs mx-auto">
-            {search || selectedCategory !== 'all'
-              ? 'Tente ajustar sua busca ou filtros'
-              : 'Converse comigo pelo WhatsApp e eu guardarei tudo para você'
-            }
-          </p>
-        </div>
-      ) : (
-        <div className="columns-1 sm:columns-2 gap-4">
-          {memories.map((memory) => (
-            <MemoryCard key={memory.id} memory={memory} />
-          ))}
-        </div>
-      )}
-      </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2 pt-4">
+              {editingNote && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleDelete}
+                  className="text-muted-foreground hover:text-destructive"
+                >
+                  <Trash weight="regular" className="h-4 w-4 mr-1" />
+                  Excluir
+                </Button>
+              )}
+              <div className="flex-1" />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSheetOpen(false)}
+              >
+                Cancelar
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleSave}
+                disabled={!formTitle.trim() && !formContent.trim()}
+              >
+                Salvar
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

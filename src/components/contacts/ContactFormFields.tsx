@@ -1,14 +1,6 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { PhoneInput, PhoneErrorMessage } from '@/components/ui/phone-input';
 
@@ -106,55 +98,7 @@ export function ContactFormFields({
         <PhoneErrorMessage show={data.phoneError} />
       </div>
 
-      {/* Category */}
-      <div className="space-y-2">
-        <Label className="text-xs text-muted-foreground">Categoria</Label>
-        <Select value={data.category} onValueChange={(value) => onChange('category', value)}>
-          <SelectTrigger className={inputClass}>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {CONTACT_CATEGORIES.map((cat) => (
-              <SelectItem key={cat} value={cat}>
-                {cat}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Intimacy Level */}
-      <div className="space-y-3">
-        <Label className="text-xs text-muted-foreground">
-          Como a Monna deve falar com este contato?
-        </Label>
-        <RadioGroup
-          value={data.intimacyLevel}
-          onValueChange={(value) => onChange('intimacyLevel', value)}
-          className="flex gap-4"
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="1" id={id('formal')} />
-            <Label htmlFor={id('formal')} className="text-sm font-normal cursor-pointer">
-              Formal
-            </Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="2" id={id('friendly')} />
-            <Label htmlFor={id('friendly')} className="text-sm font-normal cursor-pointer">
-              Amigável
-            </Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="3" id={id('intimate')} />
-            <Label htmlFor={id('intimate')} className="text-sm font-normal cursor-pointer">
-              Próximo
-            </Label>
-          </div>
-        </RadioGroup>
-      </div>
-
-      {/* Can Annia Message */}
+      {/* Can Monna Message */}
       <div className="flex items-center justify-between py-2">
         <div className="space-y-0.5">
           <Label htmlFor={id('canAnnia')} className="text-sm">

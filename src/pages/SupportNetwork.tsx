@@ -10,7 +10,7 @@ import { useContacts, useDeleteContact, type Contact } from '@/hooks/useContacts
 export default function SupportNetwork() {
   const { data: contacts = [], isLoading } = useContacts();
   const deleteContact = useDeleteContact();
-  
+
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
 
@@ -19,26 +19,21 @@ export default function SupportNetwork() {
       {/* Header */}
       <header className="mb-8">
         <div className="flex items-center gap-3">
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="p-2 rounded-lg text-primary/70 hover:text-primary hover:bg-primary/10 transition-all duration-150"
           >
             <CaretLeft weight="regular" className="h-5 w-5" />
           </Link>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Minha Rede de Apoio</h1>
-            <p className="text-sm text-primary/80 mt-0.5">
-              Pessoas que fazem parte da sua vida
-            </p>
-          </div>
+          <h1 className="text-2xl font-bold text-foreground">Contatos Importantes</h1>
         </div>
       </header>
 
-      {/* Botão adicionar */}
+      {/* Botão adicionar - full width */}
       <div className="mb-6">
-        <Button 
-          onClick={() => setIsAddOpen(true)} 
-          className="bg-primary text-primary-foreground hover:bg-primary/90"
+        <Button
+          onClick={() => setIsAddOpen(true)}
+          className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
         >
           <Plus weight="regular" className="h-4 w-4 mr-2" />
           Adicionar contato
@@ -53,7 +48,7 @@ export default function SupportNetwork() {
           <div className="text-center py-12 bg-card border border-border shadow-elevated rounded-lg">
             <p className="text-primary/80">Nenhum contato cadastrado</p>
             <p className="text-sm text-muted-foreground mt-1">
-              Adicione pessoas à sua rede de apoio
+              Adicione pessoas importantes para você
             </p>
           </div>
         ) : (
@@ -63,6 +58,7 @@ export default function SupportNetwork() {
               contact={contact}
               onEdit={() => setEditingContact(contact)}
               onDelete={() => deleteContact.mutate(contact.id)}
+              onClick={() => setEditingContact(contact)}
             />
           ))
         )}
@@ -70,10 +66,10 @@ export default function SupportNetwork() {
 
       {/* Sheets */}
       <AddContactSheet open={isAddOpen} onOpenChange={setIsAddOpen} />
-      <EditContactSheet 
-        contact={editingContact} 
-        open={!!editingContact} 
-        onOpenChange={(open) => !open && setEditingContact(null)} 
+      <EditContactSheet
+        contact={editingContact}
+        open={!!editingContact}
+        onOpenChange={(open) => !open && setEditingContact(null)}
       />
     </div>
   );

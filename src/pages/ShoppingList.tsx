@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { Plus, CaretDown, ShoppingCart, PencilSimple } from '@phosphor-icons/react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -27,6 +27,18 @@ export default function ShoppingList() {
   const { data: tags = [] } = useShoppingTags();
   const toggleChecked = useToggleChecked();
   const deleteItem = useDeleteItem();
+
+  // Ativar tab "Mercado" como padrão no primeiro carregamento
+  const defaultTabApplied = useRef(false);
+  useEffect(() => {
+    if (!defaultTabApplied.current && tags.length > 0) {
+      const mercadoTag = tags.find(t => t.name.toLowerCase().trim() === 'mercado');
+      if (mercadoTag) {
+        setActiveTab(mercadoTag.id);
+      }
+      defaultTabApplied.current = true;
+    }
+  }, [tags]);
 
   // Ordenar tags: Mercado primeiro, depois alfabético, Todos por último
   const sortedTags = useMemo(() => {
@@ -173,7 +185,7 @@ export default function ShoppingList() {
         <>
           {/* Lista de itens pendentes */}
           {pendingItems.length > 0 && (
-            <ul className="space-y-0">
+            <ul className="space-y-3">
               {pendingItems.map((item) => (
                 <li key={item.id}>
                   <ShoppingItemCard

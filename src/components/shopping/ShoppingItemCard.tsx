@@ -43,7 +43,8 @@ export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingI
   return (
     <div
       className={`
-        flex items-center gap-3 py-3 px-2 -mx-2 rounded-lg
+        flex items-center gap-3 p-4 rounded-lg
+        bg-card border border-border shadow-elevated
         transition-all duration-150
         ${item.is_checked ? 'opacity-50' : ''}
       `}
@@ -52,7 +53,7 @@ export function ShoppingItemCard({ item, onToggle, onDelete, onEdit }: ShoppingI
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span
-            className={`text-foreground transition-all duration-200 ${
+            className={`text-sm font-medium text-foreground transition-all duration-200 ${
               item.is_checked
                 ? 'line-through decoration-muted-foreground/50 text-muted-foreground'
                 : ''

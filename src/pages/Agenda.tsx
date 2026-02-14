@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 import { Plus } from '@phosphor-icons/react';
 import { StripCalendar } from '@/components/agenda/StripCalendar';
 import { EventCard } from '@/components/agenda/EventCard';
@@ -40,13 +38,7 @@ export default function Agenda() {
         </div>
       </header>
 
-      <div className="animate-slide-up stagger-2">
-        <p className="text-sm text-primary/80 capitalize">
-          {format(selectedDate, "EEEE, d 'de' MMMM", { locale: ptBR })}
-        </p>
-      </div>
-
-      <section aria-label="Eventos do dia" className="animate-slide-up stagger-3 space-y-3">
+      <section aria-label="Eventos do dia" className="animate-slide-up stagger-2 space-y-3">
         {isLoading ? (
           <div aria-busy="true">
             <Skeleton className="h-20 w-full rounded-xl" />

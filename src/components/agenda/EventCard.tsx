@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { CalendarBlank } from '@phosphor-icons/react';
+import { CalendarBlank, CaretRight } from '@phosphor-icons/react';
 
 interface EventCardProps {
   startTime: string;
@@ -16,7 +16,7 @@ export function EventCard({ startTime, endTime, title, isAllDay, onClick }: Even
       onClick={onClick}
     >
       <CardContent className="p-4">
-        <div className="flex items-start gap-3">
+        <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0">
             <CalendarBlank weight="regular" className="w-4 h-4 text-primary" />
           </div>
@@ -33,6 +33,9 @@ export function EventCard({ startTime, endTime, title, isAllDay, onClick }: Even
               )}
             </div>
           </div>
+          {onClick && (
+            <CaretRight weight="regular" className="w-4 h-4 text-muted-foreground/50 flex-shrink-0" />
+          )}
         </div>
       </CardContent>
     </Card>

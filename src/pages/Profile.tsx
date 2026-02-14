@@ -8,7 +8,6 @@ import { useProfile } from '@/hooks/useProfile';
 import { PersonalDataSection } from '@/components/profile/PersonalDataSection';
 import { ChildrenSection } from '@/components/profile/ChildrenSection';
 import { ContactsPreview } from '@/components/profile/ContactsPreview';
-import { AnniaQuestionsSection } from '@/components/profile/AnniaQuestionsSection';
 
 export default function Profile() {
   const { user } = useSession();
@@ -64,7 +63,6 @@ export default function Profile() {
         <PersonalDataSection profile={profile} userEmail={user?.email} />
         <ChildrenSection />
         <ContactsPreview />
-        <AnniaQuestionsSection />
       </div>
     </div>
   );

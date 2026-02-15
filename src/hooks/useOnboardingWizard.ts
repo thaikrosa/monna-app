@@ -1,4 +1,5 @@
 import { useReducer, useCallback, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSession } from '@/contexts/SessionContext';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -132,6 +133,7 @@ export function isValidWhatsApp(digits: string): boolean {
 
 export function useOnboardingWizard() {
   const { user, session, isReady, refetch } = useSession();
+  const navigate = useNavigate();
   const [state, dispatch] = useReducer(onboardingReducer, initialState);
   const prevUserRef = useRef<string | null | undefined>(undefined);
   const triggerRef = useRef(false);
@@ -206,6 +208,8 @@ export function useOnboardingWizard() {
           onboarding_completed_at: new Date().toISOString(),
         })
         .eq('id', session.user.id);
+
+      console.log('[Onboarding] UPDATE onboarding_completed:', error ? { error } : 'success');
 
       if (error) {
         // Retry once after 2s
@@ -318,9 +322,10 @@ export function useOnboardingWizard() {
 
   const handleGoToApp = useCallback(async () => {
     dispatch({ type: 'SET_APP_READY', payload: false });
-    await refetch();
-    window.location.href = '/home';
-  }, [refetch]);
+    const computed = await refetch();
+    console.log('[Onboarding] Post-refetch userState:', computed);
+    navigate('/home');
+  }, [refetch, navigate]);
 
   const updateFormField = useCallback(<K extends keyof OnboardingFormData>(
     field: K,

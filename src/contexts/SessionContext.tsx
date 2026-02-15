@@ -47,7 +47,7 @@ interface SessionContextType {
   user: User | null;
   profile: Profile | null;
   subscription: Subscription | null;
-  refetch: () => Promise<void>;
+  refetch: () => Promise<UserState | undefined>;
   signOut: () => Promise<void>;
   signInWithGoogle: () => Promise<void>;
 }
@@ -154,15 +154,18 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     };
   }, [computeState]);
 
-  const refetch = useCallback(async () => {
-    if (!session?.user?.id) return;
+  const refetch = useCallback(async (): Promise<UserState | undefined> => {
+    if (!session?.user?.id) return undefined;
     try {
       const { profile: prof, subscription: sub } = await fetchUserData(session.user.id);
       setProfile(prof);
       setSubscription(sub);
-      setUserState(computeState(session, prof, sub));
+      const computed = computeState(session, prof, sub);
+      setUserState(computed);
+      return computed;
     } catch {
       // Silently fail on refetch
+      return undefined;
     }
   }, [session, fetchUserData, computeState]);
 

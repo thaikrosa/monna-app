@@ -40,13 +40,7 @@ Deno.serve(async (req) => {
       subscription_data: {
         trial_period_days: 7,
       },
-      custom_fields: [
-        {
-          key: "whatsapp",
-          label: { type: "custom", custom: "Seu WhatsApp com DDD (ex: 41999999999)" },
-          type: "numeric",
-        },
-      ],
+      // WhatsApp removido do checkout — agora é coletado no wizard Step 2
       success_url: "https://monna.ia.br/bem-vinda",
       cancel_url: "https://monna.ia.br/",
       allow_promotion_codes: true,

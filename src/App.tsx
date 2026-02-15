@@ -68,9 +68,9 @@ const App = () => (
               <Route path="/contato" element={<Contact />} />
               <Route path="/cookies" element={<Cookies />} />
 
-              {/* Onboarding — only ONBOARDING state */}
+              {/* Onboarding — allows unauthenticated users arriving from Stripe */}
               <Route path="/bem-vinda" element={
-                <RequireState allowed={['ONBOARDING']}>
+                <RequireState allowed={['ONBOARDING', 'ANONYMOUS', 'NO_SUBSCRIPTION']}>
                   <BemVinda />
                 </RequireState>
               } />

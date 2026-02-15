@@ -317,8 +317,9 @@ export function useOnboardingWizard() {
   }, [user, state.formData]);
 
   const handleGoToApp = useCallback(async () => {
+    dispatch({ type: 'SET_APP_READY', payload: false });
     await refetch();
-    setTimeout(() => { window.location.href = '/home'; }, 2000);
+    window.location.href = '/home';
   }, [refetch]);
 
   const updateFormField = useCallback(<K extends keyof OnboardingFormData>(

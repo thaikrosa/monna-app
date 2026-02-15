@@ -208,15 +208,24 @@ export function useOnboardingWizard() {
         .eq('id', session.user.id);
 
       if (error) {
-        setTimeout(async () => {
-          await supabase
-            .from('profiles')
-            .update({
-              onboarding_completed: true,
-              onboarding_completed_at: new Date().toISOString(),
-            })
-            .eq('id', session.user.id);
-        }, 2000);
+        // Retry once after 2s
+        const { error: retryError } = await new Promise<{ error: unknown }>((resolve) => {
+          setTimeout(async () => {
+            const result = await supabase
+              .from('profiles')
+              .update({
+                onboarding_completed: true,
+                onboarding_completed_at: new Date().toISOString(),
+              })
+              .eq('id', session.user.id);
+            resolve(result);
+          }, 2000);
+        });
+
+        if (retryError) {
+          console.error('Failed to mark onboarding as completed after retry');
+          return;
+        }
       }
 
       dispatch({ type: 'SET_APP_READY', payload: true });
